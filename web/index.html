@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://malsup.github.io/jquery.form.js"></script>
+	<script type="text/javascript" src="web/resources/stbController.js"></script>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<title>RT Suite Control</title>
+	<meta name="MSSmartTagsPreventParsing" content="true" />
+	<meta name="description" content="Reliability Test Suite Contol" />
+	<style type="text/css" media="all">@import "web/css/controller.css";></style>
+</head>
+
+<html>
+<body>
+<div id="topBar"> 	<!-- The top bar with the header in -->
+<a id="topBarText">Reliability Test:</a><a id="topBarText" style="color:white;"> RT Suite STB Controller Central</a>
+<img id="logo" src="web/images/RT_Logo.png" onclick="window.location='http://www.rtsuite.net'">
+</div>
+
+<div id="menuBar">
+
+<input type="button" class="menuButton" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes()" />
+<input type="button" class="menuButton" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()" />
+<input type="button" class="menuButton" value="Sequences" onclick="pageCall('dynamicPage','web/sequencesPage.html');logLastBoxes();perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');focusEl('sequencesAvailable')" />
+<input type="button" class="menuButton" value="Events Schedule" onclick="pageCall('dynamicPage','web/eventsSchedulePage.html');logLastBoxes();perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')" />
+<input type="button" class="menuButton" value="STB Groups" onclick="pageCall('dynamicPage','web/stbGroupsPage.html');logLastBoxes();perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu');focusEl('stbGroupsAvailable')" />
+
+</div>
+
+<div id="dynamicPage" contenteditable="false">
+<h1 id="welcomeText">Select an option from the menu above to get started!</h1>
+</div>
+
+</body>
+</html>

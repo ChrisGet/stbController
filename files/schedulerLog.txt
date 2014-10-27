@@ -1,0 +1,3 @@
+/home/stbController/scripts/stbControl.pl
+Event = Subs and Audio
+STBs = ROW 2

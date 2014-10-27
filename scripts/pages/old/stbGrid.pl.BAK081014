@@ -1,0 +1,221 @@
+#!/usr/bin/perl -w
+use strict;
+
+use CGI;
+use DBM::Deep;
+
+my $query = CGI->new;
+print $query->header();
+
+#chomp(my $maindir = `sudo find / -type d -name stbController` || '');
+#chomp(my $maindir = (`cat ../files/homeDir.txt` || ''));
+chomp(my $maindir = (`cat homeDir.txt` || ''));
+die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
+$maindir =~ s/\/$//;
+my $confdir = $maindir . '/config/';
+my $filedir = $maindir . '/files/';
+my $lastboxfile = $filedir . 'lastBoxes.txt';
+my $confs = `ls -1 $confdir`;
+my %laststbs;
+chomp(my $lastboxstring = `cat $lastboxfile` || '');
+my @lastboxes = split(',',$lastboxstring);
+for (@lastboxes) {
+	$laststbs{$_}++;
+}
+
+if ($confs !~ m/stbGrid.conf/) {
+	createConf();
+} else {
+	loadGrid(\$confdir);
+}
+
+sub createConf {
+	my $rows = $query->textfield(-id=>'rows',-name=>'rows',-size=>'10');
+	my $columns = $query->textfield(-id=>'columns',-name=>'columns',-size=>'10');
+	my $fontformat = '<font size="4" color="#267A94">';
+	print '<div class="userForm"><body>';
+	print '<font size="5" color="#E60000">No configuration files found for the STB grid:</font><br>';
+
+print <<FORM;
+<form id="createGridConfig" name="createGridConfig">
+<font size="5" color="white">Set the following options to create your STB grid</font><br><br>
+$fontformat\ Select the number of columns:</font><br>
+$columns<br><br>
+$fontformat\ Select the number of rows:</font><br>
+$rows<br>
+<br><br>
+</form>
+<button type="submit" onclick="validate()">Create New Grid</button><br>
+</body>
+</div>
+FORM
+} ########## End of sub createConf ##########
+
+sub loadGrid {
+	my ($confdir) = @_;
+	my $conffile = $$confdir . 'stbGrid.conf';
+	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
+	chomp(my @confdata = <FH>);
+	close FH;
+	my $confdata = join("\n", @confdata);
+	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
+	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+	my $stbdatabase = $$confdir . 'stbDatabase.db';
+	tie my %stbdata, 'DBM::Deep', {file => $stbdatabase,   locking => 1, autoflush => 1, num_txns => 100};
+
+##### Load the control buttons
+print <<CONTROL;
+<div id="controller-buttons">
+	<table id="powerbuttons">  <!-- First table is the two power buttons -->
+		<td><a href="#" class="power_deep" style="color:white;"  onClick="stbControl()">Deep Sleep</a></td>
+		<td><a href="#" class="power_normal" style="float:left; color:black;" onClick="">Power</a></td>
+	</table>
+
+	<table id="num_pad"> <!-- Next is the numeric keypad -->
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '1')";>1</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '2')";>2</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '3')";>3</a></center></td>
+	  </center> </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '4')";>4</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '5')";>5</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '6')";>6</a></center></td>
+	  </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '7')";>7</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '8')";>8</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="perlXML('control', '9')";>9</a></center></td>
+	        </tr>
+	  <tr>
+	    <td></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="">0</a></center></td>
+	    <td></td>
+	   </tr>
+	</table>
+
+
+	<table id="controls">
+	<!-- Seperate sub table (so it can align to the others but have a different width THIS IS THE MAIN KEY PANEL -->
+	<tr>
+        <tr>
+        <td><center><a href="#" class="colourButton red" onClick=""></a></center></td>
+        <td><center><a href="#" class="colourButton green" onClick=""></a></center></td>
+        <td><center><a href="#" class="planner_small" style="color:white;" onClick="perlXML('event', 'access planner')">Access Planner</a></center></td>
+        <td><center><a href="#" class="colourButton yellow" onClick=""></a></center></td>
+        <td><center><a href="#" class="colourButton blue" onClick=""></a></center></td>
+        <td></td>
+        </tr>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:22px;width:50px;" onClick="perlXML('control', 'rewind')";><<</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px;" onClick="perlXML('control', 'stop')";>Stop</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:25px;" onClick="perlXML('control', 'play')";>Play</a></center></td>
+	<td><center><a href="#" class="function" style="color:red; font-size:22px;" onClick="perlXML('control', 'record')";>Record</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:23px;width:50px;" onClick="perlXML('control', 'fast forward')";>>></a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="perlXML('control', 'help')";>help</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px"; onClick="perlXML('control', 'pause')";>Pause</a></center></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="perlXML('control', 'text')";>text</a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="perlXML('control', 'box office')";>box office</a></center></td>
+	<td><center><a href="#" class="function" style="color:#5D84AF;font-size:40px;font-family:Sky Text, Helvetica, Arial, Sans-Serif;" onClick="perlXML('control', 'sky')">Sky</a></center></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="perlXML('control', 'services')";>services</a></center></td>
+	<td></td>
+	</tr>
+	<tr>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:8px;width:50px;" onClick="perlXML('event', 'assert dismiss')";>AsserrDissms</a></center></td>
+    <td><a href="#" class="topleft" style="color:white;" onClick="perlXML('control', 'tv guide')">tv guide</a></td>
+    <td><center><a href="#" class="UpNav" style="color:white;" onClick="perlXML('control', 'cursor up')";></a></center></td>
+    <td><a href="#" class="topright" style="color:white"; onClick="perlXML('control', 'interactive')";>interactive</a></td>
+<td><center>
+<a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="perlXML('control', 'channel up')";>Ch+</a><center></td>
+  </tr>
+  <tr>
+    <td><a href="#" class="rowupdown" style="color:black;" onClick="arrowDir('DEC')">(-)<br>row<br> up</a></td>
+    <td><a href="#" class="LeftNav" style="color:white;" onClick="perlXML('control', 'cursor left')";></a></td>
+    <td><center><a href="#" class="select" style="color:white;margin:auto;" onClick="perlXML('control', 'select')";>select</a></center></td>
+    <td><a href="#" class="RightNav" style="color:white;" onClick="perlXML('control', 'cursor right')";></a></td>
+    <td><a href="#" class="rowupdown" style="color:black;" onClick="arrowDir('INC')">row<br>down<br>(+)</a></td>
+  </tr>
+  <tr>
+   <td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="perlXML('event', 'adsmart')";>121</a><center></td>
+    <td><a href="#" class="bottomleft" style="color:white; font-size:40ox;" onClick="perlXML('control', 'information')";>i</a></td>
+    <td><center><a href="#" class="DownNav" style="color:white;" onClick="perlXML('control', 'cursor down')";></a></center></td>
+    <td><a href="#" class="bottomright" style="color:white;" onClick="perlXML('control', 'backup')";>back up</a></td>
+    <td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="perlXML('control', 'channel down')">Ch-</a><center></td>
+  </tr>
+    <td></td>
+    <td></td>
+    <td></td>
+   </tr>
+</table>
+</div>  <!-- End of the button cluster -->
+CONTROL
+##### Load the remote control buttons and control buttons
+
+##### Load the STB grid
+print <<TOP;
+<div id="stbGrid">
+<table>     
+<tr id="columns">
+TOP
+
+my $c = '1';
+while ($c <= $columns) {
+print <<COL;
+<td scope="col"><button class="gridButton" type="button">Column $c</button></td>
+COL
+$c++;
+}
+
+print <<DESELECT;
+<td scope="col"><button class="gridButton deselect" type="button" onClick="deselect()">Deselect</button></td></tr>
+DESELECT
+
+my $r = '1';		# Set the Row count to 1
+my $stbno = '1';	# Set the STB count to 1
+
+while ($r <= $rows) {
+	$c = '1';		# Reset the Column count to 1
+	print "<tr id=\"Row$r\">";
+	while ($c <= $columns) {
+		my $id = "STB$stbno";
+		my $name = "col$c"."stb$stbno";
+		my $buttontext;
+		if (exists $stbdata{$id}) {
+		} else {
+			%{$stbdata{$id}} = {};
+		}
+
+		if (exists $stbdata{$id}{'Name'}) {
+			$buttontext = $stbdata{$id}{'Name'};
+		} else {
+			$buttontext = "STB $stbno";
+		}
+
+print <<BOX;
+<td ><button name="$name" id="$id" class="stbButton deselect" type="button" onClick="colorToggle('$id')">$buttontext</button></td>
+BOX
+		$stbno++;
+		$c++;
+	}
+
+print <<ROWEND;
+<th><button id="Row $r" class="gridButton row" type="button" onClick="rows('Row$r')">Row $r</button></th></tr>
+ROWEND
+
+$r++;
+
+}
+
+print <<LAST;
+</tr></table><input type="hidden" id="matrixLoaded" />
+<input type="hidden" id="totalRows" value="$rows"/></div>
+LAST
+
+untie %stbdata;
+
+} ########## End of sub loadGrid ##########

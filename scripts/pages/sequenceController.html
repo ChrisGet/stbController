@@ -1,0 +1,88 @@
+<div id="controller-buttons">
+	<table id="powerbuttons">  <!-- First table is the two power buttons -->
+		<td><a href="#" class="power_deep" style="color:white;"  onClick="seqTextUpdate('passive','Deep Sleep')">Deep Sleep</a></td>
+		<td><a href="#" class="power_normal" style="float:left; color:black;" onClick="seqTextUpdate('power','Power')">Power</a></td>
+	</table>
+
+	<table id="num_pad"> <!-- Next is the numeric keypad -->
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('1','1')">1</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('2','2')">2</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('3','3')">3</a></center></td>
+	  </center> </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('4','4')">4</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('5','5')">5</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('6','6')">6</a></center></td>
+	  </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('7','7')">7</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('8','8')">8</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('9','9')">9</a></center></td>
+	        </tr>
+	  <tr>
+	    <td></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="seqTextUpdate('0','0')">0</a></center></td>
+	    <td></td>
+	   </tr>
+	</table>
+
+
+	<table id="controls">
+	<!-- Seperate sub table (so it can align to the others but have a different width THIS IS THE MAIN KEY PANEL -->
+	<tr>
+        <tr>
+        <td><center><a href="#" class="colourButton red" onClick="seqTextUpdate('red button','Red Button')"></a></center></td>
+        <td><center><a href="#" class="colourButton green" onClick="seqTextUpdate('green button','Green Button')"></a></center></td>
+	<td></td>
+        <td><center><a href="#" class="colourButton yellow" onClick="seqTextUpdate('yellow button','Yellow Button')"></a></center></td>
+        <td><center><a href="#" class="colourButton blue" onClick="seqTextUpdate('blue button','Blue Button')"></a></center></td>
+        <td></td>
+        </tr>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:22px;width:50px;" onClick="seqTextUpdate('rewind','Rewind')"><<</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px;" onClick="seqTextUpdate('stop','Stop')">Stop</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:25px;" onClick="seqTextUpdate('play','Play')">Play</a></center></td>
+	<td><center><a href="#" class="function" style="color:red; font-size:22px;" onClick="seqTextUpdate('record','Record')">Record</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:23px;width:50px;" onClick="seqTextUpdate('fast forward','Fast Forward')">>></a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="seqTextUpdate('help','Help')">Help</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px"; onClick="seqTextUpdate('pause','Pause')">Pause</a></center></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="seqTextUpdate('text','Text')">Text</a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="seqTextUpdate('box office','Box Office')">Box Office</a></center></td>
+	<td><center><a href="#" class="function" style="color:#5D84AF;font-size:40px;font-family:Sky Text, Helvetica, Arial, Sans-Serif;" onClick="seqTextUpdate('sky','Sky')">Sky</a></center></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="seqTextUpdate('interactive','Interactive')">Interactive</a></center></td>
+	<td></td>
+	</tr>
+	<tr>
+	<td></td>
+    <td><a href="#" class="topleft" style="color:white;" onClick="seqTextUpdate('tv guide','TV Guide')">TV Guide</a></td>
+    <td><center><a href="#" class="UpNav" style="color:white;" onClick="seqTextUpdate('cursor up','Up')"></a></center></td>
+    <td><a href="#" class="topright" style="color:white"; onClick="seqTextUpdate('services','Services')">Services</a></td>
+<td><center>
+<a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="seqTextUpdate('channel up','CH+')">Ch+</a><center></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><a href="#" class="LeftNav" style="color:white;" onClick="seqTextUpdate('cursor left','Left')"></a></td>
+    <td><center><a href="#" class="select" style="color:white;margin:auto;" onClick="seqTextUpdate('select','Select')">Select</a></center></td>
+    <td><a href="#" class="RightNav" style="color:white;" onClick="seqTextUpdate('cursor right','Right')"></a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><a href="#" class="bottomleft" style="color:white; font-size:40ox;" onClick="seqTextUpdate('information','Info')">i</a></td>
+    <td><center><a href="#" class="DownNav" style="color:white;" onClick="seqTextUpdate('cursor down','Down')"></a></center></td>
+    <td><a href="#" class="bottomright" style="color:white;" onClick="seqTextUpdate('backup','Back Up')">Back Up</a></td>
+    <td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="seqTextUpdate('channel down','CH-')">Ch-</a><center></td>
+  </tr>
+    <td></td>
+    <td></td>
+    <td></td>
+   </tr>
+</table>
+</div>  <!-- End of the button cluster -->

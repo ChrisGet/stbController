@@ -1,0 +1,22 @@
+backup:Back
+channel down:Ch-
+channel up:Ch+
+cursor right:TouchPad{"action":"draw","move":[[256,256,0],[260,256,0]]
+cursor up:TouchPad{"action":"draw","move":[[256,256,0],[256,252,0]]
+cursor left:TouchPad{"action":"draw","move":[[256,256,0],[252,256,0]]
+cursor down:TouchPad{"action":"draw","move":[[256,256,0],[256,260,0]]
+power:Standby
+record:Record
+select:TouchPad{"action":"pressTouch","duration":0.1,"points":[[255,255,0],[255,255,0]],"area":"Select"
+sky:Sky
+tv guide:Home
+0:0
+1:1
+2:2
+3:3
+4:4
+5:5
+6:6
+7:7
+8:8
+9:9

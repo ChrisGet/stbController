@@ -1,0 +1,88 @@
+<div id="controller-buttons">
+	<table id="powerbuttons">  <!-- First table is the two power buttons -->
+		<td><a href="#" class="power_deep" style="color:white;"  onClick="stbControl('control','passive')">Deep Sleep</a></td>
+		<td><a href="#" class="power_normal" style="float:left; color:black;" onClick="stbControl('control','power')">Power</a></td>
+	</table>
+
+	<table id="num_pad"> <!-- Next is the numeric keypad -->
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '1')">1</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '2')">2</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '3')">3</a></center></td>
+	  </center> </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '4')">4</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '5')">5</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '6')">6</a></center></td>
+	  </tr>
+	  <tr>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '7')">7</a></center></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '8')">8</a></center></td>
+	    <td class="oddrow"><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control', '9')">9</a></center></td>
+	        </tr>
+	  <tr>
+	    <td></td>
+	    <td><center><a href="#" class="number" style="color:#5D84AF;" onClick="stbControl('control','0')">0</a></center></td>
+	    <td></td>
+	   </tr>
+	</table>
+
+
+	<table id="controls">
+	<!-- Seperate sub table (so it can align to the others but have a different width THIS IS THE MAIN KEY PANEL -->
+	<tr>
+        <tr>
+        <td><center><a href="#" class="colourButton red" onClick="stbControl('control','red button')"></a></center></td>
+        <td><center><a href="#" class="colourButton green" onClick="stbControl('control','green button')"></a></center></td>
+	<td></td>
+        <td><center><a href="#" class="colourButton yellow" onClick="stbControl('control','yellow button')"></a></center></td>
+        <td><center><a href="#" class="colourButton blue" onClick="stbControl('control','blue button')"></a></center></td>
+        <td></td>
+        </tr>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:22px;width:50px;" onClick="stbControl('control', 'rewind')"><<</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px;" onClick="stbControl('control', 'stop')">Stop</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:25px;" onClick="stbControl('control', 'play')">Play</a></center></td>
+	<td><center><a href="#" class="function" style="color:red; font-size:22px;" onClick="stbControl('control', 'record')">Record</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:23px;width:50px;" onClick="stbControl('control', 'fast forward')">>></a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="stbControl('control', 'help')">Help</a></center></td>
+	<td><center><a href="#" class="function" style="color:#F0F9FF;font-size:20px"; onClick="stbControl('control', 'pause')">Pause</a></center></td>
+	<td><center><a href="#" class="function" style="color:white"; onClick="stbControl('control', 'text')">Text</a></center></td>
+	</tr>
+	<tr>
+	<td></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="stbControl('control', 'box office')">Box Office</a></center></td>
+	<td><center><a href="#" class="function" style="color:#5D84AF;font-size:40px;font-family:Sky Text, Helvetica, Arial, Sans-Serif;" onClick="stbControl('control', 'sky')">Sky</a></center></td>
+	<td><center><a href="#" class="function" style="color:white;" onClick="stbControl('control', 'interactive')">Interactive</a></center></td>
+	<td></td>
+	</tr>
+	<tr>
+    <td></td>
+    <td><a href="#" class="topleft" style="color:white;" onClick="stbControl('control', 'tv guide')">TV Guide</a></td>
+    <td><center><a href="#" class="UpNav" style="color:white;" onClick="stbControl('control', 'cursor up')"></a></center></td>
+    <td><a href="#" class="topright" style="color:white"; onClick="stbControl('control', 'services')">Services</a></td>
+<td><center>
+<a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="stbControl('control', 'channel up')">Ch+</a><center></td>
+  </tr>
+  <tr>
+    <td><a href="#" class="rowupdown" style="color:black;" onClick="arrowDir('DEC')">(-)<br>Row<br>Up</a></td>
+    <td><a href="#" class="LeftNav" style="color:white;" onClick="stbControl('control', 'cursor left')"></a></td>
+    <td><center><a href="#" class="select" style="color:white;margin:auto;" onClick="stbControl('control', 'select')">Select</a></center></td>
+    <td><a href="#" class="RightNav" style="color:white;" onClick="stbControl('control', 'cursor right')"></a></td>
+    <td><a href="#" class="rowupdown" style="color:black;" onClick="arrowDir('INC')">Row<br>Down<br>(+)</a></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><a href="#" class="bottomleft" style="color:white; font-size:40ox;" onClick="stbControl('control', 'information')">i</a></td>
+    <td><center><a href="#" class="DownNav" style="color:white;" onClick="stbControl('control', 'cursor down')"></a></center></td>
+    <td><a href="#" class="bottomright" style="color:white;" onClick="stbControl('control', 'backup')">Back Up</a></td>
+    <td><center><a href="#" class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="stbControl('control', 'channel down')">Ch-</a><center></td>
+  </tr>
+    <td></td>
+    <td></td>
+    <td></td>
+   </tr>
+</table>
+</div>  <!-- End of the button cluster -->
