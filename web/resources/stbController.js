@@ -413,9 +413,31 @@ function seqValidate($origname) {
 					var string = commands.join(',');
 					var text = '';
 					if ($origname != name) {
+						var xmlhttp;
+						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+							xmlhttp=new XMLHttpRequest();
+						} else {// code for IE6, IE5
+							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						xmlhttp.onreadystatechange=function() {
+			  				if (xmlhttp.readyState==4) {
+								//document.getElementById("").innerHTML=xmlhttp.responseText;
+							}
+						}
+	
+						xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
+						xmlhttp.send(null);
+						var returned = xmlhttp.responseText;
+						if (returned == 'Found') {
+							var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
+							if (c == false) {
+								$('#sequenceName').val($origname);
+								return;
+							}
+						}
+
 						text = 'Success! Sequence "' + $origname + '" was update to "' + name + '"';
-					}
-					if ($origname == name) {
+					} else {
 						text = 'Success! Sequence "' + $origname + '" was updated';
 					}
 					alert(text);
@@ -442,6 +464,7 @@ function seqValidate($origname) {
 							return;
 						}
 					}
+
 					var string = commands.join(',');
 					alert('Success! Event "' + name + '" has been created');
 					perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
@@ -449,8 +472,6 @@ function seqValidate($origname) {
 
 				pageCall('dynamicPage','web/sequencesPage.html');
                 		setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-				//document.getElementById('sequenceName').value = '';
-				//clearSeqArea();
 			}
 		}
 	}
@@ -535,9 +556,31 @@ function groupValidate($origname) {
 					var string = members.join(',');
 					var text = '';
 					if ($origname != name) {
+						var xmlhttp;
+						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+							xmlhttp=new XMLHttpRequest();
+						} else {// code for IE6, IE5
+							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						xmlhttp.onreadystatechange=function() {
+	  						if (xmlhttp.readyState==4) {
+								//document.getElementById("").innerHTML=xmlhttp.responseText;
+							}
+						}
+
+						xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
+						xmlhttp.send(null);
+						var returned = xmlhttp.responseText;
+						if (returned == 'Found') {
+							var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
+							if (c == false) {
+								$('#groupName').val($origname);
+								return;
+							}
+						}
+
 						text = 'Success! Group "' + $origname + '" was update to "' + name + '"';
-					}
-					if ($origname == name) {
+					} else {
 						text = 'Success! Group "' + $origname + '" was updated';
 					}
 					alert(text);
