@@ -68,7 +68,8 @@ sub stbConfig {
 	tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
 	my ($num) = $$stb =~ /STB(\d+)/i;
-	my $name = "STB " . $num;
+	#my $name = "STB " . $num;
+	my $name;
 	if ((exists $stbdata{$$stb}{'Name'}) and ($stbdata{$$stb}{'Name'} =~ /\S+/)) {
 		$name = $stbdata{$$stb}{'Name'};
 	}

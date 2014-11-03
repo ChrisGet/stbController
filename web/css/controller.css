@@ -1008,6 +1008,10 @@ button.highlighted {
    	background-color:#95958d;
    	border:1px;
 }
+.stbButton.inactive {
+	background-color:#000000;
+	border:0;
+}
 
 #stbSelect {
 /*   	background-color:#C0C0C0;*/

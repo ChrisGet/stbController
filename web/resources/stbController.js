@@ -205,6 +205,9 @@ function colorToggle($id,$override,$highlight){
 	if (!item) {
 		return;
 	}
+	if (item.className == 'stbButton inactive') {
+		return;
+	}
 
 	// The code below handles the override call. The override function allows a stb button state to be explicitly set rather than toggled
 	if ($override) {
@@ -279,18 +282,28 @@ function rows($row) {
 		lastRow = $row;
 		lastRowHL = '';
 		override = 'selected';
+		for (var stb in stbHash) {
+                	document.getElementById(stb).className = 'stbButton deselect';
+              	}
+        	stbHash = {};
 	} else {
 		if(lastRow == $row) {
 			override = 'highlighted';
 			lastRowHL = $row;
 			lastRow = '';
+			for (var stb in stbHash) {
+                		document.getElementById(stb).className = 'stbButton deselect';
+              		}
+        		stbHash = {};
 		} else {
 			lastRow = $row;
+			lastRowHL = '';
 			override = 'selected';
 			for (var stb in highlightedSTBs) {
 				document.getElementById(stb).className = 'stbButton deselect';
 			}
 			highlightedSTBs = {};
+
 			for (var stb in stbHash) {
 				document.getElementById(stb).className = 'stbButton deselect';
 			}
@@ -301,6 +314,9 @@ function rows($row) {
 
 	for(var i=0;i<count;i++) {					// While 'i' is less than the number of cells
 		var cell = row.getElementsByTagName("button")[i];	// Locate the button in that cell and save it in 'cell'
+		if (!cell) {
+			continue;			// Skip the cell if it has no button (STB has been given ':' as its name and is therefore blank)
+		}
 		var ayedee = cell.id;					// Get the buttons id and save it to 'ayedee'
 		var regex = /^Row.*/;
 		var match = regex.exec(ayedee);
