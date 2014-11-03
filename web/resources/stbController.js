@@ -8,6 +8,7 @@ $.ajaxSetup({ cache: false });
 
 var stbHash = {};	// Create the stbHash object to handle selected STBs from the grid
 var lastRow;		// Create the lastRow variable to be manipulated elsewhere
+var lastRowHL;		// Create the lastRowHL variable to record last highlighted row
 
 function stbControl($action,$commands) {
 	var comstring = '';
@@ -192,34 +193,47 @@ function deselect() {
 	}
 	for (var key in highlightedSTBs) {
 		document.getElementById(key).className = 'stbButton deselect';
+		delete highlightedSTBs[key];
 	}
 	lastRow = '';
+	lastRowHL='';
 }
 // ############### End of deselect function
 
-function colorToggle(id,override,highlight){
-	var item = document.getElementById(id);
+function colorToggle($id,$override,$highlight){
+	var item = document.getElementById($id);
 	if (!item) {
 		return;
 	}
 
-	if (override == 'selected') {
-		item.className = 'stbButton deselect';
+	// The code below handles the override call. The override function allows a stb button state to be explicitly set rather than toggled
+	if ($override) {
+		if ($override == 'selected') {
+			item.className = 'stbButton selected';
+			stbHash[$id] = 1;
+			delete highlightedSTBs[$id];
+		}
+		if ($override == 'deselect') {
+        	        item.className = 'stbButton deselect';
+			delete stbHash[$id];
+			delete highlightedSTBs[$id];
+	        }
+		if ($override == 'highlighted') {
+        	        item.className = 'stbButton highlighted';
+			delete stbHash[$id];
+			highlightedSTBs[$id] = '1';		
+	        }
+		return;
 	}
-	if (override == 'deselect') {
-                item.className = 'stbButton selected';
-        }
 
 	// The code below will check to see if the user has selected more than one STB in the same column. 
 	// The last clicked cell in a column will be selected while the rest will be deselected
-
 	var naym = item.name;
 	var myColMatch = /col(\d+)s(tb)/;
 	var match = myColMatch.exec(naym);
 	var colNo = match[0];
 	for (var key in stbHash) {
-		if (key == id) continue;		// If the key and id are the same, skip to the next iteration
-
+		if (key == $id) continue;		// If the key and $id are the same, skip to the next iteration
 		var thing = document.getElementById(key);
 		var matchName = thing.name;
 		if(matchName.indexOf(colNo) == 0){
@@ -239,19 +253,16 @@ function colorToggle(id,override,highlight){
 
 	if (item.className == 'stbButton deselect') {
 		item.className = 'stbButton selected';
-		stbHash[id] = 1;
-		perlCall('','scripts/videoSwitching.pl','stbs',id);	// Once a box is selected, switch to its video too
+		stbHash[$id] = 1;
+		perlCall('','scripts/videoSwitching.pl','stbs',$id);	// Once a box is selected, switch to its video too
 	} else {
 		if (item.className == 'stbButton highlighted') {
 			item.className = 'stbButton selected';
-                	stbHash[id] = 1;
+                	stbHash[$id] = '1';
+			delete highlightedSTBs[$id];
 		} else {
 			item.className = 'stbButton deselect';
-			delete stbHash[id];
-			if (highlight) {
-				item.className = 'stbButton highlighted';
-				highlightedSTBs[id] = '1';
-			}
+			delete stbHash[$id];
 		}
 	}
 }
@@ -264,16 +275,28 @@ function rows($row) {
 	var row = document.getElementById($row);			// Save the $row data in var 'row'
 	var override;
 	var highlight;
-	if(lastRow == $row) {
-		override = 'deselect';
-		highlight = 'yes';
-	} else {
+	if(lastRowHL == $row) {
 		lastRow = $row;
+		lastRowHL = '';
 		override = 'selected';
-		for (var stb in highlightedSTBs) {
-			document.getElementById(stb).className = 'stbButton deselect';
+	} else {
+		if(lastRow == $row) {
+			override = 'highlighted';
+			lastRowHL = $row;
+			lastRow = '';
+		} else {
+			lastRow = $row;
+			override = 'selected';
+			for (var stb in highlightedSTBs) {
+				document.getElementById(stb).className = 'stbButton deselect';
+			}
+			highlightedSTBs = {};
+			for (var stb in stbHash) {
+				document.getElementById(stb).className = 'stbButton deselect';
+			}
+			stbHash = {};
+			
 		}
-		highlightedSTBs = {};
 	}
 
 	for(var i=0;i<count;i++) {					// While 'i' is less than the number of cells
@@ -290,10 +313,19 @@ function rows($row) {
 // ############### End of rows function
 
 function arrowDir($opt) {
-	if (!lastRow) {
+	var lastRow2;
+	if (lastRow) {
+		lastRow2 = lastRow;
+	} else {
+		if (lastRowHL) {
+			lastRow2 = lastRowHL;
+		}
+	}
+
+	if (!lastRow2) {
 		rows('Row1');
 	} else {
-		var bits = lastRow.split("w"); 		// lastRow will be like 'RowX' so we split by 'w' to get the number 
+		var bits = lastRow2.split("w"); 		// lastRow will be like 'RowX' so we split by 'w' to get the number 
 		var num = bits[1];
 		var totalrows = document.getElementById('totalRows').value;
 		if ($opt == 'INC') {

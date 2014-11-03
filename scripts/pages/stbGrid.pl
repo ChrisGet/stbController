@@ -129,7 +129,7 @@ while ($r <= $rows) {
 		if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
 			$buttontext = $stbdata{$id}{'Name'};
 		} else {
-			$buttontext = "STB $stbno";
+			$buttontext = "-";
 		}
 
 print <<BOX;
