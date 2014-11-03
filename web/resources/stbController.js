@@ -193,11 +193,15 @@ function deselect() {
 	for (var key in highlightedSTBs) {
 		document.getElementById(key).className = 'stbButton deselect';
 	}
+	lastRow = '';
 }
 // ############### End of deselect function
 
 function colorToggle(id,override,highlight){
 	var item = document.getElementById(id);
+	if (!item) {
+		return;
+	}
 
 	if (override == 'selected') {
 		item.className = 'stbButton deselect';
@@ -261,7 +265,6 @@ function rows($row) {
 	var override;
 	var highlight;
 	if(lastRow == $row) {
-		//lastRow = '';
 		override = 'deselect';
 		highlight = 'yes';
 	} else {
