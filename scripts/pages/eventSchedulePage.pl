@@ -234,7 +234,7 @@ print <<BOTTOMTABLELEFT;		# Print the bottom table which contains the day option
 BOTTOMTABLELEFT
 
 	my @seqs = sort keys %sequences;
-	my $seqlist = $query->popup_menu(-id=>'seqList',-name=>'seqList',-values=>[@seqs],-class=>'styledSelect');	
+	my $seqlist = $query->popup_menu(-id=>'seqList',-name=>'seqList',-values=>[@seqs],-default=>$eventname,-class=>'styledSelect');
 
 print <<BOTTOMTABLERIGHT1;	# Print the table which holds the list of available sequences to be selected
 <table class="Bordered" style="height:auto;width:40%;float:right;">
