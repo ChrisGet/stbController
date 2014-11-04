@@ -307,9 +307,9 @@ button.highlighted {
         font-size:22px;
         font-weight:normal;
         font-style:normal;
-        height:70px;
-        line-height:70px;
-        width:70px;
+        height:50px;
+        line-height:50px;
+        width:50px;
         text-decoration:none;
         text-align:center;
 }
@@ -329,7 +329,7 @@ button.highlighted {
 #num_pad        {
         margin:auto;
         width:auto;
-        height:276px;
+        height:auto;
         border:0; 
         border-spacing: 2px;
 }
@@ -342,7 +342,6 @@ button.highlighted {
         background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #262925) );
         background:-moz-linear-gradient( center top, #ffffff 5%, #262925 100% );
         filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#262925');
-        
 	-webkit-border-top-left-radius:2px;
         -moz-border-radius-topleft:2px;
         border-top-left-radius:2px;
