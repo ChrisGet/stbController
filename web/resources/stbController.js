@@ -72,14 +72,13 @@ function getLastBoxes() {
 			stbHash = {};
 			for (var i=0;i<arrayLength;i++) {
 				var stb = boxes[i];
-				//alert(stb);
 				colorToggle(stb,'selected');
 			}		
 		}
 	}
 }
 
-function getLastBoxesAlternative() {
+function getLastBoxesAlternative() {	// Not in use but handy to keep available if needed
 	var xmlhttp;
 if (window.XMLHttpRequest)
   {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -106,7 +105,6 @@ xmlhttp.onreadystatechange=function()
 	stbHash = {};
 	for (var i=0;i<arrayLength;i++) {
 		var stb = boxes[i];
-		//alert(stb);
 		colorToggle(stb,'selected');
 	}		
 }
@@ -119,7 +117,7 @@ function logLastBoxes() {
 	localStorage && (localStorage.lastBoxes = comstring);
 }
 
-function logLastBoxesAlternative() {
+function logLastBoxesAlternative() {	// Not in use but handy to keep available if needed
 	var xmlhttp;
         if (window.XMLHttpRequest){
                 xmlhttp=new XMLHttpRequest();
@@ -438,6 +436,9 @@ function addSeqTO() {
 
 function addSeqGroup() {
 	var group = document.getElementById('groupList').value;
+	if(!group) {
+		return;
+	}
 	seqTextUpdate(group,group);
 }
 
@@ -801,6 +802,12 @@ function newSchedValidate($event) {
 				alert('You didnt choose from the Day Options!');
 				return;
 			}
+		}
+
+		var seqsel = $('#seqList').val();
+		if (!seqsel) {
+			alert('Sequence selection cannot be blank!');
+			return;
 		}
 
 		var mins = $('#minutes').val();

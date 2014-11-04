@@ -84,19 +84,20 @@ RANDOM: {
 } # End of 'RANDOM' code block
 
 	$events{$number} = $newdetails;
-	#reloadScheduler();
+	reloadScheduler();
 	return;
-} # End of sub 'addEvent'
+} ### End of sub 'addEvent'
 
 sub deleteEvent {
 	my ($eventID) = @_;
 
 	if (exists $events{$$eventID}) {
 		delete $events{$$eventID};
+		reloadScheduler();
 	} else {
 		die "Event \"$$eventID\" cannot be deleted because it does not exist\n";
 	}
-} # End of sub 'deleteEvent'
+} ### End of sub 'deleteEvent'
 
 sub startScheduler {
 	use Schedule::Cron;
@@ -128,26 +129,28 @@ sub startScheduler {
 
 	sub testRunner {
 		my ($event,$stbs) = @_;
-		#system("$controlscript Event \"$$event\" \"$$stbs\"");
-		my $log = $filedir . 'schedulerLog.txt';
-		open FH, '+>', $log or die "Couldn't open $log: $!\n";
-		print FH "$controlscript\nEvent = $$event\nSTBs = $$stbs\n";
-		close FH;
+		system("$controlscript Event \"$$event\" \"$$stbs\" logpid");
+
+		######### Uncomment below 4 lines to enable scheduled event logging #########
+		#my $log = $filedir . 'schedulerLog.txt';
+		#open FH, '+>>', $log or die "Couldn't open $log: $!\n";
+		#print FH "$controlscript\nEvent = $$event\nSTBs = $$stbs\n";
+		#close FH;
 	}
 
-}
+} ### End of sub 'startScheduler'
 
 sub stopScheduler {
 	my $pidfile = $filedir . 'scheduler.pid';
 	chomp(my $schedpid = `cat $pidfile` || '');
 	die "Failed to identify the process ID for the event scheduler\n" if (!$schedpid);
 	system("kill $schedpid");
-}
+} ### End of sub 'stopScheduler'
 
 sub reloadScheduler {
 	stopScheduler();
 	startScheduler();
-}
+} ### End of sub 'reloadScheduler'
 
 sub stringToNumbers {
         my ($string,$flag) = @_;
@@ -170,31 +173,32 @@ sub stringToNumbers {
                 }
         }
         return $result;
-}
+} ### End of sub 'stringToNumbers'
 
 sub enableEvent {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
 		$events{$$eventID} =~ s/^n/y/i;
+		reloadScheduler();
 	} else {
 		die "Cannot enable event $$eventID as it was not found in the list\n";
 	}
-}
+} ### End of sub 'enableEvent'
 
 sub disableEvent {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
 		$events{$$eventID} =~ s/^y/n/i;
+		reloadScheduler();
 	} else {
 		die "Cannot disable event $$eventID as it was not found in the list\n";
 	}
-}
+} ### End of sub 'disableEvent'
 
 sub showBoxes {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
 		my ($targets) = $events{$$eventID} =~ /\|(.[^\|]+)$/;
-		#print "$targets\n";
 		my @stbs = split(',',$targets);
 		my $resforgui = '';
 		use DBM::Deep;
@@ -219,4 +223,4 @@ sub showBoxes {
 	} else {
 		die "Cannot show the boxes for event $$eventID as it was not found in the list\n";
 	}
-}
+} ### End of sub 'showBoxes'

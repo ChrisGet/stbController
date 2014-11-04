@@ -958,7 +958,7 @@ button.highlighted {
 }
 
 .gridButton.row {
-   	border: 1px solid #993d00;
+   	border: 1px solid #FFA347;
    	background: #ff6600;
    	background: -webkit-gradient(linear, left top, left bottom, from(#ff6600), to(#ff6600));
    	background: -webkit-linear-gradient(top, #ff6600, #ff6600);
@@ -972,6 +972,10 @@ button.highlighted {
 }
 .gridButton.row:active {
    	background: #ff6600;
+}
+
+.gridButton.row.inactive:hover {
+	cursor:auto;
 }
 
 .stbButton {
@@ -997,7 +1001,7 @@ button.highlighted {
 }
 .stbButton.deselect {
    	background-color:white;
-   	border:1px;   
+   	border:1px;
 }
 .stbButton.selected {
    	background-color:#FF6600;
@@ -1007,9 +1011,10 @@ button.highlighted {
    	background-color:#95958d;
    	border:1px;
 }
-.stbButton.inactive {
-	background-color:#000000;
-	border:0;
+.stbButton.data {
+	background-color:#267A94;
+	border:1px solid #96d1f8;
+	color:white;
 }
 
 #stbSelect {

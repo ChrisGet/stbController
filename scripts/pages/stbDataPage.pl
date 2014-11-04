@@ -25,7 +25,6 @@ printIRTable() and exit if ($option =~ /printIR/i);
 sub stbSelect {
 	my $dbfile = $confdir . 'stbDatabase.db';
 	if (-e $dbfile) {
-		#print "<font size=\"5\">STB Database is found!<\/font>";
 		my $conffile = $confdir . 'stbGrid.conf';
         	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
 	        chomp(my @confdata = <FH>);
@@ -36,27 +35,64 @@ sub stbSelect {
 
 print <<HEAD;
 <div id="stbSelect">
-<p class="narrow">Click on a box below to manage its control, video, and DUT details configuration</p>
-<table id="stbConfigGrid" class="stbConfigGrid"><tr>
+<p class="narrow">Click on a box below to manage its control, video, and DUT details configuration</p><br>
+<table style="border-spacing:0;" align="center">
+<tr id="columns">
 HEAD
-		tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
-		my $c = '0';
-				
-		foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
-			if ($c >= $columns) {
-				print '</tr><tr>';
-				$c = '0';
-			}
-			my ($num) = $key =~ /STB(\d+)/;
-			my $name = 'STB ' . $num;
-			$name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
-print <<KEY;
-<td><button id="$key" class="configButton" onClick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$key')">$name</button></td>
-KEY
+		my $c = '1';
+		while ($c <= $columns) {
+print <<COL;
+<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+COL
 			$c++;
-		}
-		print '</table></div>';
+	}
+
+			tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+	
+			my $r = '1';            # Set the Row count to 1
+			my $stbno = '1';        # Set the STB count to 1
+
+			while ($r <= $rows) {
+				$c = '1';               # Reset the Column count to 1
+				print "<tr id=\"Row$r\">";
+				while ($c <= $columns) {
+					my $id = "STB$stbno";
+					my $name = "col$c"."stb$stbno";
+					my $buttontext;
+					if (exists $stbdata{$id}) {
+					} else {
+						%{$stbdata{$id}} = {};
+					}
+
+					if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
+						$buttontext = $stbdata{$id}{'Name'};
+					} else {
+						$buttontext = "-";
+					}
+
+print <<BOX;
+<td><button name="$name" id="$id" class="stbButton data" type="button" onClick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button></td>
+BOX
+	                		$stbno++;
+        	        		$c++;
+        			}
+
+print <<ROWEND;
+<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+ROWEND
+
+				$r++;
+			}
+
+print <<LAST;
+</tr></table>
+</div>
+LAST
+
+			print '</div>';         # End of the "wrapLeft" div
+
+			untie %stbdata;
 	} else {
 		print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
 	}
@@ -68,16 +104,19 @@ sub stbConfig {
 	tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
 	my ($num) = $$stb =~ /STB(\d+)/i;
-	#my $name = "STB " . $num;
 	my $name;
+	my $titlename;
 	if ((exists $stbdata{$$stb}{'Name'}) and ($stbdata{$$stb}{'Name'} =~ /\S+/)) {
 		$name = $stbdata{$$stb}{'Name'};
+		$titlename = $stbdata{$$stb}{'Name'};
+	} else {
+		$titlename = 'Unconfigured STB';
 	}
 
 print <<HEAD;
 <div class="wrapLeft shaded" style="width:550px;">
 <form id="editSTBConfigForm" name="editSTBConfigForm">
-<h2 class="narrow">Below are the configuration options for <font color="#009933">$name</font>, as well as its DUT details.<br>
+<h2 class="narrow">Below are the configuration options for "<font color="#009933">$titlename</font>", as well as its DUT details.<br>
 Any existing settings will be populated automatically.</h2>
 <p class="narrow" style="color:white;font-size:18px;">Enter values in the corresponding fields and hit "Submit" to update the STBs config.</p><br>
 <input type="hidden" id="stbname" name="stbname" value="$$stb">
@@ -157,16 +196,7 @@ HEAD
 	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'12'],-default=>"$sdinput");
 	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput");
 
-	#my $duskymoxaiptext = $query->textfield(-id=>'duskymoxaip',-name=>'MoxaIP',-size=>'15',-default=>"$duskymoxaip",-maxlength=>15);
-	#my $duskymoxaporttext = $query->textfield(-id=>'duskymoxaport',-name=>'MoxaPort',-size=>'15',-default=>"$duskymoxaport",-maxlength=>5);
-	#my $duskyporttext = $query->popup_menu(-id=>'duskyport',-name=>'DuskyPort',-values=>['01'..'15'],-default=>"$duskyport");
-	#my $btcontiptext = $query->textfield(-id=>'btcontip',-name=>'BTContIP',-size=>'15',-default=>"$btcontip",-maxlength=>15);
-	#my $btcontporttext = $query->popup_menu(-id=>'btcontport',-name=>'BTContPort',-values=>['01'..'16'],-default=>"$btcontport");
-	#my $iriptext = $query->textfield(-id=>'irip',-name=>'IRIP',-size=>'15',-default=>"$irip",-maxlength=>15);
-	#my $irporttext = $query->textfield(-id=>'irport',-name=>'IRPort',-size=>'15',-default=>"$irport");
-	#my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IROutput',-values=>['01'..'05'],-default=>"$irout");
-
-print "<div class=\"wrapRight\">";
+	print "<div class=\"wrapRight\">";
 
 print <<DUTTABLE;
 <table class="stbDataFormTable DUT">
@@ -183,17 +213,17 @@ print <<DATARIGHT;
 <div id="typeChange">
 DATARIGHT
 
-if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
-	printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
-	printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
-	printIRTable($irip,$irport,$irout) if ($type =~ /IR/i);
-} else {
-	printDuskyTable('','','');
-}
+	if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
+		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
+		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
+		printIRTable($irip,$irport,$irout) if ($type =~ /IR/i);
+	} else {
+		printDuskyTable('','','');
+	}
 
-print '</div>';	# End of 'typeChange' div
+	print '</div>';	# End of 'typeChange' div
 
-print '</div>';	# End of 'wrapRight' div
+	print '</div>';	# End of 'wrapRight' div
 
 print <<DATA;
 <div class="wrapLeft">
@@ -230,25 +260,6 @@ print <<LASTBIT;
 </form>
 </div>
 LASTBIT
-
-#$fonthead<b><u>Settings for Dusky Control:$fontend</u></b><br>
-#<table class="stbDataFormTable">
-#<tr><td width="217">$font Dusky Moxa IP:$fontend</td><td>$duskymoxaiptext</td></tr>
-#<tr><td>$font Dusky Moxa Port:$fontend</td><td>$duskymoxaporttext</td></tr>
-#<tr><td>$font Dusky Port:$fontend</td><td>$duskyporttext</td></tr>
-#</table><br>
-#$fonthead<b><u>Settings for Bluetooth Control:</u></b>$fontend<br>
-#<table class="stbDataFormTable">
-#<tr><td width="217">$font Bluetooth Server IP:$fontend</td><td>$btcontiptext</td></tr>
-#<tr><td>$font Bluetooth Server USB Port:$fontend</td><td>$btcontporttext</td></tr>
-#</table><br>
-#$fonthead<b><u>Settings for IR Control:</u></b>$fontend<br>
-#<table class="stbDataFormTable">
-#<tr><td width="217">$font IR Blaster IP:$fontend</td><td>$iriptext</td></tr>
-#<tr><td>$font IR Blaster Port:$fontend</td><td>$irporttext</td></tr>
-#<tr><td>$font IR Blaster Output:$fontend</td><td>$irouttext</td></tr>
-#</table><br>
-
 }
 
 sub printDuskyTable {
