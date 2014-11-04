@@ -15,6 +15,13 @@ function stbControl($action,$commands) {
 	for (var key in stbHash) {
 		comstring += key + ',';
 	}
+
+	// Validate whether any STBs have been selected for control. Return if none have
+	if (!comstring) {
+		alert('No valid STBs have been selected for control');
+		return;
+	}
+
 	perlCall('','scripts/stbControl.pl','action',$action,'command',$commands,'info',comstring);
 }
 
@@ -200,10 +207,15 @@ function deselect() {
 
 function colorToggle($id,$override,$highlight){
 	var item = document.getElementById($id);
+
+	// Return if item is not defined
 	if (!item) {
 		return;
 	}
-	if (item.className == 'stbButton inactive') {
+
+	// Return if the STB is unconfigured ('-' as its name)
+	var text = $('#' + $id).text();
+	if (text == '-') {
 		return;
 	}
 

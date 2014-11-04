@@ -75,7 +75,7 @@ sub mainMenu {
 				if ($name) {
 					$stbnames .= " $name ,";
 				} else {
-					$stbnames .= " $box ,";
+					$stbnames .= " Unconfigured STB ,";
 				}
 			} else {
 				$stbnames .= " $box ,";
@@ -174,18 +174,22 @@ HEAD
 	my $customradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\">Custom Days";
 
 	my $preset = 'false';
-	foreach my $dayopts (@dayoptions) {
-		if ($dow =~ /$dayopts/) {
-			$preset = 'true';
-		}
-	}
-
-	if ($preset =~ /false/) {
+	if ($event) {
 		if ($$event) {
-			$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" checked>Custom Days";
+			foreach my $dayopts (@dayoptions) {
+				if ($dow =~ /$dayopts/) {
+					$preset = 'true';
+				}
+			}
+
+			if ($preset =~ /false/) {
+				#if ($$event) {
+					$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" checked>Custom Days";
+				#}
+			} else {
+				$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" checked>Day Presets";
+			}
 		}
-	} else {
-		$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" checked>Day Presets";
 	}
 
 	my @dayshtml;
@@ -283,6 +287,8 @@ print <<TARGETS;		# Print the div which holds the Target STBs data
 TARGETS
 	print '</div>';	# End of div 'wrapLeft'
 
+	###### Print the STB Grid for STB selection
+
 print <<RIGHT;
 <div class="wrapLeft" style="margin-right:5px;">
 RIGHT
@@ -298,30 +304,103 @@ RIGHT
 
 print <<HEAD;
 <div id="stbSelect" style="margin-top:2px;padding:5px;">
-<p style="align:center;font-size:18px;margin-top:3px;margin-bottom:3px;">STB Selection Grid</p>
-<table id="stbConfigGrid" class="stbConfigGrid"><tr>
+<p style="align:center;font-size:18px;margin-top:3px;margin-bottom:3px;">STB Selection Grid &nbsp&nbsp&nbsp<font color="red">( STBs named " - " or " : " cannot be selected )</font></p>
+<table style="border-spacing:0;" align="center">
+<tr id="columns">
 HEAD
-                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
-                my $c = '0';
-
-                foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
-                        if ($c >= $columns) {
-                                print '</tr><tr>';
-                                $c = '0';
-                        }
-                        my ($num) = $key =~ /STB(\d+)/;
-			my $name = 'STB ' . $num;
-                        $name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
-print <<KEY;
-<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
-KEY
+                my $c = '1';
+                while ($c <= $columns) {
+print <<COL;
+<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+COL
                         $c++;
-                }
-                print '</table></div>';
+        	}
+
+		tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+
+             	my $r = '1';            # Set the Row count to 1
+           	my $stbno = '1';        # Set the STB count to 1
+
+          	while ($r <= $rows) {
+                	$c = '1';               # Reset the Column count to 1
+                	print "<tr id=\"Row$r\">";
+                	while ($c <= $columns) {
+                		my $id = "STB$stbno";
+                        	my $name = "col$c"."stb$stbno";
+				my $onclick;
+                        	my $buttontext;
+                        	if (exists $stbdata{$id}) {
+                        	} else {
+                        		%{$stbdata{$id}} = {};
+                        	}
+
+				if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
+                                	$buttontext = $stbdata{$id}{'Name'};
+					if ($buttontext =~ /^\s*\:\s*$/) {
+						#$buttontext = 'Spacer';
+						$onclick = '';
+					} else {
+						$onclick = "onClick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";
+					}
+                            	} else {
+                                	$buttontext = '-';
+					$onclick = '';
+                         	}
+
+print <<BOX;
+<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick >$buttontext</button></td>
+BOX
+				
+				$stbno++;
+                                $c++;
+                   	}
+
+print <<ROWEND;
+<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+ROWEND
+
+                   	$r++;
+          	}
+
+print <<LAST;
+</tr></table>
+</div>
+LAST
+
+        	print '</div>';         # End of the "wrapLeft" div
+
+        	untie %stbdata;
         } else {
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
+
+
+
+
+
+
+#                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+
+#                my $c = '0';
+
+#                foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
+#                        if ($c >= $columns) {
+#                                print '</tr><tr>';
+#                                $c = '0';
+#                        }
+#                        my ($num) = $key =~ /STB(\d+)/;
+#			my $name = 'STB ' . $num;
+#                        $name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
+#print <<KEY;
+#<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
+#KEY
+#                        $c++;
+#                }
+#                print '</table></div>';
+#        } else {
+#                print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
+#        }
 	
 	
 	untie %groups;

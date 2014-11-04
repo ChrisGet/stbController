@@ -10,12 +10,10 @@ print $query->header();
 
 chomp(my $action = $query->param('action') || $ARGV[0] || '');
 chomp(my $group = $query->param('group') || $ARGV[1] || '');
-#chomp(my $stbs = $query->param('stbs') || $ARGV[2] || '');
 
 die "No Action given for stbGroupsPage.pl\n" if (!$action);
 die "Invalid Action \"$action\" given for stbGroupsPage.pl\n" if ($action !~ /^Menu$|^Create$|^Edit$/i);
 die "No STB group given to be edited for stbGroupsPage.pl\n" if (($action =~ /^Edit$/i) and (!$group));
-#die "No STBs given for action \"$action\" on group \"$group\" for stbGroupsPage.pl\n" if (($action =~ /^Edit$|^Create$/i) and (!$stbs));
 
 chomp(my $maindir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
@@ -27,8 +25,6 @@ my $htmldir = $maindir . '/scripts/pages/';
 
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createGroup(\$group) and exit if ($action =~ /^Create$|^Edit$/i);
-#createGroup(\$group,\$stbs) and exit if ($action =~ /^Edit$/i);
-#deleteSeq() and exit if ($action =~ /^Delete$/i);
 
 sub mainMenu {
 	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
@@ -172,26 +168,100 @@ MAIN
 
 print <<HEAD;
 <div id="stbSelect">
-<table id="stbConfigGrid" class="stbConfigGrid"><tr>
+<p style="align:center;font-size:18px;margin-top:3px;margin-bottom:3px;">STB Selection Grid &nbsp&nbsp&nbsp<font color="red">( STBs named " - " or " : " cannot be selected )</font></p>
+<table style="border-spacing:0;" align="center">
+<tr id="columns">
 HEAD
-		tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
-		my $c = '0';
+                my $c = '1';
+                while ($c <= $columns) {
+print <<COL;
+<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+COL
+                        $c++;
+                }
+
+                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+
+                my $r = '1';            # Set the Row count to 1
+               my $stbno = '1';        # Set the STB count to 1
+
+                while ($r <= $rows) {
+                        $c = '1';               # Reset the Column count to 1
+                        print "<tr id=\"Row$r\">";
+                        while ($c <= $columns) {
+                                my $id = "STB$stbno";
+                                my $name = "col$c"."stb$stbno";
+                                my $onclick;
+                                my $buttontext;
+                                if (exists $stbdata{$id}) {
+                                } else {
+                                        %{$stbdata{$id}} = {};
+                                }
+
+                                if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
+                                        $buttontext = $stbdata{$id}{'Name'};
+                                        if ($buttontext =~ /^\s*\:\s*$/) {		
+                                                $onclick = '';
+                                        } else {
+                                                $onclick = "onClick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";
+                                        }
+                                } else {
+                                        $buttontext = '-';
+                                        $onclick = '';
+                                }
+
+print <<BOX;
+<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick >$buttontext</button></td>
+BOX
+
+                                $stbno++;
+                                $c++;
+                        }
+
+print <<ROWEND;
+<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+ROWEND
+
+                        $r++;
+                }
+
+print <<LAST;
+</tr></table>
+</div>
+LAST
+
+                print '</div>';         # End of the "wrapLeft" div
+
+                untie %stbdata;
+
+
+
+
+
+
+
+
+#<table id="stbConfigGrid" class="stbConfigGrid"><tr>
+#HEAD
+#		tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+
+#		my $c = '0';
 				
-		foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
-			if ($c >= $columns) {
-				print '</tr><tr>';
-				$c = '0';
-			}
-			my ($num) = $key =~ /STB(\d+)/;
-			my $name = 'STB ' . $num;
-			$name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
-print <<KEY;
-<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
-KEY
-			$c++;
-		}
-		print '</table></div>';
+#		foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
+#			if ($c >= $columns) {
+#				print '</tr><tr>';
+#				$c = '0';
+#			}
+#			my ($num) = $key =~ /STB(\d+)/;
+#			my $name = 'STB ' . $num;
+#			$name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
+#print <<KEY;
+#<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
+#KEY
+#			$c++;
+#		}
+#		print '</table></div>';
 	} else {
 		print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
 	}

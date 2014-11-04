@@ -110,6 +110,7 @@ sub stbConfig {
 		$name = $stbdata{$$stb}{'Name'};
 		$titlename = $stbdata{$$stb}{'Name'};
 	} else {
+		$name = '';
 		$titlename = 'Unconfigured STB';
 	}
 
