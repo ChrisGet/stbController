@@ -7,7 +7,6 @@ use CGI::Carp qw ( fatalsToBrowser );
 use File::Basename;
 
 my $query = new CGI;
-#$CGI::POST_MAX = 1024 * 16000;
 
 print $query->header();
 my @params = $query->param;
@@ -21,6 +20,8 @@ tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, 
 foreach my $param (@params) {
 	next if ($param =~ /stbname/);
 	my $value = $query->param($param);
+	$value =~ s/^\s+//g;
+	$value =~ s/\s+$//g;
 	if (exists $stbdata{$stbname}{$param}) {
 		if ($stbdata{$stbname}{$param} ne $value) {
 			$stbdata{$stbname}{$param} = $value;

@@ -208,12 +208,12 @@ sub showBoxes {
 			if (exists $stbdata{$stb}) {
 				my $name = $stbdata{$stb}{'Name'} || '';
 				if ($name) {
-					$resforgui .= "$stb:$name,";
+					$resforgui .= "$stb~$name,";
 				} else {
-					$resforgui .= "$stb:$stb,";
+					$resforgui .= "$stb~-,";
 				}
 			} else {
-				$resforgui .= "$stb:$stb,";
+				$resforgui .= "$stb~$stb,";
 			}
 		}
 

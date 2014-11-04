@@ -69,12 +69,12 @@ sub showGroups {
 			foreach my $box (@members) {
 				my $name = $stbdata{$box}{'Name'} || '';
 				if (!$name) {
-					#print "$box\n";
-					my ($one,$two) = $box =~ /(stb)(\d+)/i;
-					$one = uc($one);
-					$name = "$one $two";
+					#my ($one,$two) = $box =~ /(stb)(\d+)/i;
+					#$one = uc($one);
+					#$name = "$one $two";
+					$name = '-';
 				}
-				push(@resforgui,"$box:$name");
+				push(@resforgui,"$box~$name");
 			}
 			my $string = join(',',@resforgui);
 			print $string;

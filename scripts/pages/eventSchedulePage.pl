@@ -73,7 +73,11 @@ sub mainMenu {
 			if (exists $stbdata{$box}) {
 				my $name = $stbdata{$box}{'Name'} || '';
 				if ($name) {
-					$stbnames .= " $name ,";
+					if ($name =~ /^\s*\-\s*$/) {
+						$stbnames .= " Unconfigured STB ,";
+					} else {
+						$stbnames .= " $name ,";
+					}
 				} else {
 					$stbnames .= " Unconfigured STB ,";
 				}
@@ -277,7 +281,7 @@ print <<TARGETS;		# Print the div which holds the Target STBs data
 	<h1 style="margin-top:2px;margin-bottom:2px;margin-left:2px;font-size:20px;text-decoration:underline;">Target STBs</h1>
 	<p style="margin-top:2px;margin-bottom:2px;margin-left:2px;font-size:15px;color:white;">Click on a box in the grid to the right to add it to the list of target STBs (below)<br>
 		You can also add a group by selecting it from the drop down list above and clicking "Add Group"</p>
-	<p style="margin-top:2px;margin-bottom:6px;margin-left:2px;font-size:15px;color:#c0c0c0;">Click on a box or group in the target STBs list to remove it.</p>
+	<p style="margin-top:2px;margin-bottom:6px;margin-left:2px;font-size:15px;color:#c0c0c0;">Click on a box or group in the Target STB List to remove it.</p>
 	<button class="menuButton" onclick="clearSeqArea()">Clear Target STB List</button>
 	<div id="sequenceArea" contenteditable="true"></div>
 	
@@ -337,8 +341,7 @@ COL
 
 				if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
                                 	$buttontext = $stbdata{$id}{'Name'};
-					if ($buttontext =~ /^\s*\:\s*$/) {
-						#$buttontext = 'Spacer';
+					if ($buttontext =~ /^\s*(:|-)\s*$/) {
 						$onclick = '';
 					} else {
 						$onclick = "onClick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";
@@ -374,11 +377,6 @@ LAST
         } else {
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
-
-
-
-
-
 
 #                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 

@@ -55,10 +55,13 @@ STUFF
 		foreach my $item (@members) {
 			my $name = $stbdata{$item}{'Name'} || '';
 			if (!$name) {
-				$name = $item;
+				$name = 'Unconfigured STB';
 			} else {
-				if ($name !~ /\S+/) {
-					$name = $item;
+				if ($name !~ /\S+/ or $name =~ /^\s*\-\s*$/) {
+					$name = 'Unconfigured STB';
+				}
+				if ($name =~ /^\s*\-\s*$/) {
+					$name = 'Spacer';
 				}
 			}
 			$memberstring .= "$name,";
@@ -201,7 +204,7 @@ COL
 
                                 if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
                                         $buttontext = $stbdata{$id}{'Name'};
-                                        if ($buttontext =~ /^\s*\:\s*$/) {		
+                                        if ($buttontext =~ /^\s*(\:|\-)\s*$/) {		
                                                 $onclick = '';
                                         } else {
                                                 $onclick = "onClick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";

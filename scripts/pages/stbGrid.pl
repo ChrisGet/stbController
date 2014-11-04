@@ -136,7 +136,6 @@ while ($r <= $rows) {
 print <<BOX;
 <td></td>
 BOX
-#<td ><button name="$name" id="$id" class="stbButton inactive" type="button"></button></td>
 		} else {
 print <<BOX;
 <td><button name="$name" id="$id" class="stbButton deselect" type="button" onClick="colorToggle('$id')">$buttontext</button></td>

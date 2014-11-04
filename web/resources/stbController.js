@@ -179,6 +179,28 @@ function validate()
 // ############### End of validate function
 
 function editSTBData($name) {
+	var name = $('#name').val();
+	var blanknameregex = /\S+/;	// Non whitespace, 1 or more of.
+	var unconfregex = /^\s*\-\s*$/;
+	var matchblank = blanknameregex.exec(name);
+	var matchunconf = unconfregex.exec(name);
+
+	if (!name || !matchblank || matchunconf) {
+		var conf = confirm('Giving this STB a name of "-", or no name at all, will mark it as unconfigured. Are you sure you want to do this?');
+		if (conf == false) {
+			return;
+		}
+	}
+
+	var spacerregex = /^\s*\:\s*$/;
+	var matchspacer = spacerregex.exec(name);
+	if (matchspacer) {
+		var conf = confirm('Giving this STB a name of ":" will mark it as a grid spacer and it will have no control functionality. Are you sure you want to do this?');
+		if (conf == false) {
+			return;
+		}
+	}
+
         $(document).ready(function() {
                 $.ajax( {
                         type: "POST",
@@ -719,10 +741,16 @@ function editGroupPage2($grp) {
      	var returned = xmlhttp.responseText;
 	var members = returned.split(',');
 	for (var i = 0; i < members.length; i++) {
-		var bits = members[i].split(":");
+		var bits = members[i].split("~");
 		var id = bits[0];
 		var text = bits[1];
-		seqTextUpdate(id,text);
+		var regex = /^\s*\:\s*$|^\s*\-\s*$/;	// If var text is like ':' or '-' it will be skipped from being added.
+		var match = regex.exec(text);
+		if (!match)  {
+			seqTextUpdate(id,text);
+		} else {
+			alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+		}
 	}	
 }
 
@@ -891,10 +919,16 @@ function editSchedulePage2($event) {
      	var returned = xmlhttp.responseText;
 	var members = returned.split(',');
 	for (var i = 0; i < members.length; i++) {
-		var bits = members[i].split(":");
+		var bits = members[i].split("~");
 		var id = bits[0];
 		var text = bits[1];
-		seqTextUpdate(id,text);
+		var regex = /^\s*\:\s*$|^\s*\-\s*$/;    // If var text is like ':' or '-' it will be skipped from being added.
+                var match = regex.exec(text);
+                if (!match)  {
+			seqTextUpdate(id,text);
+		} else {
+			alert('A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+		}
 	}	
 }
 
