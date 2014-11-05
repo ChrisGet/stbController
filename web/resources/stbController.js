@@ -480,13 +480,18 @@ function seqValidate($origname) {
 	var name = document.getElementById('sequenceName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
-	
+	var invalidnameregex = /[^\w\s+-]|\_|\+|\-+/;	// Check the sequence name does not contain any non alphanumeric characters along with "_ + -"
+	var invalidnamematch = invalidnameregex.exec(name);
 	if (!name) {
 		alert('Please give the new sequence a name!');
 	} else {
 		if (!match) {
 			alert('Please give the new sequence a name!');
 		} else {
+			if (invalidnamematch) {
+				alert('Please only use letters, numbers, or spaces in the sequence name');
+				return;
+			}
 			var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
 			var commands = [];
 			for (var i = 0; i < elements.length; i++) {
@@ -623,6 +628,8 @@ function groupValidate($origname) {
 	var name = document.getElementById('groupName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
+	var invalidnameregex = /[^\w\s+-]|\_|\+|\-+/;	// Check the group name does not contain any non alphanumeric characters along with "_ + -"
+	var invalidnamematch = invalidnameregex.exec(name);
 	
 	if (!name) {
 		alert('Please give the new group a name!');
@@ -630,6 +637,10 @@ function groupValidate($origname) {
 		if (!match) {
 			alert('Please give the new group a non-blank name!');
 		} else {
+			if (invalidnamematch) {
+				alert('Please only use letters, numbers, or spaces in the group name');
+				return;
+			}
 			var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
 			var members = [];
 			for (var i = 0; i < elements.length; i++) {
