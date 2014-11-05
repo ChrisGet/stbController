@@ -57,6 +57,8 @@ foreach my $target (@targetsraw) {
 untie %groups;
 #### End of processing the target STB input ($info)
 
+die "No STBs selected for control after processing the input\n" if (!$targetstring or $targetstring !~ /\S+/);
+
 if ($action =~ m/^Event$/i) {
 	tie my %seqs, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%seqs to $seqfile: $!\n";
 	my @sequences = split(',',$command);

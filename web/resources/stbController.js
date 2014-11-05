@@ -19,13 +19,13 @@ function dateTime() {
 		var div = document.getElementById('dateTimeDiv');
 		if (div) {
 			var date = new Date();
-			var hour = date.getHours();
-			var min = date.getMinutes();
+			var hour = ('0' + date.getHours()).slice(-2);
+			var min = ('0' + date.getMinutes()).slice(-2);
 			var secs = ('0' + date.getSeconds()).slice(-2);
 			var time = hour + ':' + min + ':' + secs;
 			document.getElementById('dateTimeDiv').innerHTML = time + ' - ' + date.toDateString();
 		}
-	},100);
+	},1000);
 }
 
 function stbControl($action,$commands) {

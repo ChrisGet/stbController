@@ -22,20 +22,43 @@ chomp(my $stbs = $query->param('stbs') || $ARGV[0] || '');
 
 die "No STBs selected for video switching\n" if (!$stbs);
 
-if ($stbs =~ m/^groups\-(.+)/) {
-	if ($stbs =~ m/^ROW/) {
-        	$stbs =~ s/-/ /g;
-	}
-	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
-	my $groupin = "\U$stbs\E";
-	if (exists $groups{$groupin}) {
-		my $members = $groups{$groupin};
-		video(\$members);
-	}
-	untie %groups;
-} else {
-	video(\$stbs);
+my @targetsraw = split(',',$stbs);
+my $targetstring = '';
+
+tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
+
+foreach my $target (@targetsraw) {
+        $target = uc($target);
+        if (exists $groups{$target}) {
+                foreach my $member (@{ $groups{$target}}) {
+                        $targetstring .= "$member,";
+                }
+        } else {
+                $targetstring .= "$target,";
+        }
 }
+
+untie %groups;
+
+die "No STBs selected for video switching after processing the input\n" if (!$targetstring or $targetstring !~ /\S+/);
+
+$targetstring =~ s/,$//;
+video(\$targetstring);
+
+#if ($stbs =~ m/^groups\-(.+)/) {
+#	if ($stbs =~ m/^ROW/) {
+ #       	$stbs =~ s/-/ /g;
+#	}
+#	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
+#	my $groupin = "\U$stbs\E";
+#	if (exists $groups{$groupin}) {
+#		my $members = $groups{$groupin};
+#		video(\$members);
+#	}
+#	untie %groups;
+#} else {
+#	video(\$stbs);
+#}
 
 sub video {
 	my ($stbs) = @_;
