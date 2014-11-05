@@ -29,7 +29,7 @@ createGroup(\$group) and exit if ($action =~ /^Create$|^Edit$/i);
 sub mainMenu {
 	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
 	if (!%groups) {
-		print '<font size="4" color="red">You currently have no STB groups</font>';
+		print '<font size="4" color="red">You currently have no STB Groups</font>';
 		exit;
 	}
 

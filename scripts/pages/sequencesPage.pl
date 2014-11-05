@@ -32,7 +32,7 @@ createSeq(\$sequence) and exit if ($action =~ /^Edit$/i);
 sub mainMenu {
 	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	if (!%sequences) {
-		print '<font size="4" color="red">You currently have no command sequences</font>';
+		print '<font size="4" color="red">You currently have no Command Sequences</font>';
 		exit;
 	}
 

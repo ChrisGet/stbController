@@ -1408,3 +1408,11 @@ p.narrow {
 #typeChange {
 	margin-top:20px;
 }
+
+input[type="text"] {
+	border radius:3px;
+}
+
+input[type="text"]:focus {
+	background:#009933;
+}

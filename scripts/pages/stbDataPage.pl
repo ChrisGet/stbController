@@ -115,7 +115,7 @@ sub stbConfig {
 	}
 
 print <<HEAD;
-<div class="wrapLeft shaded" style="width:550px;">
+<div class="wrapLeft shaded">
 <form id="editSTBConfigForm" name="editSTBConfigForm">
 <h2 class="narrow">Below are the configuration options for "<font color="#009933">$titlename</font>", as well as its DUT details.<br>
 Any existing settings will be populated automatically.</h2>
