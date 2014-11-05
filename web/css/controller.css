@@ -40,6 +40,14 @@
 	border-radius:4px;
 }
 
+#dateTimeDiv {
+	float:right;
+	display:inline-block;
+	color:white;
+	font-size:20px;
+	margin-right:10px;
+}
+
 #stbGrid {
 	float:left;
 	margin-top:10px;

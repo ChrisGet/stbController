@@ -1,5 +1,9 @@
 <!-- hide script from old browsers
 
+window.onload = function () {
+	dateTime();
+}
+
 window.onunload = window.onbeforeunload = function ()  {
 logLastBoxes();
 }
@@ -9,6 +13,20 @@ $.ajaxSetup({ cache: false });
 var stbHash = {};	// Create the stbHash object to handle selected STBs from the grid
 var lastRow;		// Create the lastRow variable to be manipulated elsewhere
 var lastRowHL;		// Create the lastRowHL variable to record last highlighted row
+
+function dateTime() {
+	setInterval(function() {
+		var div = document.getElementById('dateTimeDiv');
+		if (div) {
+			var date = new Date();
+			var hour = date.getHours();
+			var min = date.getMinutes();
+			var secs = ('0' + date.getSeconds()).slice(-2);
+			var time = hour + ':' + min + ':' + secs;
+			document.getElementById('dateTimeDiv').innerHTML = time + ' - ' + date.toDateString();
+		}
+	},100);
+}
 
 function stbControl($action,$commands) {
 	var comstring = '';
@@ -480,7 +498,7 @@ function seqValidate($origname) {
 	var name = document.getElementById('sequenceName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
-	var invalidnameregex = /[^\w\s+-]|\_|\+|\-+/;	// Check the sequence name does not contain any non alphanumeric characters along with "_ + -"
+	var invalidnameregex = /[^\w\s]|\_+/;	// Check the sequence name does not contain any non alphanumeric characters along with "_"
 	var invalidnamematch = invalidnameregex.exec(name);
 	if (!name) {
 		alert('Please give the new sequence a name!');
@@ -628,7 +646,7 @@ function groupValidate($origname) {
 	var name = document.getElementById('groupName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
-	var invalidnameregex = /[^\w\s+-]|\_|\+|\-+/;	// Check the group name does not contain any non alphanumeric characters along with "_ + -"
+	var invalidnameregex = /[^\w\s]|\_+/;	// Check the group name does not contain any non alphanumeric characters along with "_ + -"
 	var invalidnamematch = invalidnameregex.exec(name);
 	
 	if (!name) {
