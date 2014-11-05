@@ -18,7 +18,7 @@ $maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
 my $stbDataFile = ($maindir . '/config/stbDatabase.db');
 my $groupsfile = ($filedir . 'stbGroups.txt');
-my $eventsfile = ($filedir . 'commandSequences.txt');
+my $seqfile = ($filedir . 'commandSequences.txt');
 
 chomp(my $action = $query->param('action') || $ARGV[1] || '');
 ##### Required so that the script can handle '0' as a valid string #####
@@ -37,104 +37,42 @@ chomp(my $info = $query->param('info') || $ARGV[3] || '');
 die "Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
 die "No STBs Selected" if (!$info);
 
+my @targetsraw = split(',',$info);
+my $targetstring = '';
 
-if ($info =~ m/^groups\-(.+)/) {
-	my @GRPSNEW;
-	my @GRPS = split(',', $1);
+#### Below we separate the target STB input ($info) and process each item to see whether it is a group or a single STB
+tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
 
-	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
-	foreach my $groupin (@GRPS) {
-		$groupin = "\U$groupin\E";
-		$groupin =~ s/^\s+//g;
-		$groupin =~ s/\s+$//g;
-		if (exists $groups{"$groupin"}) {
-			foreach my $members (@{ $groups{"$groupin"}}) {
-				push (@GRPSNEW, $members);
-			}
+foreach my $target (@targetsraw) {
+	$target = uc($target);
+	if (exists $groups{$target}) {
+		foreach my $member (@{ $groups{$target}}) {
+			$targetstring .= "$member,";
 		}
-	}
-	untie %groups;
-
-	die "No STBs Selected for event \"$command\"" if (!@GRPSNEW);
-	my $membersnew = join(',', @GRPSNEW);
-	#software(\@GRPSNEW);
-	if ($action =~ m/^Event$/i) {
-		tie my %events, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%events to $eventsfile: $!\n";
-		my @events = split(',',$command);
-		foreach my $ev (@events) {
-			my $evcoms = $events{$ev} || '';
-			warn "Event $ev was not found in the events file\n" and next if (!$evcoms);
-			control(\$command,\$membersnew);
-		}
-		untie %events;
-	}
-	if ($action =~ m/^Control$/i) {
-		control(\$command,\$membersnew);
-	}
-} else {
-	my @boxarray = split (',', $info);
-	#software(\@boxarray);
-	if ($action =~ m/^Event$/i) {
-		tie my %events, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%events to $eventsfile: $!\n";
-		my @events = split(',',$command);
-		foreach my $ev (@events) {
-			my $evcoms = $events{$ev} || '';
-			warn "Event $ev was not found in the events file\n" and next if (!$evcoms);
-			control(\$evcoms,\$info);
-		}
-		untie %events;
-	}
-	if ($action =~ m/^Control$/i) {
-		control(\$command,\$info);	
+	} else {
+		$targetstring .= "$target,";
 	}
 }
 
-#	sub software {
-#		my @array = @{+shift};
-#		my @software = ();
-#		foreach my $box (@array) {
-#			chomp(my $soft = $softwares{"$box"}{'Current Software'} || '');
-#			push (@software, $soft);
-#		}
-#		my $match = $software[0];
-#		my ($release,$matchshort);
-#		($release) = $match =~ /^(\w+|\d+)\./g;
-#		($matchshort = $match) =~ s/(p|u)$//gi;
-#		my $true;
-#		for (@software) {
-#			if ($_ ne $match) {
-#				$true = 'true';
-#				last;
-#			}
-#		}
+untie %groups;
+#### End of processing the target STB input ($info)
 
-#		if ($true) {
-#			#print "The software versions on the STBs are different! Trying the generic event\n";
-#		} else {
-#			#print "The software versions on the STBs are all the same! Looking for a specific event for this build\n";
-#			my $upper = "\U$command\E";
-#			my $success;
-#			foreach my $ev (sort keys %events) {
-#				if ($ev =~ m/^$upper\s*$matchshort$/g) {
-#					#print "Found an event match for this code! - $ev, Executing\n";
-#					$command = $ev;
-#					$success = 'yes';
-#					last;
-#				}
-#			}
-			
-#			if (! $success) {
-#				#print "No event found for this specific software version, looking for event for this release \($release\)\n";
-#				foreach my $ev (sort keys %events) {
-#					if ($ev =~ m/^$upper\s*$release$/g) {
-#						#print "Found an event match for this code! - $ev, Executing\n";
-#						$command = $ev;
-#						last;
-#					}
-#				}
-#			}
-#		}
-#	}
+if ($action =~ m/^Event$/i) {
+	tie my %seqs, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%seqs to $seqfile: $!\n";
+	my @sequences = split(',',$command);
+	foreach my $seq (@sequences) {
+		$seq = uc($seq);
+		my $seqcoms = $seqs{$seq} || '';
+		warn "Sequence $seq was not found in the sequences file\n" and next if (!$seqcoms);
+		control(\$seqcoms,\$targetstring);
+		sleep 2;	# Sleep 2 seconds between each sequence
+	}
+	untie %seqs;
+}
+
+if ($action =~ m/^Control$/i) {
+	control(\$command,\$targetstring);	
+}
 
 sub control {
 	my ($commands,$boxes) = @_;	# All input args are scalar references at this point
