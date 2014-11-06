@@ -1,3 +1,0 @@
-ACCESS PLANNER:tv guide,t2,green button,t5,cursor down,t2,cursor down,t2,channel up,t2,cursor down,cursor down,cursor down,cursor down,cursor down,cursor down,cursor down,cursor down
-NETWORK DETAILS:services,t2,cursor right,t2,cursor down,t1,5
-PIN:0,0,0,0

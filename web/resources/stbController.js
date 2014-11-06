@@ -18,12 +18,29 @@ function dateTime() {
 	setInterval(function() {
 		var div = document.getElementById('dateTimeDiv');
 		if (div) {
-			var date = new Date();
-			var hour = ('0' + date.getHours()).slice(-2);
-			var min = ('0' + date.getMinutes()).slice(-2);
-			var secs = ('0' + date.getSeconds()).slice(-2);
-			var time = hour + ':' + min + ':' + secs;
-			document.getElementById('dateTimeDiv').innerHTML = time + ' - ' + date.toDateString();
+			var xmlhttp;
+			if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			} else {// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function() {
+				if (xmlhttp.readyState==4) {
+					document.getElementById('dateTimeDiv').innerHTML=xmlhttp.responseText;
+				}
+			}
+        		xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", true);
+        		//xmlhttp.setRequestHeader("User-Agent",navigator.userAgent);
+        		xmlhttp.send();
+        		var returned = xmlhttp.responseText;
+
+			//var date = new Date();
+			//var hour = ('0' + date.getHours()).slice(-2);
+			//var min = ('0' + date.getMinutes()).slice(-2);
+			//var secs = ('0' + date.getSeconds()).slice(-2);
+			//var time = hour + ':' + min + ':' + secs;
+			//document.getElementById('dateTimeDiv').innerHTML = time + ' - ' + date.toDateString();
+			$('#dateTimeDiv').val(returned);
 		}
 	},1000);
 }
