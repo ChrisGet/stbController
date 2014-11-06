@@ -981,4 +981,27 @@ function daysSelectedCheck() {
 	}
 }
 
+function clearSTBDataForm() {
+	var conf = confirm('Are you sure you want to clear all data for this STB?');
+	if (conf == false) {
+		return;
+	}
+
+	$('input[type=text]').each(function(){
+        	$(this).val('');
+	});	
+
+	$('select').each(function(){
+		var id = $(this).attr('id');
+		var first = $('#' + id + " option:first").val();
+		//alert(first);
+        	$(this).val(first);
+		if (id == 'type') {
+			stbTypeChoice(first);
+		}
+	});	
+
+
+}
+
 // end hiding script from old browsers -->

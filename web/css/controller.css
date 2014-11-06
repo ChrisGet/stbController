@@ -96,6 +96,9 @@ body {
 #sequenceButtons {
 	width:100%;
 	text-align:center;
+	border:3px solid #707070;
+	border-radius:5px;
+	padding:3px;
 }
 
 .sequenceButton {

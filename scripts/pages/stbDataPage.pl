@@ -115,7 +115,8 @@ sub stbConfig {
 	}
 
 print <<HEAD;
-<div class="wrapLeft shaded">
+<div class="wrapLeft shaded" style="position:relative;">
+<button class="seqListBtn Del" style="position:absolute;bottom:20px;right:10px;font-size:16px;" type="button" onclick="clearSTBDataForm()">Clear All STB Data</button>
 <form id="editSTBConfigForm" name="editSTBConfigForm">
 <h2 class="narrow">Below are the configuration options for "<font color="#009933">$titlename</font>", as well as its DUT details.<br>
 Any existing settings will be populated automatically.</h2>
