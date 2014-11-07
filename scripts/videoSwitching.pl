@@ -30,7 +30,8 @@ tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem t
 foreach my $target (@targetsraw) {
         $target = uc($target);
         if (exists $groups{$target}) {
-                foreach my $member (@{ $groups{$target}}) {
+		my @members = split(',',$groups{$target});
+                foreach my $member (@members) {
                         $targetstring .= "$member,";
                 }
         } else {
@@ -44,21 +45,6 @@ die "No STBs selected for video switching after processing the input\n" if (!$ta
 
 $targetstring =~ s/,$//;
 video(\$targetstring);
-
-#if ($stbs =~ m/^groups\-(.+)/) {
-#	if ($stbs =~ m/^ROW/) {
- #       	$stbs =~ s/-/ /g;
-#	}
-#	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
-#	my $groupin = "\U$stbs\E";
-#	if (exists $groups{$groupin}) {
-#		my $members = $groups{$groupin};
-#		video(\$members);
-#	}
-#	untie %groups;
-#} else {
-#	video(\$stbs);
-#}
 
 sub video {
 	my ($stbs) = @_;
@@ -87,7 +73,8 @@ sub video {
 			my $hdmilast = '81';
 			chomp $hdmiin;
 			my $hdmiinhex = sprintf("%x", $hdmiin);
-			my $hdmisig = pack ("H8", "$first$hdmiinhex$hdmilast");
+			my $hdmiouthex = sprintf("%x", $hdmiout);
+			my $hdmisig = pack ("H8", "$first$hdmiinhex$hdmiouthex$hdmilast");
 			print $hdmi $hdmisig;
 			$hdmi->close;
 		}

@@ -1,0 +1,1 @@
+TEST SEQUENCE:1,0,5,t2,tv guide,t2,cursor down,t2,cursor up,t2,cursor down,t2,cursor up,t2,cursor down,t2,cursor up,t2,backup

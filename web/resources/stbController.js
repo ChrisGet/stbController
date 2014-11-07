@@ -282,6 +282,7 @@ function colorToggle($id,$override,$highlight){
 			item.className = 'stbButton selected';
 			stbHash[$id] = 1;
 			delete highlightedSTBs[$id];
+			perlCall('','scripts/videoSwitching.pl','stbs',$id);	// Once a box is selected, switch to its video too
 		}
 		if ($override == 'deselect') {
         	        item.className = 'stbButton deselect';

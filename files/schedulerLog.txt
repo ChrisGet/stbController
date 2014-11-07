@@ -1,3 +1,15 @@
 /home/stbController/scripts/stbControl.pl
 Event = Subs and Audio
 STBs = ROW 2
+/home/stbController/scripts/stbControl.pl
+Event = TEST SEQUENCE
+STBs = FIRST GROUP
+/home/stbController/scripts/stbControl.pl
+Event = TEST SEQUENCE
+STBs = FIRST GROUP
+/home/stbController/scripts/stbControl.pl
+Event = TEST SEQUENCE
+STBs = FIRST GROUP
+/home/stbController/scripts/stbControl.pl
+Event = TEST SEQUENCE
+STBs = FIRST GROUP

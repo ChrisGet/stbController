@@ -1,8 +1,6 @@
 #!/usr/bin/perl -w
 
-#BEGIN { use lib "/usr/local/lib/perl5/site_perl/5.18.0/" }
 use strict;
-use IO::Socket::INET;
 use DBM::Deep;
 use Fcntl;
 use CGI;
@@ -12,7 +10,13 @@ use Tie::File::AsHash;
 my $query = CGI->new;
 print $query->header();
 
-chomp(my $maindir = (`cat homeDir.txt` || ''));
+chomp(my $fullpath = $ARGV[3] || '');
+my $maindir;
+if ($fullpath) {
+	$maindir = $fullpath;
+} else {
+	chomp($maindir = (`cat homeDir.txt` || ''));
+}
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
@@ -20,20 +24,20 @@ my $stbDataFile = ($maindir . '/config/stbDatabase.db');
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $seqfile = ($filedir . 'commandSequences.txt');
 
-chomp(my $action = $query->param('action') || $ARGV[1] || '');
+chomp(my $action = $ARGV[0] || $query->param('action') || '');
 ##### Required so that the script can handle '0' as a valid string #####
 my $command;
-if (defined $query->param('command')) {
-	$command = $query->param('command');
+if (defined $ARGV[1]) {
+	$command = $ARGV[1];
 	chomp $command;
-}
-if (defined $ARGV[2]) {
-	$command = $ARGV[2];
-	chomp $command;
+} else {
+	if (defined $query->param('command')) {
+		$command = $query->param('command');
+		chomp $command;
+	}
 }
 ##### Required so that the script can handle '0' as a valid string #####
-chomp(my $info = $query->param('info') || $ARGV[3] || '');
-
+chomp(my $info = $ARGV[2] || $query->param('info') || '');
 die "Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
 die "No STBs Selected" if (!$info);
 
@@ -46,7 +50,8 @@ tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem t
 foreach my $target (@targetsraw) {
 	$target = uc($target);
 	if (exists $groups{$target}) {
-		foreach my $member (@{ $groups{$target}}) {
+		my @members = split(',',$groups{$target});
+		foreach my $member (@members) {
 			$targetstring .= "$member,";
 		}
 	} else {
@@ -98,6 +103,7 @@ sub control {
 } ## End of sub 'control'
 
 sub sendDuskyComms {
+	use IO::Socket::INET;
 	my ($stb,$commands,$boxdata) = @_;
 	my @commands = split(',', $$commands);
 	my $duskycomfile = $filedir . 'skyDuskyCommands.txt';
@@ -118,8 +124,10 @@ sub sendDuskyComms {
 			sleep $1;
 			next;
 		}
-		my $raw = $duskycoms{$com} || '';
-		warn "$com was not found to be a valid command\n" and next if (!$raw);	# If the requested command is not found in the commands database, print a warning and skip to the next command
+		my $raw = $duskycoms{$com};
+		unless(defined $raw) {		# 'defined' needs to be used to handle '0' value for the STB command
+			warn "$com was not found to be a valid command\n" and next;	# If the requested command is not found in the commands database, print a warning and skip to the next command
+		}
 		my $fullcom = 'A+' . $duskyport . $raw . 'x';
 		print $dusky $fullcom;
 	}
@@ -129,6 +137,8 @@ sub sendDuskyComms {
 }
 
 sub sendBTComms {
+	use LWP::UserAgent;
+	use HTTP::Request;
 	my ($stb,$commands,$boxdata) = @_;
 	my @commands = split(',',$$commands);
 	my $btcomfile = $filedir . 'skyBTUSBCommands.txt';
@@ -140,21 +150,25 @@ sub sendBTComms {
                         sleep $1;
                         next;
                 }
-		my $basecom = $btcoms{$command} || '';
-		warn "$command is not a valid command for $$stb\n" and next if (!$basecom);
+		my $basecom = $btcoms{$command};
+		unless (defined $basecom) {		# 'defined' needs to be used to handle '0' value for the STB command
+			warn "$command is not a valid command for $$stb\n" and next;
+		}
                 my $json = "\{\"action\"\:\"press\"";
+		my $comtosend;
                 if ($basecom =~ /^(TouchPad)\s*(.+)$/i) {
-                        $command = $1;
+                        $comtosend = $1;
                         $json = $2;
                         #$json = $btcoms{$area};
                 } else {
+			$comtosend = $basecom;
                         $json .= "\,\"duration\"\:\"0.1\"";
                 }
 
                 $json .= '}';
 
 my $uri = <<URI;
-http://$serverip:8000/v0.0.0/$serverport/$command
+http://$serverip:8000/v0.0.0/$serverport/$comtosend
 URI
 
                 my $ua = new LWP::UserAgent;
@@ -168,7 +182,6 @@ URI
                         my $stuff = $response->code . " " . $response->message;
                 } else {
                         my $stuff = $response->code . " " . $response->message;
-                        #my $warn = "Request Failed: $stuff";
                         warn "Failed to send \"$command\" to STB \"$$stb\" on port $serverport: $stuff\n";
                 }
         }

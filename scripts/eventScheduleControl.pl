@@ -62,7 +62,7 @@ sub addEvent {
 	if ($eventID) {		##### Check that the actual reference is defined (It wont be for 'Add' Actions)
 		if ($$eventID) {
 			$events{$$eventID} = $newdetails;
-			#reloadScheduler();
+			reloadScheduler();
 			return;
 		}
 	}
@@ -118,10 +118,11 @@ sub startScheduler {
 			my $stbs = $parts[7];
 			my $do = 'testRunner';
 			$cron->add_entry($crontime,\&$do,\$event,\$stbs);
-			print "Added $crontime - $event - $stbs\n";
-		} else {
-			print "Not Added - $value\n";
+			#print "Added $crontime - $event - $stbs\n";
 		}
+		# else {
+		#	print "Not Added - $value\n";
+		#}
 	}	
 
 	my $pidfile = $filedir . 'scheduler.pid';
@@ -129,7 +130,8 @@ sub startScheduler {
 
 	sub testRunner {
 		my ($event,$stbs) = @_;
-		system("$controlscript Event \"$$event\" \"$$stbs\" logpid");
+		my $debugfile = $filedir . 'schedulerdebug.txt';
+		system("$controlscript Event \"$$event\" \"$$stbs\" \"$maindir\"");
 
 		######### Uncomment below 4 lines to enable scheduled event logging #########
 		#my $log = $filedir . 'schedulerLog.txt';
