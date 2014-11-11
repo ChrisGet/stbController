@@ -15,34 +15,65 @@ var lastRow;		// Create the lastRow variable to be manipulated elsewhere
 var lastRowHL;		// Create the lastRowHL variable to record last highlighted row
 
 function dateTime() {
-	setInterval(function() {
-		var div = document.getElementById('dateTimeDiv');
-		if (div) {
-			var xmlhttp;
-			if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-				xmlhttp=new XMLHttpRequest();
-			} else {// code for IE6, IE5
-				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			xmlhttp.onreadystatechange=function() {
-				if (xmlhttp.readyState==4) {
-					document.getElementById('dateTimeDiv').innerHTML=xmlhttp.responseText;
-				}
-			}
-        		xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", true);
-        		//xmlhttp.setRequestHeader("User-Agent",navigator.userAgent);
-        		xmlhttp.send();
-        		var returned = xmlhttp.responseText;
-
-			//var date = new Date();
-			//var hour = ('0' + date.getHours()).slice(-2);
-			//var min = ('0' + date.getMinutes()).slice(-2);
-			//var secs = ('0' + date.getSeconds()).slice(-2);
-			//var time = hour + ':' + min + ':' + secs;
-			//document.getElementById('dateTimeDiv').innerHTML = time + ' - ' + date.toDateString();
-			$('#dateTimeDiv').val(returned);
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4) {
+			//document.getElementById('dateTimeDiv').innerHTML=xmlhttp.responseText;
 		}
-	},1000);
+	}
+        xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", false);
+        xmlhttp.send();
+        var returned = xmlhttp.responseText;
+	var bits = returned.split(',');
+        var date = new Date();
+	var dayname = bits[0];
+        var dayno = bits[1];
+        var month = bits[2];
+        month = parseInt(month, 10);
+        month--;
+        var year = bits[3];
+        var hours = bits[4];
+        var mins = bits[5];
+        var secs = bits[6];
+	date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(dayno);
+        date.setHours(hours);
+        date.setMinutes(mins);
+        date.setSeconds(secs);
+        var updateTime = setInterval(function() {
+                var div = document.getElementById('dateTimeDiv');
+                if (div) {
+                        secs++;
+                        if (secs == 60) {
+                                secs = 0;
+				mins++;
+                        }
+                        if (mins == 60) {
+                                mins = 0;
+                                hours++;
+                        }
+                        if (hours == 24) {
+                                clearInterval(updateTime);
+                                dateTimeNew();
+                                return;
+                        }
+                        date.setHours(hours);
+                        date.setMinutes(mins);
+                        date.setSeconds(secs);
+			var formatteddate = date.toUTCString().replace(',','');
+                        var parts = formatteddate.split(" ");
+                        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
+                        var timebit = parts[4];
+                        var datestring = timebit + ' - ' + datebit;
+                        $('#dateTimeDiv').html(datestring);
+                }
+        },1000);
 }
 
 function stbControl($action,$commands) {

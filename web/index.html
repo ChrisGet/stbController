@@ -11,6 +11,7 @@
 	<meta name="MSSmartTagsPreventParsing" content="true" />
 	<meta name="description" content="Reliability Test Suite Contol" />
 	<style type="text/css" media="all">@import "web/css/controller.css";></style>
+	<link rel="shortcut icon" href="http://www.rtsuite.net/favicon.ico?v=2" />
 </head>
 
 <html>
@@ -21,7 +22,7 @@
 </div>
 
 <div id="menuBar">
-<div id="dateTimeDiv"></div>
+<div id="dateTimeDiv" value="Current Server Time" onmouseover="tooltip()" class="masterTooltip"></div>
 
 <input type="button" class="menuButton" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes()" />
 <input type="button" class="menuButton" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()" />

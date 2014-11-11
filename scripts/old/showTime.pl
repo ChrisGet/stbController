@@ -4,6 +4,4 @@ use CGI;
 
 my $query = CGI->new;
 print $query->header();
-
-chomp(my $data = `date +"%a,%d,%m,%Y,%H,%M,%S"`);
-print "$data";
+print `date +"%H:%M:%S - %a %d %b %Y"`;
