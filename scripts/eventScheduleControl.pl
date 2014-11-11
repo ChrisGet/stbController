@@ -31,6 +31,11 @@ addEvent(\$eventID,\$details) and exit if ($action =~ m/^Add$|^Edit$/i);
 deleteEvent(\$eventID) and exit if ($action =~ m/^Delete$/i);
 enableEvent(\$eventID) and exit if ($action =~ m/^Enable$/i);
 disableEvent(\$eventID) and exit if ($action =~ m/^Disable$/i);
+disableScheduler() and exit if ($action =~ m/^DisableSchedule$/i);
+enableScheduler() and exit if ($action =~ m/^EnableSchedule$/i);
+killAll() and exit if ($action =~ m/^KillAll$/i);
+pauseAll() and exit if ($action =~ m/^PauseAll$/i);
+resumeAll() and exit if ($action =~ m/^ResumeAll$/i);
 
 untie %events;
 
@@ -226,3 +231,23 @@ sub showBoxes {
 		die "Cannot show the boxes for event $$eventID as it was not found in the list\n";
 	}
 } ### End of sub 'showBoxes'
+
+sub disableScheduler {
+
+}
+
+sub enableScheduler {
+
+}
+
+sub killAll {
+
+}
+
+sub pauseAll {
+
+}
+
+sub resumeAll {
+
+}

@@ -1427,3 +1427,110 @@ input[type="text"] {
 input[type="text"]:focus {
 	background:#009933;
 }
+
+.evSchedAdmin {
+   	padding: 2px 5px;
+   	-webkit-border-radius: 3px;
+   	-moz-border-radius: 3px;
+   	border-radius: 3px;
+   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   	box-shadow: rgba(0,0,0,1) 0 1px 0;
+   	text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   	color: white;
+   	font-size: 13px;
+   	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
+   	text-decoration: none;
+   	vertical-align: middle;
+}
+.evSchedAdmin.disable {
+   	border: 1px solid #cf4343;
+   	background: #cc2f2f;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
+   	background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -o-linear-gradient(top, #cc2f2f, #FF9999);
+}
+.evSchedAdmin.disable:hover {
+   	background: #b80000;
+	cursor:pointer;
+}
+.evSchedAdmin.disable:active {
+   	background: #b80000;
+}
+
+.evSchedAdmin.enable {
+   	border: 1px solid #68b351;
+   	background: #7eab71;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
+   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
+   	background: -moz-linear-gradient(top, #397a27, #7eab71);
+   	background: -ms-linear-gradient(top, #397a27, #7eab71);
+   	background: -o-linear-gradient(top, #397a27, #7eab71);
+}
+.evSchedAdmin.enable:hover {
+   	background: #235e11;
+	cursor:pointer;
+}
+.evSchedAdmin.enable:active {
+   	background: #235e11;
+}
+
+.evSchedAdmin.stopall {
+   	border: 1px solid #cf4343;
+   	background: #cc2f2f;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
+   	background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
+   	background: -o-linear-gradient(top, #cc2f2f, #FF9999);
+}
+.evSchedAdmin.stopall:hover {
+   	background: #b80000;
+	cursor:pointer;
+}
+.evSchedAdmin.stopall:active {
+   	background: #b80000;
+}
+
+.evSchedAdmin.pauseall {
+   	border: 1px solid #FFCC00;
+   	background: #E68A00;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#E68A00), to(#F2C480));
+   	background: -webkit-linear-gradient(top, #E68A00, #F2C480);
+   	background: -moz-linear-gradient(top, #E68A00, #F2C480);
+   	background: -ms-linear-gradient(top, #E68A00, #F2C480);
+   	background: -o-linear-gradient(top, #E68A00, #F2C480);
+}
+.evSchedAdmin.pauseall:hover {
+   	background: #FF6600;
+	cursor:pointer;
+}
+.evSchedAdmin.pauseall:active {
+   	background: #FF6600;
+}
+
+.evSchedAdmin.resumeall {
+   	border: 1px solid #68b351;
+   	background: #7eab71;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
+   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
+   	background: -moz-linear-gradient(top, #397a27, #7eab71);
+   	background: -ms-linear-gradient(top, #397a27, #7eab71);
+   	background: -o-linear-gradient(top, #397a27, #7eab71);
+}
+.evSchedAdmin.resumeall:hover {
+   	background: #235e11;
+	cursor:pointer;
+}
+.evSchedAdmin.resumeall:active {
+   	background: #235e11;
+}
+
+#schedAdmin {
+	float:right;
+	display:inline-block;
+	min-width:30px;
+	min-height:30px;
+}

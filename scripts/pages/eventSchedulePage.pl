@@ -30,7 +30,29 @@ sub mainMenu {
 		print '<font size="4" color="red">You currently have no Scheduled Events</font>';
 		exit;
 	}
-
+print <<ADMINTABLE;
+<table>
+ <tr>
+  <td>
+    <button class="evSchedAdmin disable">Disable the Scheduler</button>
+  </td>
+  <td>
+    <button class="evSchedAdmin enable">Enable the Scheduler</button>
+  </td>
+  <td width="60px">
+  </td>
+  <td>
+    <button class="evSchedAdmin stopall">Stop ALL</button>
+  </td>
+  <td>
+    <button class="evSchedAdmin pauseall">Pause ALL</button>
+  </td>
+  <td>
+    <button class="evSchedAdmin resumeall">Resume ALL</button>
+  </td>
+ </tr>
+</table>
+ADMINTABLE
 	my @times;
 	foreach my $key (keys %events) {
 		my @sections = split('\|',$events{$key});
