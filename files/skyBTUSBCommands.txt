@@ -5,8 +5,12 @@ cursor right:TouchPad{"action":"draw","move":[[256,256,0],[260,256,0]]
 cursor up:TouchPad{"action":"draw","move":[[256,256,0],[256,252,0]]
 cursor left:TouchPad{"action":"draw","move":[[256,256,0],[252,256,0]]
 cursor down:TouchPad{"action":"draw","move":[[256,256,0],[256,260,0]]
+fast forward:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[510,0,0],[511,0,0]],"area":"FW"
+pause:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
+play:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
 power:Standby
 record:Record
+rewind:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[1,0,0],[0,0,0]],"area":"RW"
 select:TouchPad{"action":"pressTouch","duration":0.1,"points":[[255,255,0],[255,255,0]],"area":"Select"
 sky:Sky
 tv guide:Home
