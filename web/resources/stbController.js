@@ -3,6 +3,7 @@
 window.onload = function () {
 	dateTime();
 	announcements();
+	dynamicTitle('get');
 }
 
 window.onunload = window.onbeforeunload = function ()  {
@@ -97,6 +98,62 @@ function announcements() {
 		$('#messages').html(returned);
 	}
 	return;
+}
+
+function dynamicTitle($option) {
+	if ($option == 'get') {
+		var xmlhttp;
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+  			xmlhttp=new XMLHttpRequest();
+  		} else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function() {
+  			if (xmlhttp.readyState==4) {
+    				//document.getElementById("").innerHTML=xmlhttp.responseText;
+    			}
+		}
+
+        	var date = Date();
+	        xmlhttp.open("GET","web/dynamicTitle.txt?date", false);
+	        xmlhttp.send(null);		
+		var title = xmlhttp.responseText;
+
+		if (!title) {
+			$('#dynamicTitle').text('Click here to change the default title!');
+		} else {
+			var blankregex = /\S+/;
+                        var notblank = blankregex.exec(title);
+			if (!notblank) {
+				$('#dynamicTitle').text('Click here to change the default title!');
+			} else {
+				$('#dynamicTitle').text(title);
+			}
+		}
+	}
+
+	if ($option == 'set') {
+		var current = $('#dynamicTitle').text();
+		var newtitle = prompt("Please enter your new page title",current);
+		if (!newtitle) {
+			return;
+		} else {
+			if (newtitle == current) {
+				return;
+			}
+			var blankregex = /\S+/;
+			var notblank = blankregex.exec(newtitle);
+			if (!notblank) {
+				var conf = confirm('Your new page title is blank. If you select ok, the page title will be returned to the default. Do you want to proceed?');
+				if (conf == false) {
+					return;
+				}
+			}
+			alert('Your page title has been updated. The page will now be reloaded.');
+			perlCall('','scripts/editPageTitle.pl','title',newtitle);
+			window.location='http://www.rtsuite.net';
+		}
+	}
 }
 
 function stbControl($action,$commands) {

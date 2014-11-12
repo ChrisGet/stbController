@@ -21,10 +21,23 @@
 }
 
 #topBarText {
-	line-height:60px;	/* Keep this the same as the "height" value of #topbar so that text os centered */
+	line-height:60px;	/* Keep this the same as the "height" value of #topbar so that text is centered */
 	margin-left:10px;
 	width:auto;
 	font-size:30px;
+}
+
+.topBarTextDynamic{
+	line-height:100%;	/* Keep this the same as the "height" value of #topbar so that text is centered */
+	margin-left:10px;
+	width:auto;
+	font-size:30px;
+	color:white;
+	background:transparent;
+	border:none;
+}
+.topBarTextDynamic:hover {
+        cursor:pointer;
 }
 
 #menuBar {

@@ -13,6 +13,7 @@ my $schedpidfile = $filedir . 'scheduler.pid';
 my $statefile = $filedir . 'schedulerState.txt';
 my $runningdir = $filedir . 'pidsRunning/';
 my $pauseddir = $filedir . 'pidsPaused/';
+my $bullet = "&\#8226";
 chomp(my $schedpid = `cat $schedpidfile` || ''); 
 
 if ($schedpid) {
@@ -26,21 +27,21 @@ if ($schedpid) {
 	chomp(my $pausedtotal = `ls -l $pauseddir | grep -v total | wc -l` || '');
 	my @parts = split(/MainLoop\s*-\s*/,$res);
 	my $wanted = $parts[1];
-	$wanted =~ s/next:/\<font color\=\"\#267A94\"\>> Next scheduled event :- \<\/font\>\<font color\=\"white\"\>/;
+	$wanted =~ s/next:/\<font color\=\"\#267A94\"\>$bullet Next scheduled event -- \<\/font\>\<font color\=\"white\"\>/;
         print $wanted . '</font><br>';
 
 	if ($runningtotal) {
-		print "\<font color\=\"red\"\>> !! Warning !! There are currently $runningtotal event(s) running\<\/font\>";
+		print "\<font color\=\"red\"\>$bullet !! Warning !! There are currently $runningtotal event(s) running\<\/font\>";
 	} else {
-		print "\<font color\=\"green\"\>> No events currently running\<\/font\>";
+		print "\<font color\=\"green\"\>$bullet No events currently running\<\/font\>";
 	}
 
 	if ($pausedtotal) {
-		print "\<br\>\<font color\=\"orange\"\>> Alert! You have paused events\<\/font\>";
+		print "\<br\>\<font color\=\"orange\"\>$bullet Alert! You have paused events\<\/font\>";
 	} else {
-		print "\<br\>\<font color\=\"green\"\>> No events currently paused\<\/font\>";
+		print "\<br\>\<font color\=\"green\"\>$bullet No events currently paused\<\/font\>";
 	}
 
 } else {
-	print "<font color=\"red\">> Event scheduler is not running</font>";
+	print "<font color=\"red\">$bullet Event scheduler is not running</font>";
 }
