@@ -279,6 +279,10 @@ sub killAll {
 	foreach my $runpid (@running) {
 		chomp $runpid;
 		system("kill $runpid");
+		chomp(my $notdead = `ps ax | grep $runpid` || '');
+		if ($notdead) {
+			system("kill -9 $runpid");			
+		}
 		system("rm $runningdir$runpid");
 	}
 
@@ -289,6 +293,10 @@ sub killAll {
 	foreach my $pausepid (@paused) {
 		chomp $pausepid;
 		system("kill $pausepid");
+		chomp(my $notdead = `ps ax | grep $pausepid` || '');
+		if ($notdead) {
+			system("kill -9 $pausepid");			
+		}
 		system("rm $pauseddir$pausepid");
 	}
 } ### End of sub 'killAll'
