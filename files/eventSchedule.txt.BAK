@@ -1,8 +1,0 @@
-00 10 * * 6,0|'/var/www/cgi-bin/Scripts/E2E_Channel_Change.pl+weekend'
-00 16 * * 1-5|'/var/www/cgi-bin/Scripts/E2E_Controller_Main.pl+Subs and Audio'
-10 16 * * *|'/var/www/cgi-bin/Scripts/E2E_Controller_Main.pl+Live Pause'
-00 17 * * 0-4|'/var/www/cgi-bin/Scripts/E2E_Controller_Main.pl+On Demand'
-00 22 * * *|'/var/www/cgi-bin/Scripts/E2E_Channel_Change.pl+night'
-#15 23 * * 0,2,4|'/var/www/cgi-bin/Scripts/e2eAddDailyMovies.pl'
-05 06 * * 6|'/var/www/cgi-bin/Scripts/e2eAddSundayRecording.pl'
-#05 06 * * 0|'/var/www/cgi-bin/Scripts/e2eAddWeeksMovies.pl'

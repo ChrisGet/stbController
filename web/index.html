@@ -17,13 +17,15 @@
 <html>
 <body>
 <div id="topBar"> 	<!-- The top bar with the header in -->
-<a id="topBarText">Reliability Test:</a><a id="topBarText" style="color:white;"> RT Suite STB Controller Central</a>
+<a id="topBarText">Reliability Test: </a><a id="topBarText" style="color:white;"></a>
 <img id="logo" src="web/images/RT_Logo.png" onclick="window.location='http://www.rtsuite.net'">
 </div>
 
 <div id="menuBar">
-<div id="dateTimeDiv" value="Current Server Time" onmouseover="tooltip()" class="masterTooltip"></div>
-
+	<div style="float:right;width:50%;">
+		<div id="messages" value="Check here for server announcements (Updated every minute)" onmouseover="tooltip()" class="masterTooltip"></div>
+		<div id="dateTimeDiv" value="Current Server Time" onmouseover="tooltip()" class="masterTooltip"></div>
+	</div>
 <input type="button" class="menuButton" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes()" />
 <input type="button" class="menuButton" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()" />
 <input type="button" class="menuButton" value="Sequences" onclick="pageCall('dynamicPage','web/sequencesPage.html');logLastBoxes();perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');focusEl('sequencesAvailable')" />

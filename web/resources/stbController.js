@@ -2,6 +2,7 @@
 
 window.onload = function () {
 	dateTime();
+	announcements();
 }
 
 window.onunload = window.onbeforeunload = function ()  {
@@ -53,6 +54,7 @@ function dateTime() {
                         if (secs == 60) {
                                 secs = 0;
 				mins++;
+				announcements(); // Update the announcements div with latest scheduled events info
                         }
                         if (mins == 60) {
                                 mins = 0;
@@ -74,6 +76,27 @@ function dateTime() {
                         $('#dateTimeDiv').html(datestring);
                 }
         },1000);
+}
+
+function announcements() {
+	var div = document.getElementById('messages');
+	if (div) {
+		var xmlhttp;
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		} else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function() {
+			if (xmlhttp.readyState==4) {
+			}
+		}
+	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", false);
+	        xmlhttp.send();
+	        var returned = xmlhttp.responseText;
+		$('#messages').html(returned);
+	}
+	return;
 }
 
 function stbControl($action,$commands) {
@@ -1051,6 +1074,24 @@ function clearSTBDataForm() {
 	});	
 
 
+}
+
+function scheduleAdmin($option) {
+	var msghash = {};
+	msghash['DisableSchedule'] = 'disable the scheduler';
+	msghash['EnableSchedule'] = 'enable the scheduler';
+	msghash['KillAll'] = 'kill all currently running scheduled events';
+	msghash['PauseAll'] = 'pause all currently running scheduled events';
+	msghash['ResumeAll'] = 'resume all currently paused scheduled events';
+
+	var conf = confirm('Are you sure you want to ' + msghash[$option] + '?');
+	if (conf == false) {
+		return;
+	}
+
+	perlCall('','scripts/eventScheduleControl.pl','action',$option);
+        setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);	
+	setTimeout(function(){announcements()},200);
 }
 
 // end hiding script from old browsers -->

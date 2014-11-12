@@ -39,7 +39,9 @@ sub createConf {
 
 print <<FORM;
 <form id="createGridConfig" name="createGridConfig">
-<font size="5" color="white">Set the following options to create your STB grid</font><br><br>
+<font size="5" color="white">Set the following options to create your STB grid</font><br>
+<font size="5" color="red">NOTE: Once you have chosen the size of the grid it cannot be changed. 
+<br>Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</font><br><br>
 $fontformat\ Select the number of columns:</font><br>
 $columns<br><br>
 $fontformat\ Select the number of rows:</font><br>

@@ -18,6 +18,7 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
+my $statefile = $filedir . 'schedulerState.txt';
 my $eventsfile = ($filedir . 'eventSchedule.txt');
 my $htmldir = $maindir . '/scripts/pages/';
 
@@ -30,29 +31,41 @@ sub mainMenu {
 		print '<font size="4" color="red">You currently have no Scheduled Events</font>';
 		exit;
 	}
+	chomp(my $schedstate = `cat $statefile` || '');
+	if ($schedstate =~ /^Disabled$/i) {
+print <<ADMINSTUFF;
+<table>
+ <tr>
+  <td><font color="red" size="4">The Event Scheduler is currently disabled. You can still manage the scheduled events but nothing will run until you enable the scheduler</font></td>
+ </tr>
+ <tr>
+  <td><button class="evSchedAdmin enable" onclick="scheduleAdmin('EnableSchedule')">Enable the Scheduler</button></td>
+ </tr>
+</table>
+ADMINSTUFF
+	} else {
 print <<ADMINTABLE;
 <table>
  <tr>
   <td>
-    <button class="evSchedAdmin disable">Disable the Scheduler</button>
-  </td>
-  <td>
-    <button class="evSchedAdmin enable">Enable the Scheduler</button>
+    <button class="evSchedAdmin disable" onclick="scheduleAdmin('DisableSchedule')">Disable the Scheduler</button>
   </td>
   <td width="60px">
   </td>
   <td>
-    <button class="evSchedAdmin stopall">Stop ALL</button>
+    <button class="evSchedAdmin stopall" onclick="scheduleAdmin('KillAll')">Kill ALL</button>
   </td>
   <td>
-    <button class="evSchedAdmin pauseall">Pause ALL</button>
+    <button class="evSchedAdmin pauseall" onclick="scheduleAdmin('PauseAll')">Pause ALL</button>
   </td>
   <td>
-    <button class="evSchedAdmin resumeall">Resume ALL</button>
+    <button class="evSchedAdmin resumeall" onclick="scheduleAdmin('ResumeAll')">Resume ALL</button>
   </td>
  </tr>
 </table>
 ADMINTABLE
+	}
+
 	my @times;
 	foreach my $key (keys %events) {
 		my @sections = split('\|',$events{$key});
@@ -81,7 +94,7 @@ ADMINTABLE
 		my $days = numbersToDays(\$data{'DOW'},\'dow');
 		my $dom = $data{'DOM'};
 		$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
-		my $togglebtn = "<button class=\"activateBtn\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Running<\/button>";
+		my $togglebtn = "<button class=\"activateBtn\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Enabled<\/button>";
 		my $editbtn = "<button class=\"seqListBtn\" onclick=\"editSchedulePage(\'$id\')\" style=\"width:90\%;\">Edit<\/button>";
 		my $delbtn = "<button class=\"seqListBtn Del\" onclick=\"deleteSchedule(\'$id\')\" style=\"width:90\%;margin-top:5px;\">Delete<\/button>";
 		if ($data{'Active'} eq 'n') {

@@ -20,7 +20,11 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 $maindir =~ s/\/$//;
 my $controlscript = $maindir . '/scripts/stbControl.pl';
 my $filedir = $maindir . '/files/';
+my $runningdir = $filedir . 'pidsRunning/';
+my $pauseddir = $filedir . 'pidsPaused/';
+my $statefile = $filedir . 'schedulerState.txt';
 my $schedfile = ($filedir . 'eventSchedule.txt');
+my $pidfile = $filedir . 'scheduler.pid';
 tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
 
 showBoxes(\$eventID) and exit if ($action =~ m/^Show$/i);
@@ -106,6 +110,14 @@ sub deleteEvent {
 
 sub startScheduler {
 	use Schedule::Cron;
+	chomp(my $state = `cat $statefile` || '');
+	if (!$state) {
+		die "Could not determine scheduler state\n";
+	} else {
+		if ($state =~ /^Disabled/) {
+			die "Scheduler is currently disabled so will not start\n";
+		}
+	}
 
 	sub dispatcher {
         	my $run = shift;
@@ -115,6 +127,7 @@ sub startScheduler {
 	
 	my $cron = new Schedule::Cron(\&dispatcher);
 
+	my $added = '0';
 	while (my ($key,$value) = each %events) {
 		if ($value =~ /^y/i) {		# If the $value starts with a 'y', the event is active, so we load it in to the scheduler
 			my @parts = split('\|',$value);
@@ -123,20 +136,21 @@ sub startScheduler {
 			my $stbs = $parts[7];
 			my $do = 'testRunner';
 			$cron->add_entry($crontime,\&$do,\$event,\$stbs);
-			#print "Added $crontime - $event - $stbs\n";
+			$added++;
 		}
-		# else {
-		#	print "Not Added - $value\n";
-		#}
 	}	
 
-	my $pidfile = $filedir . 'scheduler.pid';
+	if ($added==0) {
+		system(">$pidfile");
+		die "No point in starting the scheduler as no scheduled events are currently enabled\n";
+	}
+
 	$cron->run(detach=>1,pid_file=>$pidfile); # Change value to 1 to make the jobs background tasks rather than the script hanging on to them
 
 	sub testRunner {
 		my ($event,$stbs) = @_;
 		my $debugfile = $filedir . 'schedulerdebug.txt';
-		system("$controlscript Event \"$$event\" \"$$stbs\" \"$maindir\"");
+		system("$controlscript Event \"$$event\" \"$$stbs\" \"$maindir\" logpid");
 
 		######### Uncomment below 4 lines to enable scheduled event logging #########
 		#my $log = $filedir . 'schedulerLog.txt';
@@ -150,8 +164,17 @@ sub startScheduler {
 sub stopScheduler {
 	my $pidfile = $filedir . 'scheduler.pid';
 	chomp(my $schedpid = `cat $pidfile` || '');
-	die "Failed to identify the process ID for the event scheduler\n" if (!$schedpid);
-	system("kill $schedpid");
+	if (!$schedpid) {
+		#warn "Failed to identify the process ID for the event scheduler\n";
+		return;
+	}
+	chomp(my $isrunning = `ps ax | grep $schedpid` || '');
+	if ($isrunning) {
+		system("kill $schedpid");
+		system(">$pidfile");
+	} else {
+		warn "Can't stop the scheduler as it is not running\n";
+	}
 } ### End of sub 'stopScheduler'
 
 sub reloadScheduler {
@@ -233,21 +256,61 @@ sub showBoxes {
 } ### End of sub 'showBoxes'
 
 sub disableScheduler {
-
-}
+	open FH, '+>', $statefile;
+	print FH 'Disabled';
+	close FH;	
+	killAll();
+	#system(">$pidfile");
+	stopScheduler();	
+} ### End of sub 'disableScheduler'
 
 sub enableScheduler {
-
-}
+	open FH, '+>', $statefile;
+	print FH 'Enabled';
+	close FH;
+	reloadScheduler();	
+} ### End of sub 'enableScheduler'
 
 sub killAll {
+	# Kill all running processes
+	opendir(my $run, $runningdir) || die "Can't opendir $runningdir: $!\n";
+	my @running = grep { !/^\./ } readdir($run);
+	closedir $run;
+	foreach my $runpid (@running) {
+		chomp $runpid;
+		system("kill $runpid");
+		system("rm $runningdir$runpid");
+	}
 
-}
+	# Kill all paused processes
+	opendir(my $pause, $pauseddir) || die "Can't opendir $pauseddir: $!\n";
+	my @paused = grep { !/^\./ } readdir($pause);
+	closedir $pause;
+	foreach my $pausepid (@paused) {
+		chomp $pausepid;
+		system("kill $pausepid");
+		system("rm $pauseddir$pausepid");
+	}
+} ### End of sub 'killAll'
 
 sub pauseAll {
-
-}
+	opendir(my $run, $runningdir) || die "Can't opendir $runningdir: $!\n";
+	my @running = grep { !/^\./ } readdir($run);
+	closedir $run;
+	foreach my $runpid (@running) {
+		chomp $runpid;
+		system("kill -STOP $runpid");
+		system("mv $runningdir$runpid $pauseddir$runpid");
+	}
+} ### End of sub 'pauseAll'
 
 sub resumeAll {
-
-}
+	opendir(my $pause, $pauseddir) || die "Can't opendir $pauseddir: $!\n";
+	my @paused = grep { !/^\./ } readdir($pause);
+	closedir $pause;
+	foreach my $pausepid (@paused) {
+		chomp $pausepid;
+		system("kill -CONT $pausepid");
+		system("mv $pauseddir$pausepid $runningdir$pausepid");
+	}
+} ### End of sub 'resumeAll'

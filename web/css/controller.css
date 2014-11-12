@@ -40,6 +40,14 @@
 	border-radius:4px;
 }
 
+#messages {
+	float:left;
+	text-align:left;
+	margin-top:1px;
+	line-height:16px;
+	font-size:15px;
+}
+
 #dateTimeDiv {
 	float:right;
 	display:inline-block;
