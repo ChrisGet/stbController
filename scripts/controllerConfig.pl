@@ -7,7 +7,6 @@ use DBM::Deep;
 my $query = CGI->new;
 print $query->header();
 
-#chomp(my $maindir = `sudo find / -type d -name stbController` || '');
 chomp(my $maindir = (`cat ../files/homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
@@ -54,69 +53,67 @@ sub loadGrid {
 	my $stbdatabase = $$confdir . 'stbDatabase.db';
 	tie my %stbdata, 'DBM::Deep', {file => $stbdatabase,   locking => 1, autoflush => 1, num_txns => 100};
 
-
 print <<TOP;
 <div id="stbMatrix">
 <table>     
 <tr id="columns">
 TOP
 
-my $c = '1';
-while ($c <= $columns) {
+	my $c = '1';
+	while ($c <= $columns) {
 print <<COL;
 <td scope="col"><button id="columnButton" type="button">Column $c</button></td>
 COL
-$c++;
-}
+		$c++;
+	}
 
 print <<DESELECT;
 <td scope="col"><button id="deselectButton" type="button" onClick="deselect()">Deselect</button></td></tr>
 DESELECT
 
-my $r = '1';		# Set the Row count to 1
-my $stbno = '1';	# Set the STB count to 1
+	my $r = '1';		# Set the Row count to 1
+	my $stbno = '1';	# Set the STB count to 1
 
-while ($r <= $rows) {
-	$c = '1';		# Reset the Column count to 1
-	print "<tr id=\"Row$r\">";
-	while ($c <= $columns) {
-		my $id = "STB$stbno";
-		my $name = "col$c"."stb$stbno";
-		my $buttontext;
-		if (exists $stbdata{$id}) {
-		} else {
-			%{$stbdata{$id}} = {};
-		}
+	while ($r <= $rows) {
+		$c = '1';		# Reset the Column count to 1
+		print "<tr id=\"Row$r\">";
+		while ($c <= $columns) {
+			my $id = "STB$stbno";
+			my $name = "col$c"."stb$stbno";
+			my $buttontext;
+			if (exists $stbdata{$id}) {
+			} else {
+				%{$stbdata{$id}} = {};
+			}
 
-		if (exists $stbdata{$id}{'Name'}) {
-			$buttontext = $stbdata{$id}{'Name'};
-		} else {
-			$buttontext = "STB $stbno";
-		}
+			if (exists $stbdata{$id}{'Name'}) {
+				$buttontext = $stbdata{$id}{'Name'};
+			} else {
+				$buttontext = "STB $stbno";
+			}
 
 print <<BOX;
 <td ><button name="$name" id="$id" type="button" style="width:100%;" onClick="colorToggle('$id')" class="deselect">$buttontext</button></td>
 BOX
-		$stbno++;
-		$c++;
-	}
+			$stbno++;
+			$c++;
+		}
 
 print <<ROWEND;
 <th><button id="rowButton" type="button" onClick="rows('Row$r')">Row $r</button></th></tr>
 ROWEND
 
-$r++;
+		$r++;
 
-}
+	}
 
-print '</tr></table></div>';
+	print '</tr></table></div>';
 
 print <<CONTROL;
 <div id="controlButtons">
-
 </div>
 CONTROL
 
-untie %stbdata;
+	untie %stbdata;
 
 } ########## End of sub loadGrid ##########

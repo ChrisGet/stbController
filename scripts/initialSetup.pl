@@ -3,7 +3,6 @@ use strict;
 
 chomp(my $pwd = `pwd`);
 my ($maindir) = $pwd =~ /^(.*stbController\/)/;
-#print "$pwd\n$maindir\n";
 
 my $dirfile = $maindir . 'files/homeDir.txt';
 my $scriptfile = $maindir . 'scripts/homeDir.txt';

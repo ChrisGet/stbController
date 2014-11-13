@@ -1,32 +1,27 @@
 <!-- hide script from old browsers
 
-window.onload = function () {
+window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
 	announcements();
 	dynamicTitle('get');
 }
 
-window.onunload = window.onbeforeunload = function ()  {
-logLastBoxes();
+window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
+	logLastBoxes();
 }
 
-$.ajaxSetup({ cache: false });
+//$.ajaxSetup({ cache: false });
 
-var stbHash = {};	// Create the stbHash object to handle selected STBs from the grid
-var lastRow;		// Create the lastRow variable to be manipulated elsewhere
-var lastRowHL;		// Create the lastRowHL variable to record last highlighted row
+var stbHash = {};	// Create the GLOBAL stbHash object (hash) to handle selected STBs from the grid
+var lastRow;		// Create the GLOBAL lastRow variable (scalar) to record last selected row
+var lastRowHL;		// Create the GLOBAL lastRowHL variable (scalar) to record last highlighted row
 
-function dateTime() {
+function dateTime() {	// This function handles the updating of the real time server clock on the main page
 	var xmlhttp;
 	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp=new XMLHttpRequest();
 	} else {// code for IE6, IE5
 		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4) {
-			//document.getElementById('dateTimeDiv').innerHTML=xmlhttp.responseText;
-		}
 	}
         xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", false);
         xmlhttp.send();
@@ -48,7 +43,8 @@ function dateTime() {
         date.setHours(hours);
         date.setMinutes(mins);
         date.setSeconds(secs);
-        var updateTime = setInterval(function() {
+
+        var updateTime = setInterval(function() {	// Var updateTime holds the ID for this interval function. This can be cleared later
                 var div = document.getElementById('dateTimeDiv');
                 if (div) {
                         secs++;
@@ -57,29 +53,26 @@ function dateTime() {
 				mins++;
 				announcements(); // Update the announcements div with latest scheduled events info
                         }
-                        if (mins == 60) {
-                                mins = 0;
-                                hours++;
-                        }
-                        if (hours == 24) {
-                                clearInterval(updateTime);
-                                dateTimeNew();
-                                return;
+                        if (mins == 60) {	// Each hour we restart the function to get the time from the server again
+                                clearInterval(updateTime);	// Clear the interval for updateTime so it stops
+                                dateTime();	// Start the dateTime function again
+                                return;		// Return from this instance of the function
                         }
                         date.setHours(hours);
                         date.setMinutes(mins);
                         date.setSeconds(secs);
-			var formatteddate = date.toUTCString().replace(',','');
+			var formatteddate = date.toUTCString().replace(',',''); // Change the date format to a standard UTC string while removing all ',' characters
                         var parts = formatteddate.split(" ");
                         var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
                         var timebit = parts[4];
                         var datestring = timebit + ' - ' + datebit;
-                        $('#dateTimeDiv').html(datestring);
+                        $('#dateTimeDiv').html(datestring);	// Update the html in div 'dateTimeDiv' with the new date info
                 }
         },1000);
 }
+// ############### End of dateTime function
 
-function announcements() {
+function announcements() {	// This function handles the server announcements section on the main page. It is only used for scheduled events info
 	var div = document.getElementById('messages');
 	if (div) {
 		var xmlhttp;
@@ -88,10 +81,6 @@ function announcements() {
 		} else {// code for IE6, IE5
 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 		}
-		xmlhttp.onreadystatechange=function() {
-			if (xmlhttp.readyState==4) {
-			}
-		}
 	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", false);
 	        xmlhttp.send();
 	        var returned = xmlhttp.responseText;
@@ -99,19 +88,15 @@ function announcements() {
 	}
 	return;
 }
+// ############### End of announcements function
 
-function dynamicTitle($option) {
+function dynamicTitle($option) {	// This function handles the editing of the Title of the main page
 	if ($option == 'get') {
 		var xmlhttp;
 		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
   			xmlhttp=new XMLHttpRequest();
   		} else {// code for IE6, IE5
 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xmlhttp.onreadystatechange=function() {
-  			if (xmlhttp.readyState==4) {
-    				//document.getElementById("").innerHTML=xmlhttp.responseText;
-    			}
 		}
 
         	var date = Date();
@@ -155,8 +140,9 @@ function dynamicTitle($option) {
 		}
 	}
 }
+// ############### End of dynamicTitle function
 
-function stbControl($action,$commands) {
+function stbControl($action,$commands) {	// This function handles the control of STBs from the STB Grid
 	var comstring = '';
 	for (var key in stbHash) {
 		comstring += key + ',';
@@ -170,8 +156,9 @@ function stbControl($action,$commands) {
 
 	perlCall('','scripts/stbControl.pl','action',$action,'command',$commands,'info',comstring);
 }
+// ############### End of stbControl function
 
-function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4) {
+function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4) {	// This function allows running of any script from within this javascript
 	var regex = /\S+/;
 	var elemmatch = regex.exec($element);
 	var xmlhttp;
@@ -183,7 +170,7 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 
 	xmlhttp.onreadystatechange=function(){
 		if (xmlhttp.readyState==4) {
-			if (elemmatch) {
+			if (elemmatch) {	// If a html element has been defined in $element, put the script output in to that element
 				document.getElementById($element).innerHTML=xmlhttp.responseText;
 			}
 		}
@@ -194,7 +181,7 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 }
 // ############### End of perlCall function
 
-function pageCall ($element, $page) {
+function pageCall ($element, $page) {	// This function allows calling of html pages
 	var xmlhttp;
         if (window.XMLHttpRequest){                                                
                 xmlhttp=new XMLHttpRequest();
@@ -213,7 +200,7 @@ function pageCall ($element, $page) {
 }
 // ############### End of pageCall function
 
-function getLastBoxes() {
+function getLastBoxes() {	// This function gets the list of last STBs selected in the grid and sets them to selected in the STB grid. It uses the client browsers localStorage ability
 	var loaded = document.getElementById('matrixLoaded');
 	if (!loaded) {
 		window.setTimeout(getLastBoxes, 100);
@@ -230,70 +217,18 @@ function getLastBoxes() {
 		}
 	}
 }
+// ############### End of getLastBoxes function
 
-function getLastBoxesAlternative() {	// Not in use but handy to keep available if needed
-	var xmlhttp;
-if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
-xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4)
-    {
-    //document.getElementById("").innerHTML=xmlhttp.responseText;
-    }
-}
-	var date = Date();
-	xmlhttp.open("GET","web/lastBoxes.txt?date", false);
-	xmlhttp.setRequestHeader("User-Agent",navigator.userAgent);
-	xmlhttp.send(null);
-	var returned = xmlhttp.responseText;
-	var boxes = returned.split(",");
-	var arrayLength = boxes.length;
-	stbHash = {};
-	for (var i=0;i<arrayLength;i++) {
-		var stb = boxes[i];
-		colorToggle(stb,'selected');
-	}		
-}
-
-function logLastBoxes() {
+function logLastBoxes() {	// This function logs the last selected STBs from the STB grid. It uses the client browsers localStorage ability
 	var comstring = '';
         for (var key in stbHash) {
                 comstring += key + ',';
         }
 	localStorage && (localStorage.lastBoxes = comstring);
 }
+// ############### End of logLastBoxes function
 
-function logLastBoxesAlternative() {	// Not in use but handy to keep available if needed
-	var xmlhttp;
-        if (window.XMLHttpRequest){
-                xmlhttp=new XMLHttpRequest();
-        } else {
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById($element).innerHTML=xmlhttp.responseText;
-                }
-        }
-
-	var comstring = '';
-        for (var key in stbHash) {
-                comstring += key + ',';
-        }
-
-	perlCall('','scripts/logLastBoxes.pl','boxes',comstring);
-}
-
-function validate() 
-{
+function validate() {	// This function validates and submits the data given when setting up the STB grid for the first time
 	var x = document.forms["createGridConfig"]["columns"].value;
 	var y = document.forms["createGridConfig"]["rows"].value;
 	var text = /[a-zA-Z]+/;
@@ -324,7 +259,7 @@ function validate()
 }
 // ############### End of validate function
 
-function editSTBData($name) {
+function editSTBData($name) {	// This function handles editing details of an STB in the "STB Data" page
 	var name = $('#name').val();
 	var blanknameregex = /\S+/;	// Non whitespace, 1 or more of.
 	var unconfregex = /^\s*\-\s*$/;
@@ -360,7 +295,7 @@ function editSTBData($name) {
 }
 // ############### End of editSTBData function
 
-function deselect() {
+function deselect() {	// This function handles the deselect button on the STB grid.
 	for (var key in stbHash) {
 		colorToggle(key);
 	}
@@ -373,7 +308,7 @@ function deselect() {
 }
 // ############### End of deselect function
 
-function colorToggle($id,$override,$highlight){
+function colorToggle($id,$override,$highlight){	// This function handles the STB grid manipulation. It handles which STBs are selected for control, which should be highlighted, and which need video switching to be done
 	var item = document.getElementById($id);
 
 	// Return if item is not defined
@@ -450,9 +385,9 @@ function colorToggle($id,$override,$highlight){
 }
 // ############### End of colorToggle function
 
-var highlightedSTBs = {};
+var highlightedSTBs = {};	// Create the GLOBAL highlightedSTBs variable (hash)
 
-function rows($row) {
+function rows($row) {	// This function handles the row selection buttons on the STB grid
 	var count = document.getElementById($row).cells.length;		// Locate the row by its ID and get the number of cells in it
 	var row = document.getElementById($row);			// Save the $row data in var 'row'
 	var override;
@@ -491,23 +426,23 @@ function rows($row) {
 		}
 	}
 
-	for(var i=0;i<count;i++) {					// While 'i' is less than the number of cells
+	for(var i=0;i<count;i++) {	// While 'i' is less than the number of cells
 		var cell = row.getElementsByTagName("button")[i];	// Locate the button in that cell and save it in 'cell'
 		if (!cell) {
-			continue;			// Skip the cell if it has no button (STB has been given ':' as its name and is therefore blank)
+			continue;	// Skip the cell if it has no button (STB has been given ':' as its name and is therefore blank)
 		}
-		var ayedee = cell.id;					// Get the buttons id and save it to 'ayedee'
+		var ayedee = cell.id;	// Get the buttons id and save it to 'ayedee'
 		var regex = /^Row.*/;
 		var match = regex.exec(ayedee);
 		if (match) {
-			continue;			// Skip the row button that is in that row
+			continue;	// Skip the row button that is in that row
 		}
-		colorToggle(ayedee,override,highlight);					// Send 'ayedee' to the colorToggle function
+		colorToggle(ayedee,override,highlight);	// Send 'ayedee' to the colorToggle function
 	}
 }
 // ############### End of rows function
 
-function arrowDir($opt) {
+function arrowDir($opt) {	// This function handles the Row Up and Down buttons on the STB controller
 	var lastRow2;
 	if (lastRow) {
 		lastRow2 = lastRow;
@@ -544,11 +479,11 @@ function arrowDir($opt) {
 		}
 	}
 }
+// ############### End of arrowDir function
 
+var sequenceIndex = '1';	// Create the GLOBAL sequenceIndex variable (scalar) and set it to '1'
 
-var sequenceIndex = '1';
-
-function seqTextUpdate($id,$text) {
+function seqTextUpdate($id,$text) {	// This function handles the first part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
 	var btn = document.createElement("input");
 	btn.type = 'button';
 	btn.value = $text;
@@ -561,18 +496,21 @@ function seqTextUpdate($id,$text) {
 	btn.setAttribute("onclick", newonclick);
 	insertButtonAtCaret(btn);
 }
+// ############### End of seqTextUpdate function
 
-function clearSeqArea() {
+function clearSeqArea() {	// This function handles clearing of the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
 	document.getElementById('sequenceArea').innerHTML = '';
 	sequenceIndex = '1';
 }
+// ############### End of clearSeqArea function
 
-function removeFromSeq($this) {
+function removeFromSeq($this) {	// This function handles removing specific elements from the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
 	var rem = document.getElementById($this);
 	document.getElementById('sequenceArea').removeChild(rem);
 }
+// ############### End of removeFromSeq function
 
-function insertButtonAtCaret($btn) {
+function insertButtonAtCaret($btn) {	// This function handles the second part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
     $('#sequenceArea').focus();
     var sel, range;
     if (window.getSelection) {
@@ -607,23 +545,26 @@ function insertButtonAtCaret($btn) {
         document.selection.createRange().appendChild($btn);
     }
 }
+// ############### End of insertButtonAtCaret function
 
-function addSeqTO() {
+function addSeqTO() {	// This function handles adding of Timeouts to the dynamic area on the Sequences creation/editing pages
 	var timeout = document.getElementById('timeoutList').value;
 	var id = 't' + timeout;
 	var text = 'Timeout (' + timeout + 's)';
 	seqTextUpdate(id,text);
 }
+// ############### End of addSeqTO function
 
-function addSeqGroup() {
+function addSeqGroup() {	// This function handles adding of STB Groups to the dynamic area on the Events Schedule creation/editing pages
 	var group = document.getElementById('groupList').value;
 	if(!group) {
 		return;
 	}
 	seqTextUpdate(group,group);
 }
+// ############### End of addSeqGroup function
 
-function seqValidate($origname) {
+function seqValidate($origname) {	// This function handles validation and submitting of the data on the Sequences creation/editing pages
 	var name = document.getElementById('sequenceName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
@@ -656,13 +597,7 @@ function seqValidate($origname) {
 							xmlhttp=new XMLHttpRequest();
 						} else {// code for IE6, IE5
 							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-						}
-						xmlhttp.onreadystatechange=function() {
-			  				if (xmlhttp.readyState==4) {
-								//document.getElementById("").innerHTML=xmlhttp.responseText;
-							}
-						}
-	
+						}	
 						xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
 						xmlhttp.send(null);
 						var returned = xmlhttp.responseText;
@@ -687,12 +622,6 @@ function seqValidate($origname) {
 					} else {// code for IE6, IE5
 						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 					}
-					xmlhttp.onreadystatechange=function() {
-	  					if (xmlhttp.readyState==4) {
-							//document.getElementById("").innerHTML=xmlhttp.responseText;
-						}
-					}
-
 					xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
 					xmlhttp.send(null);
 					var returned = xmlhttp.responseText;
@@ -714,8 +643,9 @@ function seqValidate($origname) {
 		}
 	}
 }
+// ############### End of seqValidate function
 
-function deleteSequence($seq) {
+function deleteSequence($seq) {	// This function handles deletion of an existing sequence
 	var c = confirm('Are you sure you want to delete the sequence "' + $seq + '" ?');
 	if (c == false) {
 		return;
@@ -728,24 +658,21 @@ function deleteSequence($seq) {
 		perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');
 	}
 }
+// ############### End of deleteSequence function
 
-function editSequencePage($seq) {
+function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
 	perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Edit','sequence',$seq);
 	setTimeout(function(){editSequencePage2($seq)},200);
 }
+// ############### End of editSequencePage function
 
-function editSequencePage2($seq) {
+function editSequencePage2($seq) {	// This function handles the second part of editing an existing sequence (Existing sequence data load)
 	var xmlhttp;
         if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         	xmlhttp=new XMLHttpRequest();
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-       	xmlhttp.onreadystatechange=function() {
-        	if (xmlhttp.readyState==4) {
-        	}
-       	}
-
       	xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Show&sequence=" + $seq, false);
     	xmlhttp.send(null);
      	var returned = xmlhttp.responseText;
@@ -763,15 +690,15 @@ function editSequencePage2($seq) {
 		var newtext = '';
 		for (var o = 0; o < bits.length; o++) {
 			var chunk = bits[o];
-			//alert('Chunk = ' + chunk);
 			newtext += chunk[0].toUpperCase() + chunk.slice(1);
 			newtext += ' ';
 		}
 		seqTextUpdate(id,newtext);
 	}	
 }
+// ############### End of editSequencePage2 function
 
-function groupValidate($origname) {
+function groupValidate($origname) {	// This function handles validation and submitting of data on the STB Groups creation/editing pages
 	var name = document.getElementById('groupName').value;
 	var regex = /\S+/;
 	var match = regex.exec(name);
@@ -806,12 +733,6 @@ function groupValidate($origname) {
 						} else {// code for IE6, IE5
 							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 						}
-						xmlhttp.onreadystatechange=function() {
-	  						if (xmlhttp.readyState==4) {
-								//document.getElementById("").innerHTML=xmlhttp.responseText;
-							}
-						}
-
 						xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
 						xmlhttp.send(null);
 						var returned = xmlhttp.responseText;
@@ -836,12 +757,6 @@ function groupValidate($origname) {
 					} else {// code for IE6, IE5
 						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 					}
-					xmlhttp.onreadystatechange=function() {
-	  					if (xmlhttp.readyState==4) {
-							//document.getElementById("").innerHTML=xmlhttp.responseText;
-						}
-					}
-
 					xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
 					xmlhttp.send(null);
 					var returned = xmlhttp.responseText;
@@ -862,8 +777,9 @@ function groupValidate($origname) {
 		}
 	}
 }
+// ############### End of groupValidate function
 
-function deleteGroup($grp) {
+function deleteGroup($grp) {	// This function handles deletion of an existing STB group
 	var c = confirm('Are you sure you want to delete the group "' + $grp + '" ?');
 	if (c == false) {
 		return;
@@ -876,24 +792,21 @@ function deleteGroup($grp) {
 		perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu');
 	}
 }
+// ############### End of deleteGroup function
 
-function editGroupPage($grp) {
+function editGroupPage($grp) {	// This function handles the first part of editing of an existing STB group (Initial page load)
 	perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Edit','group',$grp);
 	setTimeout(function(){editGroupPage2($grp)},500);
 }
+// ############### End of editGroupPage function
 
-function editGroupPage2($grp) {
+function editGroupPage2($grp) {	// This function handles the second part of editing of an existing STB group (Existing group data load)
 	var xmlhttp;
         if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         	xmlhttp=new XMLHttpRequest();
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-       	xmlhttp.onreadystatechange=function() {
-        	if (xmlhttp.readyState==4) {
-        	}
-       	}
-
       	xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Show&group=" + $grp, false);
     	xmlhttp.send(null);
      	var returned = xmlhttp.responseText;
@@ -911,8 +824,9 @@ function editGroupPage2($grp) {
 		}
 	}	
 }
+// ############### End of editGroupPage2 function
 
-function tooltip() {
+function tooltip() {	// This function handles elements that have popup message functionality (tooltips)
 	$(document).ready(function() {
 	// Tooltip only Text
 	$('.masterTooltip').hover(function(){
@@ -933,8 +847,9 @@ function tooltip() {
 		});
 	});
 }
+// ############### End of tooltip function
 
-function focusEl($element) {
+function focusEl($element) {	// This function handles focussing on the given element on the page
 	var xmlhttp;
         if (window.XMLHttpRequest){
                 xmlhttp=new XMLHttpRequest();
@@ -959,8 +874,9 @@ function focusEl($element) {
 		setTimeout(function(){tooltip()},200);
 	}
 }
+// ############### End of focusEl function
 
-function bindTrigger() {
+function bindTrigger() {	// This function creates the event listener for handling radio buttons on the Events Schedule creation/editing pages
 	$(".trigger").change(function() {
 		if($(this).is(":checked")) {
 			$('input[type=radio]').each(function(){
@@ -970,8 +886,9 @@ function bindTrigger() {
 		}
 	});
 }
+// ############### End of bindTrigger function
 
-function newSchedValidate($event) {
+function newSchedValidate($event) {	// This function handles validation and submitting of data on the Events Schedule creation/editing pages
 	var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
 	var members = [];
 	for (var i = 0; i < elements.length; i++) {
@@ -1027,8 +944,9 @@ function newSchedValidate($event) {
 		setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 	}
 }
+// ############### End of newSchedValidate function
 
-function deleteSchedule($id) {
+function deleteSchedule($id) {	// This function handles deletion of an existing Scheduled Event
 	var c = confirm('Are you sure you want to delete this scheduled event?');
 	if (c == false) {
        		return;
@@ -1036,8 +954,9 @@ function deleteSchedule($id) {
 	perlCall('','scripts/eventScheduleControl.pl','action','Delete','eventID',$id);
 	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
+// ############### End of deleteSchedule function
 
-function scheduleStateChange($state,$id) {
+function scheduleStateChange($state,$id) {	// This function handles enabling and disabling of exisiting Scheduled Events
 	var msg;
 	if ($state == 'Enable') {
 		msg = 'Are you sure you want to enable this scheduled event?';
@@ -1054,24 +973,21 @@ function scheduleStateChange($state,$id) {
 	perlCall('','scripts/eventScheduleControl.pl','action',$state,'eventID',$id);
 	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
+// ############### End of scheduleStateChange function
 
-function editSchedulePage($event) {
+function editSchedulePage($event) {	// This function handles the first part of editing an exisiting Scheduled Event (Initial page load)
 	perlCall('dynamicPage','scripts/pages/eventSchedulePage.pl','action','Edit','event',$event);
 	setTimeout(function(){editSchedulePage2($event)},500);
 }
+// ############### End of editSchedulePage function
 
-function editSchedulePage2($event) {
+function editSchedulePage2($event) {	// This function handles the second part of editing an exisiting Scheduled Event (Existing event data load)
 	var xmlhttp;
         if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         	xmlhttp=new XMLHttpRequest();
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-       	xmlhttp.onreadystatechange=function() {
-        	if (xmlhttp.readyState==4) {
-        	}
-       	}
-
       	xmlhttp.open("GET","cgi-bin/scripts/eventScheduleControl.pl?action=Show&eventID=" + $event, false);
     	xmlhttp.send(null);
      	var returned = xmlhttp.responseText;
@@ -1089,14 +1005,16 @@ function editSchedulePage2($event) {
 		}
 	}	
 }
+// ############### End of editSchedulePage2 function
 
 
-function stbTypeChoice($option) {
+function stbTypeChoice($option) {	// This function handles changing of an STB type in the STB Data page. It loads the appropriate control data input fields according to its control type i.e. Dusky, Bluetooth, etc
 	var tag = 'print' + $option;
 	perlCall('typeChange','scripts/pages/stbDataPage.pl','option',tag);
 }
+// ############### End of stbTypeChoice function
 
-function daysSelectedCheck() {
+function daysSelectedCheck() {	// This function suggests to the user to use the "Everyday" option in the "Day Presets" section on the Event Schedule creation/editiing pages if they have chosen "Custom Days" and then checked ALL of the days
 	var checked = 0;
 
 	$('input[name=dayCheck]').each(function(){
@@ -1109,8 +1027,9 @@ function daysSelectedCheck() {
 		alert('You have selected all of the custom days. Why not use "Everyday" in the Day Presets section?');
 	}
 }
+// ############### End of daysSelectedCheck function
 
-function clearSTBDataForm() {
+function clearSTBDataForm() {	// This function handles clearing of the current date in all fields on the STB Data editing page
 	var conf = confirm('Are you sure you want to clear all data for this STB?');
 	if (conf == false) {
 		return;
@@ -1123,17 +1042,15 @@ function clearSTBDataForm() {
 	$('select').each(function(){
 		var id = $(this).attr('id');
 		var first = $('#' + id + " option:first").val();
-		//alert(first);
         	$(this).val(first);
 		if (id == 'type') {
 			stbTypeChoice(first);
 		}
 	});	
-
-
 }
+// ############### End of clearSTBDataForm function
 
-function scheduleAdmin($option) {
+function scheduleAdmin($option) {	// This function handles the Events Scheduler admin buttons (Disable Scheduler,Enable Scheduler,Kill All,Pause All, Resume All)
 	var msghash = {};
 	msghash['DisableSchedule'] = 'disable the scheduler';
 	msghash['EnableSchedule'] = 'enable the scheduler';
@@ -1150,5 +1067,6 @@ function scheduleAdmin($option) {
         setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);	
 	setTimeout(function(){announcements()},200);
 }
+// ############### End of scheduleAdmin function
 
 // end hiding script from old browsers -->

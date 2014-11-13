@@ -4,7 +4,6 @@ use strict;
 use DBM::Deep;
 use Fcntl;
 use CGI;
-use Tie::File;
 use Tie::File::AsHash;
 
 my $query = CGI->new;

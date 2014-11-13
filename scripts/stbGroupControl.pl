@@ -1,9 +1,7 @@
 #!/usr/bin/perl -w
 
-#BEGIN { use lib "/usr/local/lib/perl5/site_perl/5.18.0/" }
 use strict;
 use CGI;
-use Tie::File;
 use Tie::File::AsHash;
 
 my $query = CGI->new;
@@ -69,9 +67,6 @@ sub showGroups {
 			foreach my $box (@members) {
 				my $name = $stbdata{$box}{'Name'} || '';
 				if (!$name) {
-					#my ($one,$two) = $box =~ /(stb)(\d+)/i;
-					#$one = uc($one);
-					#$name = "$one $two";
 					$name = '-';
 				}
 				push(@resforgui,"$box~$name");

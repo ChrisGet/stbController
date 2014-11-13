@@ -2,7 +2,6 @@
 
 use strict;
 use CGI;
-use Tie::File;
 use Tie::File::AsHash;
 
 my $query = CGI->new;
@@ -66,7 +65,6 @@ sub addEvent {
 	$days =~ s/,$//;
 	my $newdetails = "$state\|$min\|$hour\|$dom\|$month\|$days\|$event\|$targets";
 
-
 	##### Do this for 'Edit' Action
 	if ($eventID) {		##### Check that the actual reference is defined (It wont be for 'Add' Actions)
 		if ($$eventID) {
@@ -110,6 +108,7 @@ sub deleteEvent {
 
 sub startScheduler {
 	use Schedule::Cron;
+
 	chomp(my $state = `cat $statefile` || '');
 	if (!$state) {
 		die "Could not determine scheduler state\n";
@@ -158,7 +157,6 @@ sub startScheduler {
 		#print FH "$controlscript\nEvent = $$event\nSTBs = $$stbs\n";
 		#close FH;
 	}
-
 } ### End of sub 'startScheduler'
 
 sub stopScheduler {
@@ -260,7 +258,6 @@ sub disableScheduler {
 	print FH 'Disabled';
 	close FH;	
 	killAll();
-	#system(">$pidfile");
 	stopScheduler();	
 } ### End of sub 'disableScheduler'
 

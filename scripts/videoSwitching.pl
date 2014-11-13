@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-#BEGIN { use lib "/usr/local/lib/perl5/site_perl/5.18.0/" }
 use strict;
 use DBM::Deep;
 use IO::Socket::INET;
@@ -88,7 +87,6 @@ sub video {
 		}
 
 		my $audio = '02';
-		#my $hdmiin = '128'+$control{"$box"}{'HDMIInput'};
 		my $svid = $boxinfo{'SDInput'};
 		my $svidout = $boxinfo{'SDOutput'};
 		my $svideoin;
@@ -124,5 +122,4 @@ sub video {
 		print $svideo $audiosig;
 		$svideo->close;
 	}
-
 }
