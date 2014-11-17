@@ -282,6 +282,48 @@ function editSTBData($name) {	// This function handles editing details of an STB
 		}
 	}
 
+	///////	IP Address and Port input field validation
+	var inputs = document.editSTBConfigForm.getElementsByTagName("input");	// Get all "input" elements from the STB Data form
+	for (var i=0;i<inputs.length;i++) {
+		var isport = /.*port.*/i;	// Regex for a port input
+		var isip = /.*ip[^ort].*/i;	// Regex for an ip input (Regex allows for id of "hdmiport" where it could match just "ip")
+
+		var val = inputs[i].value;
+		var blankmatch = blanknameregex.exec(val);
+		if (!val || !blankmatch) {	// If the field is undefined or only contains whitespace, ignore it
+			continue;
+		}
+
+		var inputid = inputs[i].id;
+		var itisanip = isip.exec(inputid);
+		var itisaport = isport.exec(inputid);
+
+		if (itisanip) {
+			var ipregex = /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/;
+			var valid = ipregex.exec(val);
+			if (valid) {
+				continue;
+			} else {
+				alert('You have entered an invalid IP address');
+				inputs[i].focus();
+				return;
+			}
+		}
+
+		if (itisaport) {
+			var portregex = /\D+/;	// We will look to match the port value to non-digit characters as only digits are allowed for a port
+			var valid = portregex.exec(val);
+			if (valid) {	// If 'valid' is true, we have matched a word character in the value for the port. This is invalid so we alert the user
+				alert('You have entered non digit characters for a port number. A port can only be digits');
+				inputs[i].focus();
+				return;
+			} else {
+				continue;
+			}
+		}
+	}
+	///////	End of IP Address and Port input field validation
+
         $(document).ready(function() {
                 $.ajax( {
                         type: "POST",
