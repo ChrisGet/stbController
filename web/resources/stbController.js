@@ -705,6 +705,7 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
 	perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Edit','sequence',$seq);
 	setTimeout(function(){editSequencePage2($seq)},200);
+	setTimeout(function(){tooltip()},400);
 }
 // ############### End of editSequencePage function
 
