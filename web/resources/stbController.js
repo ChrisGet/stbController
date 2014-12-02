@@ -136,7 +136,8 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 			}
 			alert('Your page title has been updated. The page will now be reloaded.');
 			perlCall('','scripts/editPageTitle.pl','title',newtitle);
-			window.location='http://www.rtsuite.net';
+			//window.location='http://www.rtsuite.net';
+			location.reload();
 		}
 	}
 }
