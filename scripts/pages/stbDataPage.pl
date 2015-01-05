@@ -26,6 +26,10 @@ sub stbSelect {
 	my $dbfile = $confdir . 'stbDatabase.db';
 	if (-e $dbfile) {
 		my $conffile = $confdir . 'stbGrid.conf';
+		if (! -e $conffile) {
+                        print "<font size=\"5\" color=\"red\">No STB Grid configuration found. Have you setup your STB Controller Grid yet?<\/font>";
+                        exit;
+                }
         	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
 	        chomp(my @confdata = <FH>);
 	        close FH;
