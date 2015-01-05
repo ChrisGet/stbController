@@ -1,9 +1,0 @@
-CH 105:1,t1,0,t1,5
-RECORD CHANNEL:record,t1,record
-RECORD CANCEL:record,t1,record
-PLANNER:tv guide,t2,cursor up,t2,select,t2,select
-PERM DELETE:tv guide,t1,cursor up,t1,select,t1,cursor down,t1,select,t1,cursor right
-SYS DETAILS:tv guide,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,select,t1,cursor down,t1,cursor down,t1,cursor down,t1,select
-CH 501:5,t1,0,t1,1
-MOVIE VOD:tv guide,t1,cursor down,t1,cursor down,t1,cursor down,t1,select,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,cursor down,t1,select,t1,cursor right,t1,cursor right,t1,select,t1,select,t10,backup
-501 REC TV GUIDE:tv guide,t1,cursor up,t1,cursor up,t1,select,t1,5,t1,0,t1,1,t1,cursor right,t1,record,t1,select,t1,select,t1,backup

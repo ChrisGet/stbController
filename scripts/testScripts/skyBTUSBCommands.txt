@@ -1,7 +1,0 @@
-ChDown:Ch-
-Right:{"action":"draw","move":[[256,256,0],[260,256,0]]
-Up:{"action":"draw","move":[[256,256,0],[256,252,0]]
-Left:{"action":"draw","move":[[256,256,0],[252,256,0]]
-Down:{"action":"draw","move":[[256,256,0],[256,260,0]]
-ChUp:Ch+
-Select:{"action":"pressTouch","duration":0.1,"points":[[255,255,0],[255,255,0]],"area":"Select"

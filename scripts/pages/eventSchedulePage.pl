@@ -207,7 +207,6 @@ HEAD
 	my $domdata = $query->popup_menu(-id=>'dom',-name=>'dom',-values=>[@dom],-default=>$dom,-class=>'styledSelect');
 	my $monthdata = $query->popup_menu(-id=>'month',-name=>'month',-values=>[@months],-default=>$month,-class=>'styledSelect');
 	my $dayoptsdata = $query->popup_menu(-id=>'dayopts',-name=>'dayopts',-values=>[@dayoptions],-default=>$dow,-class=>'styledSelect');
-	#my $daysdata = $query->popup_menu(-id=>'days',-name=>'days',-values=>[@days],-default=>$dow,-class=>'styledSelect');
 	
 	my $presetradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\">Day Presets";
 	my $customradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\">Custom Days";
@@ -237,21 +236,16 @@ HEAD
 		if ($$event) {
 			if ($preset =~ /true/) {
 				$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-				#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);				
 			} else {
 				if ($dow =~ /$day/) {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\" checked>$day<br>";
-					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day,-selected=>1);
 				} else {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 				}
 			}
 		} else {
 			$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-			#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 		}
-		#my $html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
 		push(@dayshtml,$html);
 	}
 
@@ -413,29 +407,6 @@ LAST
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
 
-#                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
-
-#                my $c = '0';
-
-#                foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
-#                        if ($c >= $columns) {
-#                                print '</tr><tr>';
-#                                $c = '0';
-#                        }
-#                        my ($num) = $key =~ /STB(\d+)/;
-#			my $name = 'STB ' . $num;
-#                        $name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
-#print <<KEY;
-#<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
-#KEY
-#                        $c++;
-#                }
-#                print '</table></div>';
-#        } else {
-#                print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
-#        }
-	
-	
 	untie %groups;
 	untie %sequences;
 	untie %events;

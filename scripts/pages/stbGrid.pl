@@ -8,14 +8,13 @@ use Tie::File::AsHash;
 my $query = CGI->new;
 print $query->header();
 
-#chomp(my $maindir = `sudo find / -type d -name stbController` || '');
-#chomp(my $maindir = (`cat ../files/homeDir.txt` || ''));
 chomp(my $maindir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
 my $lastboxfile = $filedir . 'lastBoxes.txt';
+my $contbtnfile = $maindir . '/scripts/pages/controlButtons.html';
 my $confs = `ls -1 $confdir`;
 my %laststbs;
 chomp(my $lastboxstring = `cat $lastboxfile` || '');
@@ -70,7 +69,7 @@ sub loadGrid {
 
 	print '<div class="wrapLeft">';
 	##### Load the control buttons
-	open FH, '<', '/home/stbController/scripts/pages/controlButtons.html' or die "Unable to open controlButtons.html: $!\n";
+	open FH, '<', $contbtnfile or die "Unable to open $contbtnfile: $!\n";
 	my @control = <FH>;
 	close FH;
 	print @control;

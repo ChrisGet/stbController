@@ -27,7 +27,6 @@ my $conthtml = $htmldir . 'sequenceController.html';
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Create$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Edit$/i);
-#deleteSeq() and exit if ($action =~ /^Delete$/i);
 
 sub mainMenu {
 	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
@@ -76,8 +75,6 @@ SEQ
 	print '</tr></table>'
 }
 
-#   <td colspan="2" align="center" style="background-color:#C0C0C0;width:250px;height:40px;border-radius:4px;">
-
 sub createSeq {
 	my ($seq) = @_;
 	open my $fh, '<', $conthtml or die "Unable to open $conthtml: $!\n";
@@ -91,7 +88,6 @@ sub createSeq {
 	my $buttontext = 'Create New Sequence';
 	my $onclick = 'seqValidate()';
 
-	#if ($seq) {
 	if ($$seq) {
 		$headertext = "Edit Command Sequence for <font color\=\"#65a9d7\">\"$$seq\"<\/font>:";
 		$defname = $$seq;
@@ -101,7 +97,6 @@ sub createSeq {
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "seqValidate(\'$defname\')";
 	}
-	#}
 
 	my $timeouts = $query->popup_menu(-id=>'timeoutList',-name=>'timeoutList',-values=>['1','2','5','10'],-class=>'styledSelect');
 	my $tobtn = '<button class="menuButton" onclick="addSeqTO()">Add Timeout</button>';

@@ -27,4 +27,4 @@
 	- Create a symbolic link called "web" which links to the "stbController/web" directory.
 	- Create a symbolic link called "index.html" which links to the "stbController/web/index.html" file.
 
-- Once the directorys and symbolic links are created you will be good to go. Navigate to your web page to view the stbController
+- Once the directories and symbolic links are created you will be good to go. Navigate to your web page to view the stbController
