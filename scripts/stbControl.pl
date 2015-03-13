@@ -24,20 +24,9 @@ my $stbDataFile = ($maindir . '/config/stbDatabase.db');
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $seqfile = ($filedir . 'commandSequences.txt');
 
-chomp(my $action = $ARGV[0] || $query->param('action') || '');
-##### Required so that the script can handle '0' as a valid string #####
-my $command;
-if (defined $ARGV[1]) {
-	$command = $ARGV[1];
-	chomp $command;
-} else {
-	if (defined $query->param('command')) {
-		$command = $query->param('command');
-		chomp $command;
-	}
-}
-##### Required so that the script can handle '0' as a valid string #####
-chomp(my $info = $ARGV[2] || $query->param('info') || '');
+chomp(my $action = $ARGV[0] // $query->param('action') // '');
+chomp(my $command = $ARGV[1] // $query->param('command') // '');
+chomp(my $info = $ARGV[2] // $query->param('info') // '');
 chomp(my $logpid = $ARGV[4] || '');	# $logpid will only ever be used by the backend eventScheduleControl.pl script
 my $logging = '';
 die "Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
@@ -159,9 +148,9 @@ sub sendDuskyComms {
 				warn "$com was not found to be a valid command\n" and next;	# If the requested command is not found in the commands database, print a warning and skip to the next command
 			}
 			my $fullcom = 'A+' . $duskyport . $raw . 'x';
-			print $dusky $fullcom;
+			$dusky->send($fullcom);
 		}
-		
+		sleep 1;		
 		$dusky->close;
 		untie %duskycoms;
 	} else {

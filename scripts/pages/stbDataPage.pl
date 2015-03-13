@@ -180,7 +180,7 @@ HEAD
 	my $mactext = $query->textfield(-id=>'mac',-name=>'MAC',-size=>'15',-default=>"$mac",-maxlength=>17);
 	#### STB Details Table stuff	
 
-	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'15',-default=>"$name",-maxlength=>6);
+	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>8);
 	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','IR (Any)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15);
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5);
