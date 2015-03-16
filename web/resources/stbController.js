@@ -23,52 +23,57 @@ function dateTime() {	// This function handles the updating of the real time ser
 	} else {// code for IE6, IE5
 		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	}
-        xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", false);
-        xmlhttp.send();
-        var returned = xmlhttp.responseText;
-	var bits = returned.split(',');
-        var date = new Date();
-	var dayname = bits[0];
-        var dayno = bits[1];
-        var month = bits[2];
-        month = parseInt(month, 10);
-        month--;
-        var year = bits[3];
-        var hours = bits[4];
-        var mins = bits[5];
-        var secs = bits[6];
-	date.setFullYear(year);
-        date.setMonth(month);
-        date.setDate(dayno);
-        date.setHours(hours);
-        date.setMinutes(mins);
-        date.setSeconds(secs);
+        xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", true);
+	xmlhttp.onreadystatechange=function(){
+        	if (xmlhttp.readyState==4) {
+		        var returned = xmlhttp.responseText;
+			var bits = returned.split(',');
+		        var date = new Date();
+			var dayname = bits[0];
+		        var dayno = bits[1];
+		        var month = bits[2];
+		        month = parseInt(month, 10);
+		        month--;
+		        var year = bits[3];
+		        var hours = bits[4];
+		        var mins = bits[5];
+		        var secs = bits[6];
+			date.setFullYear(year);
+		        date.setMonth(month);
+		        date.setDate(dayno);
+		        date.setHours(hours);
+		        date.setMinutes(mins);
+		        date.setSeconds(secs);
 
-        var updateTime = setInterval(function() {	// Var updateTime holds the ID for this interval function. This can be cleared later
-                var div = document.getElementById('dateTimeDiv');
-                if (div) {
-                        secs++;
-                        if (secs == 60) {
-                                secs = 0;
-				mins++;
-				announcements(); // Update the announcements div with latest scheduled events info
-                        }
-                        if (mins == 60) {	// Each hour we restart the function to get the time from the server again
-                                clearInterval(updateTime);	// Clear the interval for updateTime so it stops
-                                dateTime();	// Start the dateTime function again
-                                return;		// Return from this instance of the function
-                        }
-                        date.setHours(hours);
-                        date.setMinutes(mins);
-                        date.setSeconds(secs);
-			var formatteddate = date.toUTCString().replace(',',''); // Change the date format to a standard UTC string while removing all ',' characters
-                        var parts = formatteddate.split(" ");
-                        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
-                        var timebit = parts[4];
-                        var datestring = timebit + ' - ' + datebit;
-                        $('#dateTimeDiv').html(datestring);	// Update the html in div 'dateTimeDiv' with the new date info
-                }
-        },1000);
+		        var updateTime = setInterval(function() {	// Var updateTime holds the ID for this interval function. This can be cleared later
+		                var div = document.getElementById('dateTimeDiv');
+		                if (div) {
+		                        secs++;
+        		                if (secs == 60) {
+                		                secs = 0;
+						mins++;
+						announcements(); // Update the announcements div with latest scheduled events info
+		                        }
+        		                if (mins == 60) {	// Each hour we restart the function to get the time from the server again
+                		                clearInterval(updateTime);	// Clear the interval for updateTime so it stops
+                        		        dateTime();	// Start the dateTime function again
+                                		return;		// Return from this instance of the function
+		                        }
+        		                date.setHours(hours);
+                		        date.setMinutes(mins);
+                        		date.setSeconds(secs);
+					var formatteddate = date.toUTCString().replace(',',''); // Change the date format to a standard UTC string while removing all ',' characters
+        		                var parts = formatteddate.split(" ");
+                		        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
+                        		var timebit = parts[4];
+	                        	var datestring = timebit + ' - ' + datebit;
+	        	                $('#dateTimeDiv').html(datestring);	// Update the html in div 'dateTimeDiv' with the new date info
+        	        	}
+	        	},1000);
+		}
+	}
+        xmlhttp.send(null);
+
 }
 // ############### End of dateTime function
 
@@ -81,10 +86,14 @@ function announcements() {	// This function handles the server announcements sec
 		} else {// code for IE6, IE5
 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 		}
-	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", false);
+	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", true);
+		xmlhttp.onreadystatechange=function(){
+	                if (xmlhttp.readyState==4) {
+			        var returned = xmlhttp.responseText;
+				$('#messages').html(returned);
+			}
+		}
 	        xmlhttp.send();
-	        var returned = xmlhttp.responseText;
-		$('#messages').html(returned);
 	}
 	return;
 }
@@ -100,21 +109,25 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 		}
 
         	var date = Date();
-	        xmlhttp.open("GET","web/dynamicTitle.txt?date", false);
-	        xmlhttp.send(null);		
-		var title = xmlhttp.responseText;
+	        xmlhttp.open("GET","web/dynamicTitle.txt?date", true);
+		xmlhttp.onreadystatechange=function(){
+   	        	if (xmlhttp.readyState==4) {
+				var title = xmlhttp.responseText;
 
-		if (!title) {
-			$('#dynamicTitle').text('Click here to change the default title!');
-		} else {
-			var blankregex = /\S+/;
-                        var notblank = blankregex.exec(title);
-			if (!notblank) {
-				$('#dynamicTitle').text('Click here to change the default title!');
-			} else {
-				$('#dynamicTitle').text(title);
+				if (!title) {
+					$('#dynamicTitle').text('Click here to change the default title!');
+				} else {
+					var blankregex = /\S+/;
+                        		var notblank = blankregex.exec(title);
+					if (!notblank) {
+						$('#dynamicTitle').text('Click here to change the default title!');
+					} else {
+						$('#dynamicTitle').text(title);
+					}
+				}
 			}
-		}
+		}	
+	        xmlhttp.send(null);
 	}
 
 	if ($option == 'set') {
@@ -149,13 +162,15 @@ function stbControl($action,$commands) {	// This function handles the control of
 		comstring += key + ',';
 	}
 
+	var comstring2 = comstring.replace(/,$/,''); // Remove any trailing commas from comstring
+
 	// Validate whether any STBs have been selected for control. Return if none have
-	if (!comstring) {
+	if (!comstring2) {
 		alert('No valid STBs have been selected for control');
 		return;
 	}
 
-	perlCall('','scripts/stbControl.pl','action',$action,'command',$commands,'info',comstring);
+	perlCall('','scripts/stbControl.pl','action',$action,'command',$commands,'info',comstring2);
 }
 // ############### End of stbControl function
 
@@ -169,6 +184,7 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	}
 
+	xmlhttp.open("GET","cgi-bin/" + $script +"?"+$param1 + "=" + $value1 + "&"+$param2+"="+$value2 + "&"+$param3+"="+$value3 + "&"+$param4+"="+$value4,true);
 	xmlhttp.onreadystatechange=function(){
 		if (xmlhttp.readyState==4) {
 			if (elemmatch) {	// If a html element has been defined in $element, put the script output in to that element
@@ -176,9 +192,7 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 			}
 		}
 	}
-
-	xmlhttp.open("GET","cgi-bin/" + $script +"?"+$param1 + "=" + $value1 + "&"+$param2+"="+$value2 + "&"+$param3+"="+$value3 + "&"+$param4+"="+$value4,true);
-	xmlhttp.send();
+	xmlhttp.send(null);
 }
 // ############### End of perlCall function
 
@@ -190,13 +204,12 @@ function pageCall ($element, $page) {	// This function allows calling of html pa
                 xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
         }
 
+	xmlhttp.open("GET",$page);
         xmlhttp.onreadystatechange=function(){
                 if (xmlhttp.readyState==4) {
                         document.getElementById($element).innerHTML=xmlhttp.responseText;
                 }
         }
-
-	xmlhttp.open("GET",$page);
 	xmlhttp.send();
 }
 // ############### End of pageCall function
@@ -923,14 +936,52 @@ function focusEl($element) {	// This function handles focussing on the given ele
 function bindTrigger() {	// This function creates the event listener for handling radio buttons on the Events Schedule creation/editing pages
 	$(".trigger").change(function() {
 		if($(this).is(":checked")) {
+			var name = $(this).attr('name');
+			var value = $(this).attr('value');
+
 			$('input[type=radio]').each(function(){
-				$(this).attr('class','trigger radiooff');
+				var naym = $(this).attr('name');
+				if(naym == name) {
+					var val = $(this).attr('value');
+					if (val != value) {
+						$(this).prop('checked',false);
+						$(this).attr('class','trigger radiooff');
+					}
+				}
 			});
 			$(this).attr('class','trigger radioon');
 		}
 	});
 }
 // ############### End of bindTrigger function
+
+function eventScheduleEndHourControl() {
+	var start = $('#everyhrstart').val();
+	$('#everyhrend').empty();
+	var newhtml = '';
+	for (i = start;i < 24;i++) {
+		var num = i;
+		var res = /^\d$/.test(num);
+		if (res) {
+			num = '0' + i;
+		}
+		newhtml += "<option value='" + num + "'>" + num + '</option>';
+	}
+	//newhtml += "<option value='0'>0</option>";
+	$('#everyhrend').html(newhtml);
+}
+
+function eventRadioSwitch($element) {
+	$('input[type=radio]').each(function(){
+		if ($(this).is(":checked")) {
+			var parent = $(this).parents('td').attr('class','fancyCell highlighted');
+			$(this).attr('class','trigger radioon');
+		} else {
+			var parent = $(this).parents('td').attr('class','fancyCell cellImportant');
+			$(this).attr('class','trigger radiooff');
+		}
+	});
+}
 
 function newSchedValidate($event) {	// This function handles validation and submitting of data on the Events Schedule creation/editing pages
 	var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
@@ -941,6 +992,27 @@ function newSchedValidate($event) {	// This function handles validation and subm
 	if (!members[0]) {
 		alert('You have not selected any target STBs for this scheduled event!');
 	} else {
+		var mins = '';
+		var hours = '';
+		var starthrs = '';
+		var endhrs = '';
+		if($('input[value=everyxmins]').is(":checked")) {
+			mins = '*/' + $('#everyminutes').val();
+			if ($('#everyhrstart').val() == $('#everyhrend').val()) {
+				hours = $('#everyhrend').val();
+			} else { 
+				hours = $('#everyhrstart').val() + '-' + $('#everyhrend').val();
+			}
+		} else {
+			if($('input[value=normalmins]').is(":checked")) {
+				mins = $('#minutes').val();
+				hours = $('#hours').val();
+			} else {
+				alert('You have not used the radio buttons to choose when the event runs');
+				return;
+			}
+		} 
+
 		var days = '';
 		if($('input[value=dayPresets]').is(":checked")) {
 			days = $('#dayopts').val();
@@ -969,12 +1041,11 @@ function newSchedValidate($event) {	// This function handles validation and subm
 			return;
 		}
 
-		var mins = $('#minutes').val();
-		var hours = $('#hours').val();
 		var dom = $('#dom').val();
 		var month = $('#month').val();
 		var sequence = $('#seqList').val();
 		var boxes = members.join(',');
+
 		var wholething = mins + '|' + hours + '|' + dom + '|' + month + '|' + days + '|' + sequence + '|' + boxes;
 		
 		if ($event) {
@@ -1032,22 +1103,26 @@ function editSchedulePage2($event) {	// This function handles the second part of
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-      	xmlhttp.open("GET","cgi-bin/scripts/eventScheduleControl.pl?action=Show&eventID=" + $event, false);
-    	xmlhttp.send(null);
-     	var returned = xmlhttp.responseText;
-	var members = returned.split(',');
-	for (var i = 0; i < members.length; i++) {
-		var bits = members[i].split("~");
-		var id = bits[0];
-		var text = bits[1];
-		var regex = /^\s*\:\s*$|^\s*\-\s*$/;    // If var text is like ':' or '-' it will be skipped from being added.
-                var match = regex.exec(text);
-                if (!match)  {
-			seqTextUpdate(id,text);
-		} else {
-			alert('A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+      	xmlhttp.open("GET","cgi-bin/scripts/eventScheduleControl.pl?action=Show&eventID=" + $event, true);
+	xmlhttp.onreadystatechange=function(){
+                if (xmlhttp.readyState==4) {
+		     	var returned = xmlhttp.responseText;
+			var members = returned.split(',');
+			for (var i = 0; i < members.length; i++) {
+				var bits = members[i].split("~");
+				var id = bits[0];
+				var text = bits[1];
+				var regex = /^\s*\:\s*$|^\s*\-\s*$/;    // If var text is like ':' or '-' it will be skipped from being added.
+		                var match = regex.exec(text);
+		                if (!match)  {
+					seqTextUpdate(id,text);
+				} else {
+					alert('A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+				}
+			}	
 		}
-	}	
+	}
+    	xmlhttp.send(null);
 }
 // ############### End of editSchedulePage2 function
 

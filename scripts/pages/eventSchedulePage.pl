@@ -88,7 +88,17 @@ ADMINTABLE
 				'Event' => $info[6],
 				'Boxes' => $info[7],
 			);
-		my $time = $data{'Hour'} . ':' . $data{'Minute'};
+		my $time;
+		if ($data{'Minute'} =~ /\*\/(\d+)/) {
+			my $mins = $1;
+			if ($data{'Hour'} =~ /(\d+)-(\d+)/) {
+				$time = "Every $mins minutes at $1:00 to $2:00"; 
+			} else {
+				$time = "Every $mins minutes at " . $data{'Hour'} . ':00';
+			}
+		} else {
+			$time = $data{'Hour'} . ':' . $data{'Minute'};
+		}
 		my $months = numbersToDays(\$data{'Month'},\'month');
 		$$months =~ s/_/ /g;
 		my $days = numbersToDays(\$data{'DOW'},\'dow');
@@ -126,8 +136,8 @@ ADMINTABLE
 
 print <<STUFF;
 <table class="Bordered">
-<tr><td class="fancyCell cellHead" width="50px">Time</td><td class="fancyCell cellHead" width="110px">Day Of Month</td><td class="fancyCell cellHead" width="60px">Month</td><td class="fancyCell cellHead" width="110px">Day Of Week</td><td class="fancyCell cellHead" width="120px">Event</td><td class="fancyCell cellHead" width="300px">Target STB(s)</td><td rowspan="2" style="text-align:center;vertical-align:middle;" width="80px">$editbtn<br>$delbtn</td><td rowspan="2" width="90px">$togglebtn</td></tr>
-<tr><td class="cellInfo" style="max-width:50px;">$time</td><td class="cellInfo" style="max-width:110px;">$dom</td><td class="cellInfo" style="max-width:60px;">$$months</td><td class="cellInfo" style="max-width:110px;">$$days</td><td class="cellInfo" style="max-width:120px;">$data{'Event'}</td><td class="cellInfo" style="max-width:300px;">$stbnames</td></tr>
+<tr><td class="fancyCell cellHead" width="100px">Time</td><td class="fancyCell cellHead" width="110px">Day Of Month</td><td class="fancyCell cellHead" width="60px">Month</td><td class="fancyCell cellHead" width="110px">Day Of Week</td><td class="fancyCell cellHead" width="120px">Event</td><td class="fancyCell cellHead" width="300px">Target STB(s)</td><td rowspan="2" style="text-align:center;vertical-align:middle;" width="80px">$editbtn<br>$delbtn</td><td rowspan="2" width="90px">$togglebtn</td></tr>
+<tr><td class="cellInfo" style="max-width:100px;">$time</td><td class="cellInfo" style="max-width:110px;">$dom</td><td class="cellInfo" style="max-width:60px;">$$months</td><td class="cellInfo" style="max-width:110px;">$$days</td><td class="cellInfo" style="max-width:120px;">$data{'Event'}</td><td class="cellInfo" style="max-width:300px;">$stbnames</td></tr>
 STUFF
 	}
 
@@ -168,12 +178,31 @@ sub createEvSched {
 	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
 	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	tie my %events, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%events to $eventsfile: $!\n";
-	my ($active,$min,$hour,$dom,$month,$dow,$eventname,$boxes);
-
+	my ($active,$min,$hour,$dom,$month,$dow,$eventname,$boxes,$everymin);
+	my $mintype = 'normal';		# 'normal' means event runs once at a certain time. This is default until changed.
+	my $everyhrstart = '00';	# Used if the event runs every x minutes at a certain time
+	my $everyhrend = '00';		# Same as above
+	my @evhrs = ('00'..'23');
 	if ($event) {
 		if ($$event) {
 			my @info = split('\|',$events{$$event});
 			($active,$min,$hour,$dom,$month,$dow,$eventname,$boxes) = @info;
+
+			if ($min =~ /\*\/(\d+)/) {
+				$everymin = $1;
+				$min = '';
+				$mintype = 'every';	# Change $mintype to every to show that this event runs every x minutes
+				if ($hour =~ /(\d+)-(\d+)/) {
+					$everyhrstart = $1;
+					$everyhrend = $2;
+				} else {
+					$everyhrstart = $hour;
+					$everyhrend = $hour;					
+				}
+				$hour = '';
+				@evhrs = ("$everyhrstart"..'23');
+			}
+
 			$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
 			$month = numbersToDays(\$month,\'month');
 			$month = $$month;
@@ -195,6 +224,8 @@ print <<HEAD;
 </div>
 HEAD
 	
+	my @everymins = ('10'..'59');
+
 	my @mins = ('00'..'59');
 	my @hours = ('00'..'23');
 	my @dom = ('Every Day Of The Month','01'..'31');
@@ -202,16 +233,30 @@ HEAD
 	my @dayoptions = ('Everyday','Mon-Fri','Sun-Thurs','Sat,Sun','Mon,Weds,Fri');
 	my @days = qw/Mon Tues Weds Thurs Fri Sat Sun/;
 
+	my $everymindata = $query->popup_menu(-id=>'everyminutes',-name=>'everyminutes',-values=>[@everymins],-default=>$everymin,-class=>'styledSelect');
+	my $everyhrstartdata = $query->popup_menu(-id=>'everyhrstart',-name=>'everyhrstart',-values=>[@hours],-default=>$everyhrstart,-class=>'styledSelect',-onChange=>'eventScheduleEndHourControl()');
+	my $everyhrenddata = $query->popup_menu(-id=>'everyhrend',-name=>'everyhrend',-values=>[@evhrs],-default=>$everyhrend,-class=>'styledSelect');
+	#my $everymindata = $query->popup_menu(-id=>'minutes',-name=>'minutes',-values=>[@mins],-default=>$min,-class=>'styledSelect');
+
+
 	my $mindata = $query->popup_menu(-id=>'minutes',-name=>'minutes',-values=>[@mins],-default=>$min,-class=>'styledSelect');
 	my $hourdata = $query->popup_menu(-id=>'hours',-name=>'hours',-values=>[@hours],-default=>$hour,-class=>'styledSelect');
 	my $domdata = $query->popup_menu(-id=>'dom',-name=>'dom',-values=>[@dom],-default=>$dom,-class=>'styledSelect');
 	my $monthdata = $query->popup_menu(-id=>'month',-name=>'month',-values=>[@months],-default=>$month,-class=>'styledSelect');
 	my $dayoptsdata = $query->popup_menu(-id=>'dayopts',-name=>'dayopts',-values=>[@dayoptions],-default=>$dow,-class=>'styledSelect');
+	#my $daysdata = $query->popup_menu(-id=>'days',-name=>'days',-values=>[@days],-default=>$dow,-class=>'styledSelect');
 	
-	my $presetradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\">Day Presets";
-	my $customradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\">Custom Days";
+	my $presetradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" onchange=\"eventRadioSwitch()\">Day Presets";
+	my $customradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" onchange=\"eventRadioSwitch()\">Custom Days";
 
 	my $preset = 'false';
+	my $presetshead = 'fancyCell cellImportant';
+	my $customdayshead = 'fancyCell cellImportant';
+	my $everyxminsradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"timeOption\" value=\"everyxmins\" onchange=\"eventRadioSwitch()\"/>Process repeats every (x) minutes";
+	my $normalradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"timeOption\" value=\"normalmins\" onchange=\"eventRadioSwitch()\"/>Process runs once at the set time";
+	my $everyhead = 'fancyCell cellImportant';
+	my $normalhead = 'fancyCell cellImportant';
+
 	if ($event) {
 		if ($$event) {
 			foreach my $dayopts (@dayoptions) {
@@ -222,10 +267,22 @@ HEAD
 
 			if ($preset =~ /false/) {
 				#if ($$event) {
-					$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" checked>Custom Days";
+				$customdayshead = 'fancyCell highlighted';
+				$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" onchange=\"eventRadioSwitch()\" checked>Custom Days";
 				#}
 			} else {
-				$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" checked>Day Presets";
+				$presetshead = 'fancyCell highlighted';
+				$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" onchange=\"eventRadioSwitch()\" checked>Day Presets";
+			}
+
+			if ($mintype =~ /every/) {
+				$everyhead = 'fancyCell highlighted';
+				$everyxminsradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"timeOption\" value=\"everyxmins\" onchange=\"eventRadioSwitch()\" checked/>Process repeats every (x) minutes";
+			} else {
+				if ($mintype =~ /normal/) {
+					$normalhead = 'fancyCell highlighted';
+					$normalradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"timeOption\" value=\"normalmins\" onchange=\"eventRadioSwitch()\" checked/>Process runs once at the set time";
+				}
 			}
 		}
 	}
@@ -236,37 +293,50 @@ HEAD
 		if ($$event) {
 			if ($preset =~ /true/) {
 				$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
+				#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);				
 			} else {
 				if ($dow =~ /$day/) {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\" checked>$day<br>";
+					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day,-selected=>1);
 				} else {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
+					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 				}
 			}
 		} else {
 			$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
+			#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 		}
+		#my $html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
 		push(@dayshtml,$html);
 	}
 
+
+print <<HEADTABLE;		# Print the head table which contains info for "Every x mins" fields
+<table class="Bordered" style="width:100%;">
+  <tr><td colspan="3" class="$everyhead">$everyxminsradio</td></tr>
+  <tr><td class="fancyCell cellHead">Every (x) Minutes</td><td class="fancyCell cellHead">Start Hour</td><td class="fancyCell cellHead">End Hour (This hour inclusive)</td></tr>
+  <tr><td>$everymindata</td><td>$everyhrstartdata</td><td>$everyhrenddata</td></tr>
+</table>
+HEADTABLE
+
 print <<TOPTABLE;		# Print the top table which contains the hour, minute, day of month, and month fields
 <table class="Bordered" style="width:100%;">
-  <tr><td class="fancyCell cellHead">Hour</td><td class="fancyCell cellHead">Minute</td><td class="fancyCell cellHead">Day Of Month</td><td class="fancyCell cellHead">Month</td></tr>
-  <tr><td>$hourdata</td><td>$mindata</td><td>$domdata</td><td>$monthdata</td></tr>
+  <tr><td colspan="2" class="$normalhead">$normalradio</td></tr>
+  <tr><td class="fancyCell cellHead">Hour</td><td class="fancyCell cellHead">Minute</td></tr>
+  <tr><td>$hourdata</td><td>$mindata</td></tr>
+</table>
+<table class="Bordered" style="width:100%;">
+  <tr><td class="fancyCell cellHead">Day Of Month</td><td class="fancyCell cellHead">Month</td></tr>
+  <tr><td>$domdata</td><td>$monthdata</td></tr>
 </table>
 TOPTABLE
 
 print <<BOTTOMTABLELEFT;		# Print the bottom table which contains the day options
 <table class="Bordered" style="width:55%;float:left;">
   <tr><td class="fancyCell cellHead" colspan="2">Day Options (Select One)</td></tr>
-  <tr>
-   <td>
-    <table style="width:100%;">
-     <tr><td class="fancyCell cellHead">$presetradio</td><td class="fancyCell cellHead">$customradio</td></tr>
-     <tr><td valign="top">$dayoptsdata</td><td style="text-align:left;font-size:17px;">@dayshtml</td></tr>
-    </table>
-   </td>
-  </tr>
+  <tr><td class="$presetshead">$presetradio</td><td class="$customdayshead">$customradio</td></tr>
+  <tr><td valign="top">$dayoptsdata</td><td style="text-align:left;font-size:17px;">@dayshtml</td></tr>
 </table>
 BOTTOMTABLELEFT
 
@@ -407,6 +477,29 @@ LAST
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
 
+#                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+
+#                my $c = '0';
+
+#                foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
+#                        if ($c >= $columns) {
+#                                print '</tr><tr>';
+#                                $c = '0';
+#                        }
+#                        my ($num) = $key =~ /STB(\d+)/;
+#			my $name = 'STB ' . $num;
+#                        $name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
+#print <<KEY;
+#<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
+#KEY
+#                        $c++;
+#                }
+#                print '</table></div>';
+#        } else {
+#                print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
+#        }
+	
+	
 	untie %groups;
 	untie %sequences;
 	untie %events;

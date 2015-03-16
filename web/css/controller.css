@@ -1095,6 +1095,26 @@ td.cellHead {
 	text-align:center;
 }
 
+td.cellImportant {
+	font-size:20px;
+	border-radius:3px;
+	color:green;
+	text-align:left;
+}
+
+td.highlighted {
+   	background: #7eab71;
+   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
+   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
+   	background: -moz-linear-gradient(top, #397a27, #7eab71);
+   	background: -ms-linear-gradient(top, #397a27, #7eab71);
+   	background: -o-linear-gradient(top, #397a27, #7eab71);
+	font-size:20px;
+	border-radius:3px;
+	color:white;
+	text-align:left;
+}
+
 td.cellInfo {
 	font-size:15px;
 	color:white;
@@ -1337,4 +1357,14 @@ input[type="text"]:focus {
 	display:inline-block;
 	min-width:30px;
 	min-height:30px;
+}
+
+#evSchedPageAdd {
+	display:inline-block;
+	width:100%;
+}
+
+#evSchedHeader {
+	display:inline-block;
+	width:100%;
 }
