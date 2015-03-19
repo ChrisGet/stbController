@@ -730,28 +730,32 @@ function editSequencePage2($seq) {	// This function handles the second part of e
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-      	xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Show&sequence=" + $seq, false);
+      	xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Show&sequence=" + $seq, true);
+	xmlhttp.onreadystatechange=function(){
+        	if (xmlhttp.readyState==4) {
+		     	var returned = xmlhttp.responseText;
+			var commands = returned.split(',');
+			for (var i = 0; i < commands.length; i++) {
+				var id = commands[i];
+				var text = id;
+				if (id == 'tv guide') {
+					text = 'TV Guide';
+				}
+				if (id == 'passive') {
+					text = 'Deep Sleep';
+				}
+				var bits = text.split(" ");
+				var newtext = '';
+				for (var o = 0; o < bits.length; o++) {
+					var chunk = bits[o];
+					newtext += chunk[0].toUpperCase() + chunk.slice(1);
+					newtext += ' ';
+				}
+				seqTextUpdate(id,newtext);
+			}	
+		}
+	}
     	xmlhttp.send(null);
-     	var returned = xmlhttp.responseText;
-	var commands = returned.split(',');
-	for (var i = 0; i < commands.length; i++) {
-		var id = commands[i];
-		var text = id;
-		if (id == 'tv guide') {
-			text = 'TV Guide';
-		}
-		if (id == 'passive') {
-			text = 'Deep Sleep';
-		}
-		var bits = text.split(" ");
-		var newtext = '';
-		for (var o = 0; o < bits.length; o++) {
-			var chunk = bits[o];
-			newtext += chunk[0].toUpperCase() + chunk.slice(1);
-			newtext += ' ';
-		}
-		seqTextUpdate(id,newtext);
-	}	
 }
 // ############### End of editSequencePage2 function
 
@@ -864,22 +868,26 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
       	} else {// code for IE6, IE5
         	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
       	}
-      	xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Show&group=" + $grp, false);
-    	xmlhttp.send(null);
-     	var returned = xmlhttp.responseText;
-	var members = returned.split(',');
-	for (var i = 0; i < members.length; i++) {
-		var bits = members[i].split("~");
-		var id = bits[0];
-		var text = bits[1];
-		var regex = /^\s*\:\s*$|^\s*\-\s*$/;	// If var text is like ':' or '-' it will be skipped from being added.
-		var match = regex.exec(text);
-		if (!match)  {
-			seqTextUpdate(id,text);
-		} else {
-			alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+      	xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Show&group=" + $grp, true);
+	xmlhttp.onreadystatechange=function(){
+        	if (xmlhttp.readyState==4) {
+		     	var returned = xmlhttp.responseText;
+			var members = returned.split(',');
+			for (var i = 0; i < members.length; i++) {
+				var bits = members[i].split("~");
+				var id = bits[0];
+				var text = bits[1];
+				var regex = /^\s*\:\s*$|^\s*\-\s*$/;	// If var text is like ':' or '-' it will be skipped from being added.
+				var match = regex.exec(text);
+				if (!match)  {
+					seqTextUpdate(id,text);
+				} else {
+					alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+				}
+			}	
 		}
-	}	
+	}
+    	xmlhttp.send(null);
 }
 // ############### End of editGroupPage2 function
 
