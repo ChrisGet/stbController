@@ -34,20 +34,20 @@ sub createConf {
 	my $columns = $query->textfield(-id=>'columns',-name=>'columns',-size=>'10');
 	my $fontformat = '<font size="4" color="#267A94">';
 	print '<div class="userForm"><body>';
-	print '<font size="5" color="#E60000">No configuration files found for the STB grid:</font><br>';
+	print "<p style=\"color:red;font-size:20px;margin-bottom:3px;margin-top:5px;\">No configuration files found for the STB grid:</p>";
 
 print <<FORM;
 <form id="createGridConfig" name="createGridConfig">
-<font size="5" color="white">Set the following options to create your STB grid</font><br>
-<font size="5" color="red">NOTE: Once you have chosen the size of the grid it cannot be changed. 
-<br>Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</font><br><br>
-$fontformat\ Select the number of columns:</font><br>
+<p style="color:white;font-size:20px;margin-bottom:3px;margin-top:3px;">Set the following options to create your STB grid</p>
+<p style="color:red;font-size:20px;margin-bottom:3px;">NOTE: Once you have chosen the size of the grid it cannot be changed.</p>
+<p style="color:red;font-size:20px;margin-bottom:10px;margin-top:1px;">Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</p>
+<p style="color:#267A94;font-size:18px;margin-bottom:10px;margin-top:1px;">Select the number of columns:</p>
 $columns<br><br>
-$fontformat\ Select the number of rows:</font><br>
+<p style="color:#267A94;font-size:18px;margin-bottom:10px;margin-top:1px;">Select the number of rows:</p>
 $rows<br>
 <br><br>
 </form>
-<button type="submit" onclick="validate()">Create New Grid</button><br>
+<button class="newSeqSubmit" style="float:none;" onclick="validate()">Create New Grid</button><br>
 </body>
 </div>
 FORM

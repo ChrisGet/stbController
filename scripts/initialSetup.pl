@@ -4,6 +4,8 @@ use strict;
 chomp(my $pwd = `pwd`);
 my ($maindir) = $pwd =~ /^(.*stbController\/)/;
 
+my $filedir = $maindir . 'files/';
+my $webdir = $maindir . 'web/';
 my $dirfile = $maindir . 'files/homeDir.txt';
 my $scriptfile = $maindir . 'scripts/homeDir.txt';
 my $webpagesfile = $maindir . 'scripts/pages/homeDir.txt';
@@ -18,3 +20,5 @@ for (@files) {
 	system("chmod 775 $_");
 }
 
+system("chmod 777 $filedir*");
+system("chmod 777 $webdir/dynamicTitle.txt");
