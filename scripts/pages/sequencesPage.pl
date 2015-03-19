@@ -54,7 +54,7 @@ print <<SEQ;
  <table class="roundedTable" style="width:100%;">
   <tr>
    <td colspan="2" align="center" class="fancyCell" style="width:250px;height:40px;border-radius:4px;">
-    <label class="seqLabel masterTooltip" onmouseover="tooltip()" value="Commands: $titlestring">$key</label>
+    <label class="seqLabel masterTooltip" value="Commands: $titlestring">$key</label>
    </td>
   </tr>
   <tr>

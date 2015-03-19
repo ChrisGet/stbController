@@ -4,6 +4,27 @@ window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
 	announcements();
 	dynamicTitle('get');
+
+	// Bind the tooltip function
+        $(document).ready(function() {
+                // Tooltip only Text
+                $('body').on({
+                        mouseenter: function(){
+                                // Hover over code
+                                var title = $(this).attr('value');
+                                $('<p class="tooltip"></p>').text(title).appendTo('body').fadeIn('fast');
+                        },
+                        mouseleave: function() {
+                                // Hover out code
+                                $('.tooltip').remove();
+                        },
+                        mousemove: function(e) {
+                                var mousex = e.pageX + 20; //Get X coordinates
+                                var mousey = e.pageY + 10; //Get Y coordinates
+                                $('.tooltip').css({ top: mousey, left: mousex })
+                        }
+                }, '.masterTooltip');
+        });
 }
 
 window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
@@ -719,7 +740,6 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
 	perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Edit','sequence',$seq);
 	setTimeout(function(){editSequencePage2($seq)},200);
-	setTimeout(function(){tooltip()},400);
 }
 // ############### End of editSequencePage function
 
@@ -891,29 +911,6 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 }
 // ############### End of editGroupPage2 function
 
-function tooltip() {	// This function handles elements that have popup message functionality (tooltips)
-	$(document).ready(function() {
-	// Tooltip only Text
-	$('.masterTooltip').hover(function(){
-	        // Hover over code
-	        var title = $(this).attr('value');
-	        $('<p class="tooltip"></p>')
-	        .text(title)
-	        .appendTo('body')
-	        .fadeIn('fast');
-	}, function() {
-        	// Hover out code
-	        $('.tooltip').remove();
-	}).mousemove(function(e) {
-	        var mousex = e.pageX + 20; //Get X coordinates
-	        var mousey = e.pageY + 10; //Get Y coordinates
-	        $('.tooltip')
-	        .css({ top: mousey, left: mousex })
-		});
-	});
-}
-// ############### End of tooltip function
-
 function focusEl($element) {	// This function handles focussing on the given element on the page
 	var xmlhttp;
         if (window.XMLHttpRequest){
@@ -929,15 +926,6 @@ function focusEl($element) {	// This function handles focussing on the given ele
         }
 	var elem = '#' + $element;
 	$(elem).focus();
-
-	//This stuff below runs the tooltip function when the Sequences or STB Groups page is loaded and focussed.
-	//This allows the hover functions to bind to the elements so that first time hover works properly
-	if ($element == 'sequencesAvailable') {
-		setTimeout(function(){tooltip()},200);
-	}
-	if ($element == 'stbGroupsAvailable') {
-		setTimeout(function(){tooltip()},200);
-	}
 }
 // ############### End of focusEl function
 

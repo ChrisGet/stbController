@@ -17,16 +17,16 @@
 <html>
 <body>
 <div id="topBar"> 	<!-- The top bar with the header in -->
-<a id="topBarText">Reliability Test: </a><button class="topBarTextDynamic masterTooltip" id="dynamicTitle" onmouseover="tooltip()" onclick="dynamicTitle('set')" value="Click on this title to customise it!"></button>
+<a id="topBarText">Reliability Test: </a><button class="topBarTextDynamic masterTooltip" id="dynamicTitle"  onclick="dynamicTitle('set')" value="Click on this title to customise it!"></button>
 <img id="logo" src="web/images/RT_Logo.png" onclick="document.location.href='/'">
 </div>
 
 <div id="menuBar">
 	<div style="float:right;width:50%;">
-		<div id="messages" value="Check here for server announcements (Updated every minute)" onmouseover="tooltip()" class="masterTooltip"></div>
-		<div id="dateTimeDiv" value="Current Server Time" onmouseover="tooltip()" class="masterTooltip"></div>
+		<div id="messages" value="Check here for server announcements (Updated every minute)"  class="masterTooltip"></div>
+		<div id="dateTimeDiv" value="Current Server Time"  class="masterTooltip"></div>
 	</div>
-<input type="button" class="menuButton" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes();setTimeout(function(){tooltip()},1000);" />
+<input type="button" class="menuButton" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes();" />
 <input type="button" class="menuButton" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()" />
 <input type="button" class="menuButton" value="Sequences" onclick="pageCall('dynamicPage','web/sequencesPage.html');logLastBoxes();perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');focusEl('sequencesAvailable')" />
 <input type="button" class="menuButton" value="Events Schedule" onclick="pageCall('dynamicPage','web/eventsSchedulePage.html');logLastBoxes();perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')" />

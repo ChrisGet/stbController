@@ -79,7 +79,7 @@ sub loadGrid {
 
 	##### Load the sequences buttons
 	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
-	print '<div id="sequenceButtons"><p style="font-size:25px;margin-top:0em;margin-bottom:0em;" value="Below are your custom built sequences. Go to the Sequences page to make more or edit the current ones" onmouseover="tooltip()" class="masterTooltip">Sequences</p>';
+	print '<div id="sequenceButtons"><p style="font-size:25px;margin-top:0em;margin-bottom:0em;" value="Below are your custom built sequences. Go to the Sequences page to make more or edit the current ones" class="masterTooltip">Sequences</p>';
 
 	foreach my $seq (sort keys %sequences) {
 print <<BUTTON;

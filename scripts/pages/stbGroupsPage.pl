@@ -73,7 +73,7 @@ print <<GROUP;
  <table class="roundedTable" style="width:100%;">
   <tr>
    <td colspan="2" align="center" class="fancyCell" style="background-color:#C0C0C0;width:250px;height:40px;border-radius:4px;">
-    <label class="seqLabel masterTooltip" onmouseover="tooltip()" value="Members: $memberstring">$key</label>
+    <label class="seqLabel masterTooltip" value="Members: $memberstring">$key</label>
    </td>
   </tr>
   <tr>
