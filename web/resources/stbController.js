@@ -289,8 +289,8 @@ function validate() {	// This function validates and submits the data given when
 		});
 	});
 	alert('Congratulations! Your new grid has been created');
-	perlCall('dynamicPage','scripts/controllerConfig.pl');
-	return false;
+	document.getElementById('dynamicPage').innerHTML = '<p style="font-size:30px;">Loading The New Grid, Please Wait ...</p>';
+        setTimeout(function(){perlCall('dynamicPage','scripts/pages/stbGrid.pl')},3000);
 }
 // ############### End of validate function
 

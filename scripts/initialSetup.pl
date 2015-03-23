@@ -6,6 +6,7 @@ my ($maindir) = $pwd =~ /^(.*stbController\/)/;
 
 my $filedir = $maindir . 'files/';
 my $webdir = $maindir . 'web/';
+my $configdir = $maindir . 'config/';
 my $dirfile = $maindir . 'files/homeDir.txt';
 my $scriptfile = $maindir . 'scripts/homeDir.txt';
 my $webpagesfile = $maindir . 'scripts/pages/homeDir.txt';
@@ -22,3 +23,4 @@ for (@files) {
 
 system("chmod 777 $filedir*");
 system("chmod 777 $webdir/dynamicTitle.txt");
+system("chmod -R 777 $configdir");
