@@ -109,6 +109,7 @@ sub control {
                 	sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/);
 			sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 			sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
+			sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
 	                exit;
         	}
 	}
@@ -236,4 +237,102 @@ sub sendIRComms {
 		my $logpid = $$runningpids . $$;
 		system("rm $logpid");
 	}
+}
+
+sub sendVNCComms {
+	use IO::Socket::INET;
+	my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+
+	my $ip = $$boxdata{'VNCIP'};
+	my $port;
+	if ($$boxdata{'Type'} =~ /ethan/i) {
+		$port = '5900';
+	} else {
+		$port = '49160';
+	}
+	my $string = "SKY 000.001\n";
+	my $keytype = '4';
+	my $keydown = '1';
+	my $keyup = '0';
+	my @commands = split(',', $$commands);
+        my $comfile = $filedir . '/skyVNCCommands.txt';
+	my $socket = new IO::Socket::INET (
+			PeerHost => $ip,
+			PeerPort => $port,
+			Proto => 'tcp',
+	);	
+	die "Cannot connect to the server: $!\n" unless $socket;
+	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
+
+	$socket->autoflush(1);
+
+	my $stuff = '';
+	$socket->recv($stuff,12);
+	$socket->send($string);
+	$stuff = '';
+	$socket->recv($stuff,12);
+	if ($stuff) {
+		my $num = '1';
+		my $tosend = pack("C",$num);
+		my $new = '';
+		$socket->send($tosend);	# Send '01' to the STB for security selection
+		$socket->recv($new,12);	# Receive security response from STB in to $new
+		if ($new) {
+			$new = '';
+			$socket->send($tosend);	# Send '01' to the STB again for client init message
+			$socket->recv($new,64);	# Receive server init message back from STB in to $new
+			if ($new) {	# If all is good up to here, send the commands!
+				foreach my $com (@commands) {
+					if ($com =~ /^t(\d+)/i) {
+						sleep $1;
+					} else {
+						my $ds = '';
+						if ($com =~ /passive/i) {
+							$ds = 1;
+							$com = 'power';
+						}
+						if (exists $vnckeys{$com}) {
+							my ($first,$last) = process(\$vnckeys{$com});
+							my $kdown = pack "C*", $keytype,$keydown,0,0,0,0,$first,$last;
+							my $kup = pack "C*", $keytype,$keyup,0,0,0,0,$first,$last;
+							$socket->send($kdown);
+							sleep 10 if ($ds);
+							$socket->send($kup);
+						} else {
+							warn "$com not found in the file $comfile\n";
+						}
+					}
+				}
+			} else {
+				warn "No response from STB during VNC handshake (Client/Server Init Exchange).\n";
+			}
+		} else {
+			warn "No response from STB during VNC handshake (Security Exchange).\n";
+		}
+	} else {
+		warn "No response from STB during VNC handshake (Protocol Exchange).\n";
+	}	
+
+	untie %vnckeys;
+
+	if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+
+	sub process {
+		my ($in) = @_;
+		$$in =~ s/^0x//;
+		my ($first,$last) = unpack('a2 a2',$$in);
+		$first = '0x'.$first;
+		$last = '0x'.$last;
+		$first = eval $first;
+		$last = eval $last;
+		return ($first,$last);
+	}
+
 }

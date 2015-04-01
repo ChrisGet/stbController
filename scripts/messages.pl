@@ -31,7 +31,12 @@ if ($schedpid) {
         print $wanted . '</font><br>';
 
 	if ($runningtotal) {
-		print "\<font color\=\"red\"\>$bullet !! Warning !! There are currently $runningtotal event(s) running\<\/font\>";
+		$runningtotal =~ s/\s+//g;
+		if ($runningtotal > 1) {
+			print "\<font color\=\"red\"\>$bullet !! Warning !! There are currently $runningtotal events running\<\/font\>";
+		} else {
+			print "\<font color\=\"red\"\>$bullet !! Warning !! There is currently $runningtotal event running\<\/font\>";
+		}
 	} else {
 		print "\<font color\=\"green\"\>$bullet No events currently running\<\/font\>";
 	}

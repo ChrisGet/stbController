@@ -20,6 +20,7 @@ stbSelect() if ($option =~ /chooseSTB/i);
 stbConfig(\$box) if ($option =~ /configSTB/i);
 printDuskyTable() and exit if ($option =~ /printDusky/i);
 printBluetoothTable() and exit if ($option =~ /printBluetooth/i);
+printNetworkTable() and exit if ($option =~ /printNetwork/i);
 printIRTable() and exit if ($option =~ /printIR/i);
 
 sub stbSelect {
@@ -40,14 +41,14 @@ sub stbSelect {
 print <<HEAD;
 <div id="stbSelect">
 <p class="narrow">Click on a box below to manage its control, video, and DUT details configuration</p><br>
-<table style="border-spacing:0;" align="center">
+<table align="center">
 <tr id="columns">
 HEAD
 
 		my $c = '1';
 		while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+<td scope="col" width="85px"><button class="gridButton">Column $c</button></td>
 COL
 			$c++;
 	}
@@ -154,6 +155,7 @@ HEAD
 	my $irip = $stbdata{$$stb}{'IRIP'} || '';
 	my $irport = $stbdata{$$stb}{'IRPort'} || '';
 	my $irout = $stbdata{$$stb}{'IROutput'} || '';
+	my $networkip = $stbdata{$$stb}{'VNCIP'} || '';
 	##### STB Control and Video Data
 
 	##### STB Information Data
@@ -181,7 +183,7 @@ HEAD
 	#### STB Details Table stuff	
 
 	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>8);
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','IR (Any)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','Network (Sky+)','Network (Ethan)','IR (Any)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15);
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5);
 	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1");
@@ -222,6 +224,7 @@ DATARIGHT
 	if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
+		printNetworkTable($networkip) if ($type =~ /Network/i);
 		printIRTable($irip,$irport,$irout) if ($type =~ /IR/i);
 	} else {
 		printDuskyTable('','','');
@@ -296,6 +299,18 @@ print <<BLUETOOTH;
 <tr><td>BT Server USB Port:</td><td>$btcontporttext</td></tr>
 </table><br>
 BLUETOOTH
+}
+
+sub printNetworkTable {
+	my ($ip) = @_;
+	my $iptext = $query->textfield(-id=>'netip',-name=>'VNCIP',-size=>'15',-default=>$ip,-maxlength=>15);
+
+print <<NETWORK;
+<p class="narrow" style="font-size:20px;">Network Control:</p>
+<table class="stbDataFormTable">
+<tr><td>STB IP Address:</td><td>$iptext</td></tr>
+</table><br>
+NETWORK
 }
 
 sub printIRTable {

@@ -1,5 +1,25 @@
 ### Instructions for setting up your new STB Controller ###
 
+############## STEP 1:
+- Go to the scripts directory and run "perl initialSetup.pl" as root. This will set up file permissions as well as 
+	other things for the controller
+
+
+############## STEP 2:
+- Below is a list of perl modules that the controller requires. These can be installed using CPAN.
+	(To install CPAN in Debian, run "apt-get install libcpan-meta-perl").
+	Packages to install:-
+	- DBM::Deep
+	- IO::Socket::INET
+	- CGI
+	- LWP::UserAgent
+	- HTTP::Request
+	- Tie::File::AsHash
+	- Schedule::Cron
+
+
+############## STEP 3:
+- Set up the web server:-
 - Here is an example of the settings that need to be configured in the Apache config file for your web page:
 
 #####
@@ -15,7 +35,7 @@
 </VirtualHost>
 #####
 
-- The "Options" and "AddHandler" parts are key to enabling all functionality for the stbController.
+- The "Options" and "AddHandler" parts are key to enabling all functionality for the stbController. Everything else will be according to your personal setup
 
 - Once you have Apache setup and your website configured, you will need to go to the root directory for the web page
 (where you defined "DocumentRoot" for your web page) and create some directories and symbolic links.
@@ -26,5 +46,7 @@
 	  which links to the "stbController/scripts/" directory.
 	- Create a symbolic link called "web" which links to the "stbController/web" directory.
 	- Create a symbolic link called "index.html" which links to the "stbController/web/index.html" file.
+	- NOTE: File and folder permissions may have to be tweaked according to your Apache setup. Keep an eye on the error log file
+		for your web page to see where these need to be changed if needed.
 
-- Once the directories and symbolic links are created you will be good to go. Navigate to your web page to view the stbController
+- Once the directories and symbolic links are created you should be good to go. Navigate to your web page to view the stbController

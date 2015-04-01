@@ -21,6 +21,7 @@ for (@files) {
 	system("chmod 775 $_");
 }
 
-system("chmod 777 $filedir*");
+system("chmod -R 775 $maindir");
+system("chmod -R 777 $filedir");
 system("chmod 777 $webdir/dynamicTitle.txt");
 system("chmod -R 777 $configdir");

@@ -290,7 +290,8 @@ function validate() {	// This function validates and submits the data given when
 	});
 	alert('Congratulations! Your new grid has been created');
 	document.getElementById('dynamicPage').innerHTML = '<p style="font-size:30px;">Loading The New Grid, Please Wait ...</p>';
-        setTimeout(function(){perlCall('dynamicPage','scripts/pages/stbGrid.pl')},3000);
+	setTimeout(function(){perlCall('dynamicPage','scripts/pages/stbGrid.pl')},3000);
+	//return false;
 }
 // ############### End of validate function
 
@@ -320,35 +321,47 @@ function editSTBData($name) {	// This function handles editing details of an STB
 	///////	IP Address and Port input field validation
 	var inputs = document.editSTBConfigForm.getElementsByTagName("input");	// Get all "input" elements from the STB Data form
 	for (var i=0;i<inputs.length;i++) {
-		var isport = /.*port.*/i;	// Regex for a port input
-		var isip = /.*ip[^ort].*/i;	// Regex for an ip input (Regex allows for id of "hdmiport" where it could match just "ip")
-
 		var val = inputs[i].value;
-		var blankmatch = blanknameregex.exec(val);
-		if (!val || !blankmatch) {	// If the field is undefined or only contains whitespace, ignore it
+		if (!val || !val.match(/\S+/)) {	// If the field is undefined or only contains whitespace, ignore it
 			continue;
 		}
 
 		var inputid = inputs[i].id;
-		var itisanip = isip.exec(inputid);
-		var itisaport = isport.exec(inputid);
+		var regex = /.*ip(.*)/i;
+		var match = regex.exec(inputid);
 
-		if (itisanip) {
-			var ipregex = /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/;
-			var valid = ipregex.exec(val);
-			if (valid) {
-				continue;
+		if (match) {
+			if (match[0]) {
+				if (match[1].match(/ort/i)) {	// This will identify an input field that is a port number, not an IP address
+					if (val.match(/\D+/)) {	// If 'valid' is true, we have matched a word character in the value for the port. This is invalid so we alert the user
+						alert('You have entered non digit characters for a port number. A port can only be digits');
+						inputs[i].focus();
+						return;
+					} else {
+						continue;
+					}
+				} else {
+					if (val.match(/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/)) {
+						continue;
+					} else {
+						alert('You have entered an invalid IP address');
+						inputs[i].focus();
+						return;
+					}
+				}
 			} else {
-				alert('You have entered an invalid IP address');
-				inputs[i].focus();
-				return;
+				if (val.match(/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/)) {
+					continue;
+				} else {
+					alert('You have entered an invalid IP address');
+					inputs[i].focus();
+					return;
+				}
 			}
 		}
 
-		if (itisaport) {
-			var portregex = /\D+/;	// We will look to match the port value to non-digit characters as only digits are allowed for a port
-			var valid = portregex.exec(val);
-			if (valid) {	// If 'valid' is true, we have matched a word character in the value for the port. This is invalid so we alert the user
+		if (inputid.match(/.*port.*/i)) {
+			if (val.match(/\D+/)) {	// If this matches, we have founc a word character in the value for the port. This is invalid so we alert the user
 				alert('You have entered non digit characters for a port number. A port can only be digits');
 				inputs[i].focus();
 				return;
@@ -738,8 +751,20 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 // ############### End of deleteSequence function
 
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
-	perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Edit','sequence',$seq);
-	setTimeout(function(){editSequencePage2($seq)},200);
+	var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+        } else {// code for IE6, IE5
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("GET","cgi-bin/scripts/pages/sequencesPage.pl?action=Edit&sequence=" + $seq, true);
+        xmlhttp.onreadystatechange=function(){
+                if (xmlhttp.readyState==4) {
+			document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+			editSequencePage2($seq);
+		}
+	}
+	xmlhttp.send(null);
 }
 // ############### End of editSequencePage function
 
@@ -758,20 +783,28 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 			for (var i = 0; i < commands.length; i++) {
 				var id = commands[i];
 				var text = id;
-				if (id == 'tv guide') {
-					text = 'TV Guide';
+				var tregex = /t(\d+)/;
+				var timeoutmatch = tregex.exec(id);
+
+				if (timeoutmatch) {
+					var newtext = 'Timeout (' + timeoutmatch[1] + 's)';
+					seqTextUpdate(id,newtext);
+				} else {				
+					if (id == 'tv guide') {
+						text = 'TV Guide';
+					}
+					if (id == 'passive') {
+						text = 'Deep Sleep';
+					}
+					var bits = text.split(" ");
+					var newtext = '';
+					for (var o = 0; o < bits.length; o++) {
+						var chunk = bits[o];
+						newtext += chunk[0].toUpperCase() + chunk.slice(1);
+						newtext += ' ';
+					}
+					seqTextUpdate(id,newtext);
 				}
-				if (id == 'passive') {
-					text = 'Deep Sleep';
-				}
-				var bits = text.split(" ");
-				var newtext = '';
-				for (var o = 0; o < bits.length; o++) {
-					var chunk = bits[o];
-					newtext += chunk[0].toUpperCase() + chunk.slice(1);
-					newtext += ' ';
-				}
-				seqTextUpdate(id,newtext);
 			}	
 		}
 	}
@@ -876,8 +909,22 @@ function deleteGroup($grp) {	// This function handles deletion of an existing ST
 // ############### End of deleteGroup function
 
 function editGroupPage($grp) {	// This function handles the first part of editing of an existing STB group (Initial page load)
-	perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Edit','group',$grp);
-	setTimeout(function(){editGroupPage2($grp)},500);
+	//perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Edit','group',$grp);
+	var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+        } else {// code for IE6, IE5
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("GET","cgi-bin/scripts/pages/stbGroupsPage.pl?action=Edit&group=" + $grp, true);
+        xmlhttp.onreadystatechange=function(){
+                if (xmlhttp.readyState==4) {
+                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+                        editGroupPage2($grp);
+                }
+        }
+        xmlhttp.send(null);
+	//setTimeout(function(){editGroupPage2($grp)},500);
 }
 // ############### End of editGroupPage function
 
@@ -1087,8 +1134,20 @@ function scheduleStateChange($state,$id) {	// This function handles enabling and
 // ############### End of scheduleStateChange function
 
 function editSchedulePage($event) {	// This function handles the first part of editing an exisiting Scheduled Event (Initial page load)
-	perlCall('dynamicPage','scripts/pages/eventSchedulePage.pl','action','Edit','event',$event);
-	setTimeout(function(){editSchedulePage2($event)},500);
+	var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+        } else {// code for IE6, IE5
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("GET","cgi-bin/scripts/pages/eventSchedulePage.pl?action=Edit&event=" + $event, true);
+        xmlhttp.onreadystatechange=function(){
+                if (xmlhttp.readyState==4) {
+                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+                        editSchedulePage2($event);
+                }
+        }
+        xmlhttp.send(null);
 }
 // ############### End of editSchedulePage function
 
@@ -1125,6 +1184,9 @@ function editSchedulePage2($event) {	// This function handles the second part of
 
 function stbTypeChoice($option) {	// This function handles changing of an STB type in the STB Data page. It loads the appropriate control data input fields according to its control type i.e. Dusky, Bluetooth, etc
 	var tag = 'print' + $option;
+	if ($option.match(/Network/)) {
+		alert('NOTE: For network control to work, the STB MUST be on the same network as the machine hosting this controller');
+	}
 	perlCall('typeChange','scripts/pages/stbDataPage.pl','option',tag);
 }
 // ############### End of stbTypeChoice function
