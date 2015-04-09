@@ -265,7 +265,7 @@ sub sendVNCComms {
 			PeerPort => $port,
 			Proto => 'tcp',
 	);	
-	die "Cannot connect to the server: $!\n" unless $socket;
+	die "Cannot connect to $stb for Network control at IP $ip, Port $port: $!\n" unless $socket;
 	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
 
 	$socket->autoflush(1);

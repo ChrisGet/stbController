@@ -130,7 +130,7 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 		}
 
         	var date = Date();
-	        xmlhttp.open("GET","web/dynamicTitle.txt?date", true);
+	        xmlhttp.open("GET","web/dynamicTitle.txt?"+date, true);
 		xmlhttp.onreadystatechange=function(){
    	        	if (xmlhttp.readyState==4) {
 				var title = xmlhttp.responseText;
