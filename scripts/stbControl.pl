@@ -106,6 +106,7 @@ sub control {
 		my $pid = fork;
         	if ($pid==0) {
 			# Fork the sendComms sub for each stb, inputting the stb, commands, and %boxdata for it
+			$0 = "stbControl - $stb - $type";
                 	sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/);
 			sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 			sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
@@ -264,8 +265,13 @@ sub sendVNCComms {
 			PeerHost => $ip,
 			PeerPort => $port,
 			Proto => 'tcp',
-	);	
-	die "Cannot connect to $stb for Network control at IP $ip, Port $port: $!\n" unless $socket;
+			Timeout => 1,
+	);
+	if (!$socket) {
+		print "Cannot connect to $stb for Network control at IP $ip, Port $port: $!\n";
+		exit (0);
+	}
+
 	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
 
 	$socket->autoflush(1);
@@ -308,13 +314,13 @@ sub sendVNCComms {
 					}
 				}
 			} else {
-				warn "No response from STB during VNC handshake (Client/Server Init Exchange).\n";
+				warn "No response from STB ($ip) during VNC handshake (Client/Server Init Exchange).\n";
 			}
 		} else {
-			warn "No response from STB during VNC handshake (Security Exchange).\n";
+			warn "No response from STB ($ip) during VNC handshake (Security Exchange).\n";
 		}
 	} else {
-		warn "No response from STB during VNC handshake (Protocol Exchange).\n";
+		warn "No response from STB ($ip) during VNC handshake (Protocol Exchange).\n";
 	}	
 
 	untie %vnckeys;
