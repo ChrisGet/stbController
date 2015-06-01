@@ -204,6 +204,7 @@ http://$serverip:8000/v0.0.0/$serverport/$comtosend
 URI
 
                 my $ua = new LWP::UserAgent;
+		$ua->timeout(3);
                 my $request = new HTTP::Request('POST',$uri);
                 $request->header( 'Content-Type' => 'application/json' );
                 $request->content( $json );
@@ -214,7 +215,7 @@ URI
                         my $stuff = $response->code . " " . $response->message;
                 } else {
                         my $stuff = $response->code . " " . $response->message;
-                        warn "Failed to send \"$command\" to STB \"$$stb\" on port $serverport: $stuff\n";
+                        warn "Failed to send \"$command\" to STB \"$$stb\" on port $serverport at RCES server $serverip: $stuff\n";
                 }
         }
 	untie %btcoms;
