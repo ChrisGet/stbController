@@ -83,7 +83,7 @@ function dateTime() {	// This function handles the updating of the real time ser
         		                date.setHours(hours);
                 		        date.setMinutes(mins);
                         		date.setSeconds(secs);
-					var formatteddate = date.toUTCString().replace(',',''); // Change the date format to a standard UTC string while removing all ',' characters
+					var formatteddate = date.toString().replace(',',''); // Change the date format to a standard string while removing all ',' characters
         		                var parts = formatteddate.split(" ");
                 		        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
                         		var timebit = parts[4];
