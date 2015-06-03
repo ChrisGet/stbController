@@ -24,6 +24,7 @@ my $pauseddir = $filedir . 'pidsPaused/';
 my $statefile = $filedir . 'schedulerState.txt';
 my $schedfile = ($filedir . 'eventSchedule.txt');
 my $pidfile = $filedir . 'scheduler.pid';
+my $processdebugfile = $filedir . 'scheduledEventDebug.txt';
 tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
 
 showBoxes(\$eventID) and exit if ($action =~ m/^Show$/i);
@@ -149,7 +150,7 @@ sub startScheduler {
 	sub testRunner {
 		my ($event,$stbs) = @_;
 		my $debugfile = $filedir . 'schedulerdebug.txt';
-		system("$controlscript Event \"$$event\" \"$$stbs\" \"$maindir\" logpid");
+		system("$controlscript Event \"$$event\" \"$$stbs\" \"$maindir\" logpid >> $processdebugfile 2>&1");
 
 		######### Uncomment below 4 lines to enable scheduled event logging #########
 		#my $log = $filedir . 'schedulerLog.txt';
@@ -178,6 +179,7 @@ sub stopScheduler {
 sub reloadScheduler {
 	stopScheduler();
 	startScheduler();
+	system("> $processdebugfile");
 } ### End of sub 'reloadScheduler'
 
 sub stringToNumbers {

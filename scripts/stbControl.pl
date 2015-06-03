@@ -215,7 +215,7 @@ URI
                         my $stuff = $response->code . " " . $response->message;
                 } else {
                         my $stuff = $response->code . " " . $response->message;
-                        warn "Failed to send \"$command\" to STB \"$$stb\" on port $serverport at RCES server $serverip: $stuff\n";
+                        warn "PID $$: Failed to send \"$command\" to STB \"$$stb\" on port $serverport at RCES server $serverip: $stuff\n";
                 }
         }
 	untie %btcoms;
@@ -267,10 +267,13 @@ sub sendVNCComms {
 			PeerPort => $port,
 			Proto => 'tcp',
 			Timeout => 1,
-	);
-	if (!$socket) {
-		print "Cannot connect to $stb for Network control at IP $ip, Port $port: $!\n";
-		exit (0);
+	);	
+	unless ($socket) {
+		if ($$logging) {
+                	my $logpid = $$runningpids . $$;
+        	        system("rm $logpid");
+	        }
+		die "Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
 	}
 
 	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
@@ -315,13 +318,13 @@ sub sendVNCComms {
 					}
 				}
 			} else {
-				warn "No response from STB ($ip) during VNC handshake (Client/Server Init Exchange).\n";
+				warn "No response from STB during VNC handshake (Client/Server Init Exchange).\n";
 			}
 		} else {
-			warn "No response from STB ($ip) during VNC handshake (Security Exchange).\n";
+			warn "No response from STB during VNC handshake (Security Exchange).\n";
 		}
 	} else {
-		warn "No response from STB ($ip) during VNC handshake (Protocol Exchange).\n";
+		warn "No response from STB during VNC handshake (Protocol Exchange).\n";
 	}	
 
 	untie %vnckeys;

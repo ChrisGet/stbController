@@ -18,11 +18,17 @@ chomp(my $schedpid = `cat $schedpidfile` || '');
 
 if ($schedpid) {
 	chomp(my $schedstate = `cat $statefile` || '');
+	chomp(my $res = `ps ax | grep $schedpid | grep -v grep` || '');
 	if ($schedstate =~ /^Disabled$/i) {
 		print "<font color=\"red\">> Scheduler is currently Disabled</font>";
 		exit;
+	} else {
+		if (!$res) {
+			print "<font color=\"red\">$bullet Event scheduler is not running</font>";
+			exit;
+		}
 	}
-	chomp(my $res = `ps ax | grep $schedpid | grep -v grep` || '');
+
 	chomp(my $runningtotal = `ls -l $runningdir | grep -v total | wc -l` || '');
 	chomp(my $pausedtotal = `ls -l $pauseddir | grep -v total | wc -l` || '');
 	my @parts = split(/MainLoop\s*-\s*/,$res);

@@ -18,10 +18,10 @@ chomp(my $box = $query->param('stb') || $ARGV[1] || '');
 
 stbSelect() if ($option =~ /chooseSTB/i);
 stbConfig(\$box) if ($option =~ /configSTB/i);
-printDuskyTable() and exit if ($option =~ /printDusky/i);
-printBluetoothTable() and exit if ($option =~ /printBluetooth/i);
-printNetworkTable() and exit if ($option =~ /printNetwork/i);
-printIRTable() and exit if ($option =~ /printIR/i);
+stbConfig(\$box,\'printDuskyTable') and exit if ($option =~ /printDusky/i);
+stbConfig(\$box,\'printBluetoothTable') and exit if ($option =~ /printBluetooth/i);
+stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
+stbConfig(\$box,\'printIRTable') and exit if ($option =~ /printIR/i);
 
 sub stbSelect {
 	my $dbfile = $confdir . 'stbDatabase.db';
@@ -104,7 +104,7 @@ LAST
 }
 
 sub stbConfig {
-	my ($stb) = @_;
+	my ($stb,$option) = @_;
 	my $dbfile = $confdir . 'stbDatabase.db';
 	tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 
@@ -119,6 +119,7 @@ sub stbConfig {
 		$titlename = 'Unconfigured STB';
 	}
 
+	unless ($option) {
 print <<HEAD;
 <div class="wrapLeft shaded" style="position:relative;">
 <button class="seqListBtn Del" style="position:absolute;bottom:20px;right:10px;font-size:16px;" type="button" onclick="clearSTBDataForm()">Clear All STB Data</button>
@@ -128,6 +129,7 @@ Any existing settings will be populated automatically.</h2>
 <p class="narrow" style="color:white;font-size:18px;">Enter values in the corresponding fields and hit "Submit" to update the STBs config.</p><br>
 <input type="hidden" id="stbname" name="stbname" value="$$stb">
 HEAD
+	}
 
 	##### STB Control and Video Data
 	my $type = $stbdata{$$stb}{'Type'} || '';
@@ -182,7 +184,7 @@ HEAD
 	my $mactext = $query->textfield(-id=>'mac',-name=>'MAC',-size=>'15',-default=>"$mac",-maxlength=>17);
 	#### STB Details Table stuff	
 
-	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>8);
+	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9);
 	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','Network (Sky+)','Network (Ethan)','IR (Any)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15);
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5);
@@ -203,6 +205,29 @@ HEAD
 	my $sdporttext = $query->textfield(-id=>'sdport',-name=>'SDPort',-size=>'10',-default=>"$sdport",-maxlength=>5);
 	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'12'],-default=>"$sdinput");
 	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput");
+
+	# If $option is defined, just print the control table it refers to and then exit. This
+	# supports the 'stbTypeChoice' function in stbController.js which changes the STB control
+	# details table when a user selects a control type for a box on the STB Data page. 
+	if ($option) {
+		if ($$option =~ /Dusky/i) {
+			printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport);
+			exit;
+		}
+		if ($$option =~ /Bluetooth/i) {
+			printBluetoothTable($btcontip,$btcontport);
+			exit;
+		}
+		if ($$option =~ /Network/i) {
+			printNetworkTable($networkip);
+			exit;
+		}
+		if ($$option =~ /IR/i) {
+			printIRTable($irip,$irport,$irout);
+			exit;
+		}
+	}
+	# End of $option actions
 
 	print "<div class=\"wrapRight\">";
 
