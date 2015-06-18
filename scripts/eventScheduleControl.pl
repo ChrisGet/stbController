@@ -92,7 +92,14 @@ RANDOM: {
 } # End of 'RANDOM' code block
 
 	$events{$number} = $newdetails;
-	reloadScheduler();
+
+	chomp(my $schedstate = `cat $statefile` || '');
+        if (!$schedstate) {
+                enableScheduler();
+        } else {
+                reloadScheduler();
+        }
+
 	return;
 } ### End of sub 'addEvent'
 

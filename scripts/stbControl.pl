@@ -261,7 +261,7 @@ sub sendVNCComms {
 	my $keydown = '1';
 	my $keyup = '0';
 	my @commands = split(',', $$commands);
-        my $comfile = $filedir . '/skyVNCCommands.txt';
+        my $comfile = $filedir . 'skyVNCCommands.txt';
 	my $socket = new IO::Socket::INET (
 			PeerHost => $ip,
 			PeerPort => $port,
@@ -279,6 +279,7 @@ sub sendVNCComms {
 	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
 
 	$socket->autoflush(1);
+	$socket->setsockopt(SOL_SOCKET, SO_RCVTIMEO, pack('l!l!', 2, 0));
 
 	my $stuff = '';
 	$socket->recv($stuff,12);

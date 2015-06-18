@@ -750,6 +750,53 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 }
 // ############### End of deleteSequence function
 
+function copySequence($seq) {
+        var newseq = prompt("Please give the copied sequence a different name to the orignal \"" + $seq + "\"");
+        if (!newseq) {
+                return;
+        } else {
+                if (newseq == $seq) {
+                        alert('The new name cannot be the same as the sequence being copied');
+                        return;
+                }
+
+                if (newseq.match(/\S+/)) {
+                        if (!newseq.match(/[^\w\s]|\_+/)) {
+                                var xmlhttp;
+                                if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                                        xmlhttp=new XMLHttpRequest();
+                                } else {// code for IE6, IE5
+                                        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                                }
+                                xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + newseq, true);
+                                xmlhttp.onreadystatechange=function(){
+                                        if (xmlhttp.readyState==4) {
+                                                var returned = xmlhttp.responseText;
+                                                if (returned == 'Found') {
+                                                        alert("A sequence already exists with the name \"" + newseq + "\". Please choose a different name");
+                                                        return;
+                                                } else {
+                                                        perlCall('','scripts/sequenceControl.pl','action','Copy','sequence',newseq,'originalName',$seq);
+                                                        newseq = newseq.toUpperCase();
+                                                        alert("The sequence \"" + $seq + "\" was successfully copied to \"" + newseq + "\"");
+                                                        pageCall('dynamicPage','web/sequencesPage.html');
+                                                        setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
+                                                }
+                                        }
+                                }
+                                xmlhttp.send(null);
+                        } else {
+                                alert('The new sequence name can only contain letters, numbers, and spaces');
+                                return;
+                        }
+                } else {
+                        alert('The new sequence name cannot be blank!');
+                        return;
+                }
+        }
+}
+// ############### End of copySequence function
+
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
 	var xmlhttp;
         if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari

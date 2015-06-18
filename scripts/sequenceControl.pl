@@ -28,6 +28,8 @@ showSequences(\$sequence) and exit if ($action =~ m/^Show$/i);
 addSequence(\$sequence,\$commands) and exit if ($action =~ m/^Add$/i);
 deleteSequence(\$sequence) and exit if ($action =~ m/^Delete$/i);
 addSequence(\$sequence,\$commands,\$origname) and exit if ($action =~ m/^Edit$/i);
+copySequence(\$sequence,\$origname) and exit if ($action =~ m/^Copy$/i);
+
 
 untie %sequences;
 
@@ -84,6 +86,18 @@ sub addSequence {
 
 	$sequences{$$seq} = $$coms;
 } # End of sub 'addSequence'
+
+sub copySequence {
+	my ($seq,$orig) = @_;
+	$$seq = uc($$seq);
+	$$seq =~ s/^\s+//g;     # Remove leading whitespace
+        $$seq =~ s/\s+$//g;     # Remove trailing whitespace
+        $$seq =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
+	my $data = $sequences{$$orig};
+	if ($data) {
+		$sequences{$$seq} = $data;
+	}	
+}
 
 sub deleteSequence {
 	my ($seq) = @_;

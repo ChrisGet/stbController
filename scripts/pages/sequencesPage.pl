@@ -53,16 +53,19 @@ print <<SEQ;
 <td style="padding:3px;width:auto;">
  <table class="roundedTable" style="width:100%;">
   <tr>
-   <td colspan="2" align="center" class="fancyCell" style="width:250px;height:40px;border-radius:4px;">
+   <td colspan="3" align="center" class="fancyCell" style="width:250px;height:40px;border-radius:4px;">
     <label class="seqLabel masterTooltip" value="Commands: $titlestring">$key</label>
    </td>
   </tr>
   <tr>
-   <td align="center" width="50%">
+   <td align="center" width="33%">
     <button class="seqListBtn" onclick="editSequencePage('$key')">Edit</button>
    </td>
-   <td align="center" width="50%">
+   <td align="center" width="33%">
     <button class="seqListBtn Del" onclick="deleteSequence('$key')">Delete</button>
+   </td>
+   <td align="center" width="33%">
+    <button class="evSchedAdmin pauseall" onclick="copySequence('$key')">Copy</button>
    </td>
   </tr>
  </table>

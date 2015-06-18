@@ -124,7 +124,7 @@ while ($r <= $rows) {
 		my $buttontext;
 		if (exists $stbdata{$id}) {
 		} else {
-			%{$stbdata{$id}} = {};
+			$stbdata{$id} = {};
 		}
 
 		if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
