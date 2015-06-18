@@ -1,8 +1,8 @@
-eventSchedule.txt
-schedulerState.txt
-stbGroups.txt
-stbDatabase.db
-commandSequences.txt
-stbGrid.conf
-homeDir.txt
-scheduler.pid
+**/eventSchedule.txt
+**/schedulerState.txt
+**/stbGroups.txt
+**/stbDatabase.db
+**/commandSequences.txt
+**/stbGrid.conf
+**/homeDir.txt
+**/scheduler.pid
