@@ -143,7 +143,11 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 					if (!notblank) {
 						$('#dynamicTitle').text('Click here to change the default title!');
 					} else {
-						$('#dynamicTitle').text(title);
+						if (title.match(/404 not found/i)) {
+							$('#dynamicTitle').text('Click here to change the default title!');
+						} else {
+							$('#dynamicTitle').text(title);
+						}
 					}
 				}
 			}
