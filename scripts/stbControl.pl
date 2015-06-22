@@ -266,7 +266,7 @@ sub sendVNCComms {
 			PeerHost => $ip,
 			PeerPort => $port,
 			Proto => 'tcp',
-			Timeout => 1,
+			Timeout => 2,
 	);	
 	unless ($socket) {
 		if ($$logging) {
