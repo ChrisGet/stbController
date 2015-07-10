@@ -18,7 +18,7 @@ chomp(my $schedpid = `cat $schedpidfile` || '');
 
 if ($schedpid) {
 	chomp(my $schedstate = `cat $statefile` || '');
-	chomp(my $res = `ps ax | grep $schedpid | grep -v grep` || '');
+	chomp(my $res = `ps ax | grep \"\^\\s\*$schedpid\" | grep -v grep` || '');
 	if ($schedstate =~ /^Disabled$/i) {
 		print "<font color=\"red\">> Scheduler is currently Disabled</font>";
 		exit;
