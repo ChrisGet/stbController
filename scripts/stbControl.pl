@@ -152,7 +152,6 @@ sub sendDuskyComms {
 			my $fullcom = 'A+' . $duskyport . $raw . 'x';
 			$dusky->send($fullcom);
 		}
-		sleep 1;		
 		$dusky->close;
 		untie %duskycoms;
 	} else {
