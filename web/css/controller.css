@@ -120,6 +120,8 @@ body {
 	border:3px solid #707070;
 	border-radius:5px;
 	padding:3px;
+	max-height:100%;
+	overflow:scroll;
 }
 
 .sequenceButton {
