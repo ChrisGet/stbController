@@ -33,6 +33,7 @@ sub createConf {
 	my $rows = $query->textfield(-id=>'rows',-name=>'rows',-size=>'10');
 	my $columns = $query->textfield(-id=>'columns',-name=>'columns',-size=>'10');
 	my $fontformat = '<font size="4" color="#267A94">';
+	print '<div class="wrapLeft shaded">';
 	print '<div class="userForm"><body>';
 	print "<p style=\"color:red;font-size:20px;margin-bottom:3px;margin-top:5px;\">No configuration files found for the STB grid:</p>";
 
@@ -49,6 +50,7 @@ $rows<br>
 </form>
 <button class="newSeqSubmit" style="float:none;" onclick="validate()">Create New Grid</button><br>
 </body>
+</div>
 </div>
 FORM
 } 
