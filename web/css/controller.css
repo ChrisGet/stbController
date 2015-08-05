@@ -124,6 +124,10 @@ body {
 	overflow:scroll;
 }
 
+#sequenceButtons::-webkit-scrollbar { /* Hides scroll bars (Look terrible in Windows) */
+    display: none; 
+}
+
 .sequenceButton {
 	border: 1px solid #96d1f8;
         background: #65a9d7;
