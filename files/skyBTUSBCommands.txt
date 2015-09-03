@@ -1,10 +1,10 @@
 backup:Back
 channel down:Ch-
 channel up:Ch+
-cursor right:TouchPad{"action":"pressTouch","duration":0.1,"points":[[472,255,0],[474,255,0]],"area":"Right"
-cursor up:TouchPad{"action":"pressTouch","duration":0.1,"points":[[230,28,0],[232,27,0]],"area":"Up"
-cursor left:TouchPad{"action":"pressTouch","duration":0.1,"points":[[37,255,0],[35,255,0]],"area":"Left"
-cursor down:TouchPad{"action":"pressTouch","duration":0.1,"points":[[196,476,0],[206,478,0]],"area":"Down"
+cursor right:TouchPad{"action":"draw","move":[[192,256,0],[224,256,1],[256,256,2],[288,256,3],[320,256,4]]
+cursor left:TouchPad{"action":"draw","move":[[320,256,0],[288,256,1],[256,256,2],[224,256,3],[192,256,4]]
+cursor up:TouchPad{"action":"draw","move":[[256,320,0],[256,288,1],[256,256,2],[256,224,3],[256,192,4]]
+cursor down:TouchPad{"action":"draw","move":[[256,192,0],[256,224,1],[256,256,2],[256,288,3],[256,320,4]]
 fast forward:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[510,0,0],[511,0,0]],"area":"FW"
 pause:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
 play:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
