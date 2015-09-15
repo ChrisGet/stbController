@@ -23,18 +23,23 @@ my $runningpids = $filedir . '/pidsRunning/';
 my $stbDataFile = ($maindir . '/config/stbDatabase.db');
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $seqfile = ($filedir . 'commandSequences.txt');
+my $pidfile = ($filedir . 'scheduler.pid');
 
 chomp(my $action = $ARGV[0] // $query->param('action') // '');
 chomp(my $command = $ARGV[1] // $query->param('command') // '');
 chomp(my $info = $ARGV[2] // $query->param('info') // '');
 chomp(my $logpid = $ARGV[4] || '');	# $logpid will only ever be used by the backend eventScheduleControl.pl script
 my $logging = '';
+my $schedpid = '';
+
 die "Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
 die "No STBs Selected" if (!$info);
 
 if ($logpid) {
 	if ($logpid =~ /^logpid$/i) {
 		$logging = 1;
+		chomp($schedpid = `cat $pidfile` // '');
+                $schedpid =~ s/\s+//g if ($schedpid);
 	}
 }
 
@@ -106,7 +111,11 @@ sub control {
 		my $pid = fork;
         	if ($pid==0) {
 			# Fork the sendComms sub for each stb, inputting the stb, commands, and %boxdata for it
-			$0 = "stbControl - $stb - $type";
+			if ($logging) {
+                                $0 = "stbControl(Scheduler-$schedpid) - $stb - $type";
+                        } else {
+                                $0 = "stbControl - $stb - $type";
+                        }
                 	sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/);
 			sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 			sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
