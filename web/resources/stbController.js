@@ -1,4 +1,5 @@
 <!-- hide script from old browsers
+var isFirefox = typeof InstallTrigger !== 'undefined';
 
 window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
@@ -600,43 +601,59 @@ function clearSeqArea() {	// This function handles clearing of the dynamic areas
 function removeFromSeq($this) {	// This function handles removing specific elements from the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
 	var rem = document.getElementById($this);
 	document.getElementById('sequenceArea').removeChild(rem);
+
+	if (isFirefox) {
+                var data = document.getElementById('sequenceArea').innerHTML;
+                var newdata = data.replace(/(?:\&nbsp;){3,}/g, "\&nbsp\;\&nbsp\;");
+                document.getElementById('sequenceArea').innerHTML = newdata;
+        }
 }
 // ############### End of removeFromSeq function
 
 function insertButtonAtCaret($btn) {	// This function handles the second part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
-    $('#sequenceArea').focus();
-    var sel, range;
-    if (window.getSelection) {
-        // IE9 and non-IE
-        sel = window.getSelection();
-        if (sel.getRangeAt && sel.rangeCount) {
-            range = sel.getRangeAt(0);
-            range.deleteContents();
+    	$('#sequenceArea').focus();
+    	var sel, range;
+    	if (window.getSelection) {
+		// IE9 and non-IE
+        	sel = window.getSelection();
+        	if (sel.getRangeAt && sel.rangeCount) {
+            		range = sel.getRangeAt(0);
+            		range.deleteContents();
 
-            // Range.createContextualFragment() would be useful here but is
-            // only relatively recently standardized and is not supported in
-            // some browsers (IE9, for one)
-            var el = document.createElement("div");
-            el.appendChild($btn);
-            var frag = document.createDocumentFragment(), node, lastNode;
-            while ( (node = el.firstChild) ) {
-                lastNode = frag.appendChild(node);
-            }
-            range.insertNode(frag);
+            		// Range.createContextualFragment() would be useful here but is
+            		// only relatively recently standardized and is not supported in
+            		// some browsers (IE9, for one)
+            		var el = document.createElement("div");
+			var starttext = document.createTextNode('\u00A0');
+			var endtext = document.createTextNode('\u00A0');
 
-            // Preserve the selection
-            if (lastNode) {
-                range = range.cloneRange();
-                range.setStartAfter(lastNode);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            }
-        }
-    } else if (document.selection && document.selection.type != "Control") {
-        // IE < 9
-        document.selection.createRange().appendChild($btn);
-    }
+			if (isFirefox) {	// For Firefox browser we add whitespace to the start and end of the inserted button
+                                el.appendChild(starttext);
+                                el.appendChild($btn);
+                                el.appendChild(endtext);
+                        } else {
+                                el.appendChild($btn);
+                        }
+			
+            		var frag = document.createDocumentFragment(), node, lastNode;
+            		while ( (node = el.firstChild) ) {
+                		lastNode = frag.appendChild(node);
+            		}
+            		range.insertNode(frag);
+
+            		// Preserve the selection
+            		if (lastNode) {
+                		range = range.cloneRange();
+                		range.setStartAfter(lastNode);
+                		range.collapse(true);
+                		sel.removeAllRanges();
+                		sel.addRange(range);
+            		}
+        	}
+    	} else if (document.selection && document.selection.type != "Control") {
+        	// IE < 9
+        	document.selection.createRange().appendChild($btn);
+    	}
 }
 // ############### End of insertButtonAtCaret function
 

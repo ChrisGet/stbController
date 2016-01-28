@@ -7,7 +7,7 @@ use DBM::Deep;
 my $query = CGI->new;
 print $query->header();
 
-chomp(my $maindir = (`cat homeDir.txt` || ''));
+chomp(my $maindwir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
@@ -185,7 +185,7 @@ HEAD
 	#### STB Details Table stuff	
 
 	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9);
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','Network (Sky+)','Network (Ethan)','IR (Any)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','Network (Sky+)','Network (Ethan)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15);
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5);
 	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1");

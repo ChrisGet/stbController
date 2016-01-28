@@ -896,6 +896,7 @@ table.stbConfigGrid {
 	word-wrap:break-word;
 	margin-top:10px;
 	border-radius:4px;
+	font-size:13px;
 }
 
 .seqAreaBtn {
@@ -903,10 +904,11 @@ table.stbConfigGrid {
 	-webkit-border-radius: 4px;
         -moz-border-radius: 4px;
         border-radius: 4px;	
-	margin-left:15px;
+	margin-left:14px;
 	margin-top:3px;
 	background-color:white;
-	
+	height:auto;
+        font-size:13px;
 }
 .seqAreaBtn:hover {
 	background-color:#AA030B;
