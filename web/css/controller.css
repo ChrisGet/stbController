@@ -1376,3 +1376,34 @@ input[type="text"]:focus {
 	display:inline-block;
 	width:100%;
 }
+
+#addSequenceDiv {
+	display:inline-block;
+	width:98%;
+	height:auto;
+	border:3px solid #707070;
+	border-radius:4px;
+	margin-top:7px;
+	padding:3px;
+}
+#addSequenceDiv h1 {
+	font-size:20px;
+	margin:1px;
+	text-decoration:underline;
+}
+#addSequenceDiv p {
+	margin:2px;
+	font-size:15px;
+	color:white;
+}
+
+#sequenceEventArea {
+	float:left;
+	background-color:#C0C0C0;		
+	width:100%;
+	min-height:100px;
+	word-wrap:break-word;
+	margin-top:10px;
+	border-radius:4px;
+	font-size:13px;
+}

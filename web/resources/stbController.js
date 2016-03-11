@@ -218,6 +218,9 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 		}
 	}
 	xmlhttp.send(null);
+
+	// Reset the sequenceIndex to 1
+	sequenceIndex = '1';
 }
 // ############### End of perlCall function
 
@@ -577,7 +580,11 @@ function arrowDir($opt) {	// This function handles the Row Up and Down buttons o
 
 var sequenceIndex = '1';	// Create the GLOBAL sequenceIndex variable (scalar) and set it to '1'
 
-function seqTextUpdate($id,$text) {	// This function handles the first part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
+function seqTextUpdate($id,$text,$area) {	// This function handles the first part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
+	if (!$area) {
+		$area = '';
+	}
+
 	var btn = document.createElement("input");
 	btn.type = 'button';
 	btn.value = $text;
@@ -585,33 +592,19 @@ function seqTextUpdate($id,$text) {	// This function handles the first part of a
 	btn.id = newid
 	btn.name = $id; 
 	sequenceIndex++;
-	var newonclick = "removeFromSeq('" + newid + "')";
+	var newonclick = "removeFromSeq('" + newid + "','" + $area + "')";
 	btn.setAttribute("class", "seqAreaBtn");
 	btn.setAttribute("onclick", newonclick);
-	insertButtonAtCaret(btn);
+	insertButtonAtCaret(btn,$area);
 }
 // ############### End of seqTextUpdate function
 
-function clearSeqArea() {	// This function handles clearing of the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
-	document.getElementById('sequenceArea').innerHTML = '';
-	sequenceIndex = '1';
-}
-// ############### End of clearSeqArea function
+function insertButtonAtCaret($btn,$area) {	// This function handles the second part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
+	if (!$area) {
+		$area = 'sequenceArea';
+	}
 
-function removeFromSeq($this) {	// This function handles removing specific elements from the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
-	var rem = document.getElementById($this);
-	document.getElementById('sequenceArea').removeChild(rem);
-
-	if (isFirefox) {
-                var data = document.getElementById('sequenceArea').innerHTML;
-                var newdata = data.replace(/(?:\&nbsp;){3,}/g, "\&nbsp\;\&nbsp\;");
-                document.getElementById('sequenceArea').innerHTML = newdata;
-        }
-}
-// ############### End of removeFromSeq function
-
-function insertButtonAtCaret($btn) {	// This function handles the second part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
-    	$('#sequenceArea').focus();
+    	$('#' + $area).focus();
     	var sel, range;
     	if (window.getSelection) {
 		// IE9 and non-IE
@@ -657,6 +650,28 @@ function insertButtonAtCaret($btn) {	// This function handles the second part of
 }
 // ############### End of insertButtonAtCaret function
 
+function clearSeqArea($area) {	// This function handles clearing of the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
+	document.getElementById($area).innerHTML = '';
+	//sequenceIndex = '1';
+}
+// ############### End of clearSeqArea function
+
+function removeFromSeq($this,$area) {	// This function handles removing specific elements from the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
+	var rem = document.getElementById($this);
+	if (!$area) {
+		$area = 'sequenceArea';
+	}
+
+	document.getElementById($area).removeChild(rem);
+
+	if (isFirefox) {
+                var data = document.getElementById($area).innerHTML;
+                var newdata = data.replace(/(?:\&nbsp;){3,}/g, "\&nbsp\;\&nbsp\;");
+                document.getElementById($area).innerHTML = newdata;
+        }
+}
+// ############### End of removeFromSeq function
+
 function addSeqTO() {	// This function handles adding of Timeouts to the dynamic area on the Sequences creation/editing pages
 	var timeout = document.getElementById('timeoutList').value;
 	var id = 't' + timeout;
@@ -671,6 +686,15 @@ function addSeqGroup() {	// This function handles adding of STB Groups to the dy
 		return;
 	}
 	seqTextUpdate(group,group);
+}
+// ############### End of addSeqGroup function
+
+function addSeqSequence() {	// This function handles adding of Sequences to the dynamic area on the Events Schedule creation/editing pages
+	var seq = document.getElementById('seqList').value;
+	if(!seq) {
+		return;
+	}
+	seqTextUpdate(seq,seq,'sequenceEventArea');
 }
 // ############### End of addSeqGroup function
 
@@ -1101,73 +1125,81 @@ function newSchedValidate($event) {	// This function handles validation and subm
 	}
 	if (!members[0]) {
 		alert('You have not selected any target STBs for this scheduled event!');
-	} else {
-		var mins = '';
-		var hours = '';
-		var starthrs = '';
-		var endhrs = '';
-		if($('input[value=everyxmins]').is(":checked")) {
-			mins = '*/' + $('#everyminutes').val();
-			if ($('#everyhrstart').val() == $('#everyhrend').val()) {
-				hours = $('#everyhrend').val();
-			} else { 
-				hours = $('#everyhrstart').val() + '-' + $('#everyhrend').val();
-			}
-		} else {
-			if($('input[value=normalmins]').is(":checked")) {
-				mins = $('#minutes').val();
-				hours = $('#hours').val();
-			} else {
-				alert('You have not used the radio buttons to choose when the event runs');
-				return;
-			}
-		} 
+		return;
+	}
 
-		var days = '';
-		if($('input[value=dayPresets]').is(":checked")) {
-			days = $('#dayopts').val();
-		} else {
-			if($('input[value=dayCustom]').is(":checked")) {
-				$('input[name=dayCheck]').each(function(){
-					if( $(this).prop('checked') ) {
-						var val = $(this).val();
-						days += val + ',';
-					}
-				});
+	// Validate the selected sequences
+	var seqels = document.getElementById('sequenceEventArea').getElementsByTagName('input');
+	var seqs = [];
+	for (var i = 0; i < seqels.length; i++) {
+		seqs.push(seqels[i].name);
+	}
+	if (!seqs[0]) {
+		alert('You have not selected any Sequences for this scheduled event!');
+		return;
+	}
 
-				if (!days) {
-					alert('You have chosen "Custom Days" but not selected any days!');
-					return;
-				}
-			} else {
-				alert('You didnt choose from the Day Options!');
-				return;
-			}
+	var mins = '';
+	var hours = '';
+	var starthrs = '';
+	var endhrs = '';
+	if($('input[value=everyxmins]').is(":checked")) {
+		mins = '*/' + $('#everyminutes').val();
+		if ($('#everyhrstart').val() == $('#everyhrend').val()) {
+			hours = $('#everyhrend').val();
+		} else { 
+			hours = $('#everyhrstart').val() + '-' + $('#everyhrend').val();
 		}
-
-		var seqsel = $('#seqList').val();
-		if (!seqsel) {
-			alert('Sequence selection cannot be blank!');
+	} else {
+		if($('input[value=normalmins]').is(":checked")) {
+			mins = $('#minutes').val();
+			hours = $('#hours').val();
+		} else {
+			alert('You have not used the radio buttons to choose when the event runs');
 			return;
 		}
+	} 
 
-		var dom = $('#dom').val();
-		var month = $('#month').val();
-		var sequence = $('#seqList').val();
-		var boxes = members.join(',');
+	var days = '';
+	if($('input[value=dayPresets]').is(":checked")) {
+		days = $('#dayopts').val();
+	} else {
+		if($('input[value=dayCustom]').is(":checked")) {
+			$('input[name=dayCheck]').each(function(){
+				if( $(this).prop('checked') ) {
+					var val = $(this).val();
+					days += val + ',';
+				}
+			});
 
-		var wholething = mins + '|' + hours + '|' + dom + '|' + month + '|' + days + '|' + sequence + '|' + boxes;
-		
-		if ($event) {
-			alert('Success! Your scheduled event was updated');
-			perlCall('','scripts/eventScheduleControl.pl','action','Edit','eventID',$event,'details',wholething);
+			if (!days) {
+				alert('You have chosen "Custom Days" but not selected any days!');
+				return;
+			}
 		} else {
-			alert('Success! Your new scheduled event has been created');
-			perlCall('','scripts/eventScheduleControl.pl','action','Add','eventID','','details',wholething);
+			alert('You didnt choose from the Day Options!');
+			return;
 		}
-		pageCall('dynamicPage','web/eventsSchedulePage.html');
-		setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 	}
+
+	var dom = $('#dom').val();
+	var month = $('#month').val();
+	var sequence = $('#seqList').val();
+	var boxes = members.join(',');
+	var sequences = seqs.join(',');
+	var activestate = document.getElementById('eventActive').value;
+
+	var wholething = activestate + '|' + mins + '|' + hours + '|' + dom + '|' + month + '|' + days + '|' + sequences + '|' + boxes;
+		
+	if ($event) {
+		alert('Success! Your scheduled event was updated');
+		perlCall('','scripts/eventScheduleControl.pl','action','Edit','eventID',$event,'details',wholething);
+	} else {
+		alert('Success! Your new scheduled event has been created');
+		perlCall('','scripts/eventScheduleControl.pl','action','Add','eventID','','details',wholething);
+	}
+	pageCall('dynamicPage','web/eventsSchedulePage.html');
+	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
 // ############### End of newSchedValidate function
 
@@ -1229,7 +1261,13 @@ function editSchedulePage2($event) {	// This function handles the second part of
 	xmlhttp.onreadystatechange=function(){
                 if (xmlhttp.readyState==4) {
 		     	var returned = xmlhttp.responseText;
-			var members = returned.split(',');
+			var stbregex = /Boxes\{(.+)\}Sequences/;
+			var seqregex = /Sequences\{(.+)\}/;
+
+			var stbmatch = stbregex.exec(returned);
+			var seqmatch = seqregex.exec(returned);
+
+			var members = stbmatch[1].split(',');
 			for (var i = 0; i < members.length; i++) {
 				var bits = members[i].split("~");
 				var id = bits[0];
@@ -1239,9 +1277,22 @@ function editSchedulePage2($event) {	// This function handles the second part of
 		                if (!match)  {
 					seqTextUpdate(id,text);
 				} else {
-					alert('A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+					alert('WARNING: A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
 				}
-			}	
+			}
+
+			var sequences = seqmatch[1].split(',');
+			for (var i = 0; i < sequences.length; i++) {
+				var bits = sequences[i].split("~");
+                                var id = bits[0];
+                                var text = bits[1];
+				if (text.match(/^-$/)) {
+					alert('WARNING: A sequence that was included in this scheduled event could not be found. It may have been renamed or deleted. Please verify the sequences and update this scheduled event.');
+				} else {
+					seqTextUpdate(id,text,'sequenceEventArea');
+				}
+			}
+
 		}
 	}
     	xmlhttp.send(null);

@@ -118,7 +118,7 @@ print <<MAIN;
 	<font size="6"><u>Sequence Area</u></font><br><br>
 	<table>
 		<tr>
-		<td><button class="menuButton" onclick="clearSeqArea()">Clear Sequence Area</button></td>
+		<td><button class="menuButton" onclick="clearSeqArea('sequenceArea')">Clear Sequence Area</button></td>
 		</tr>
 	</table>
 	</div>

@@ -23,11 +23,13 @@ my $runningdir = $filedir . 'pidsRunning/';
 my $pauseddir = $filedir . 'pidsPaused/';
 my $statefile = $filedir . 'schedulerState.txt';
 my $schedfile = ($filedir . 'eventSchedule.txt');
+my $sequencefile = ($filedir . 'commandSequences.txt');
 my $pidfile = $filedir . 'scheduler.pid';
 my $processdebugfile = $filedir . 'scheduledEventDebug.txt';
 tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
+tie my %sequencedata, 'Tie::File::AsHash', $sequencefile, split => ':' or die "Problem tying \%sequences to $sequencefile: $!\n"; 
 
-showBoxes(\$eventID) and exit if ($action =~ m/^Show$/i);
+showData(\$eventID) and exit if ($action =~ m/^Show$/i);
 startScheduler() and exit if ($action =~ m/^Start$/i);
 stopScheduler() and exit if ($action =~ m/^Stop$/i);
 reloadScheduler() and exit if ($action =~ m/^Reload$/i);
@@ -232,12 +234,14 @@ sub disableEvent {
 	}
 } ### End of sub 'disableEvent'
 
-sub showBoxes {
+sub showData {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
-		my ($targets) = $events{$$eventID} =~ /\|(.[^\|]+)$/;
+		my @splits = split /\Q|/, $events{$$eventID};	# We use \Q to quote the | symbol otherwise it is treated as a metachar and the split fails
+		#my ($targets) = $events{$$eventID} =~ /\|(.[^\|]+)$/;
+		my $targets = $splits[7];
 		my @stbs = split(',',$targets);
-		my $resforgui = '';
+		my $resforgui = 'Boxes{';
 		use DBM::Deep;
                 my $stbdatafile = $maindir . '/config/stbDatabase.db';
                 tie my %stbdata, 'DBM::Deep', {file => $stbdatafile, locking => 1, autoflush => 1, num_txns => 100};
@@ -253,8 +257,21 @@ sub showBoxes {
 				$resforgui .= "$stb~$stb,";
 			}
 		}
-
 		$resforgui =~ s/,$//;
+		$resforgui .= '}Sequences{';
+
+		my $sequences = $splits[6];
+		my @seqs = split(',',$sequences);
+		foreach my $seq (@seqs) {
+			if (exists $sequencedata{$seq}) {
+				$resforgui .= "$seq~$seq,";
+			} else {
+				$resforgui .= "$seq~-,";
+			}
+		}
+		$resforgui =~ s/,$//;
+		$resforgui .= '}';
+
 		print $resforgui;
 
 	} else {

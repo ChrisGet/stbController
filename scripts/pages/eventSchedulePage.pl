@@ -134,10 +134,13 @@ ADMINTABLE
 		$stbnames =~ s/\,$//;
 		$stbnames =~ s/^ //;
 
+		my $eventdata = $data{'Event'};
+		$eventdata =~ s/,/, /g;
+
 print <<STUFF;
 <table class="Bordered">
 <tr><td class="fancyCell cellHead" width="100px">Time</td><td class="fancyCell cellHead" width="110px">Day Of Month</td><td class="fancyCell cellHead" width="60px">Month</td><td class="fancyCell cellHead" width="110px">Day Of Week</td><td class="fancyCell cellHead" width="120px">Event</td><td class="fancyCell cellHead" width="300px">Target STB(s)</td><td rowspan="2" style="text-align:center;vertical-align:middle;" width="80px">$editbtn<br>$delbtn</td><td rowspan="2" width="90px">$togglebtn</td></tr>
-<tr><td class="cellInfo" style="max-width:100px;">$time</td><td class="cellInfo" style="max-width:110px;">$dom</td><td class="cellInfo" style="max-width:60px;">$$months</td><td class="cellInfo" style="max-width:110px;">$$days</td><td class="cellInfo" style="max-width:120px;">$data{'Event'}</td><td class="cellInfo" style="max-width:300px;">$stbnames</td></tr>
+<tr><td class="cellInfo" style="max-width:100px;">$time</td><td class="cellInfo" style="max-width:110px;">$dom</td><td class="cellInfo" style="max-width:60px;">$$months</td><td class="cellInfo" style="max-width:110px;">$$days</td><td class="cellInfo" style="max-width:120px;">$eventdata</td><td class="cellInfo" style="max-width:300px;">$stbnames</td></tr>
 STUFF
 	}
 
@@ -183,6 +186,7 @@ sub createEvSched {
 	my $everyhrstart = '00';	# Used if the event runs every x minutes at a certain time
 	my $everyhrend = '00';		# Same as above
 	my @evhrs = ('00'..'23');
+	$active = 'y';
 	if ($event) {
 		if ($$event) {
 			my @info = split('\|',$events{$$event});
@@ -342,6 +346,7 @@ BOTTOMTABLELEFT
 
 	my @seqs = sort keys %sequences;
 	my $seqlist = $query->popup_menu(-id=>'seqList',-name=>'seqList',-values=>[@seqs],-default=>$eventname,-class=>'styledSelect');
+	my $addseqbtn = "<button class=\"menuButton\" onclick=\"addSeqSequence()\">Add Sequence</button>";
 
 print <<BOTTOMTABLERIGHT1;	# Print the table which holds the list of available sequences to be selected
 <table class="Bordered" style="height:auto;width:40%;float:right;">
@@ -355,7 +360,19 @@ print <<BOTTOMTABLERIGHT1;	# Print the table which holds the list of available s
  <tr>
   <td align="center">$seqlist</td> 
  </tr>
+ <tr>
+  <td align="center">$addseqbtn</td> 
+ </tr>
 </table>
+<div id="addSequenceDiv">
+	<h1>Sequences</h1>
+	<p>Clicking the "Add Sequence" button above will add the sequence to the list.</p>
+	<p>Each sequence selected will be run one at a time in the order selected.</p>
+	<button class="menuButton" onclick="clearSeqArea('sequenceEventArea')">Clear Sequences</button>
+	
+	<div id="sequenceEventArea" contenteditable="true">
+	</div>
+</div>
 BOTTOMTABLERIGHT1
 
 	my @groups = sort keys %groups;
@@ -381,11 +398,12 @@ print <<TARGETS;		# Print the div which holds the Target STBs data
 	<p style="margin-top:2px;margin-bottom:2px;margin-left:2px;font-size:15px;color:white;">Click on a box in the grid to the right to add it to the list of target STBs (below)<br>
 		You can also add a group by selecting it from the drop down list above and clicking "Add Group"</p>
 	<p style="margin-top:2px;margin-bottom:6px;margin-left:2px;font-size:15px;color:#c0c0c0;">Click on a box or group in the Target STB List to remove it.</p>
-	<button class="menuButton" onclick="clearSeqArea()">Clear Target STB List</button>
+	<button class="menuButton" onclick="clearSeqArea('sequenceArea')">Clear Target STB List</button>
 	<div id="sequenceArea" contenteditable="true"></div>
 	
 </div>
 <br>
+<input type="hidden" id="eventActive" value="$active">
 <button class="newSeqSubmit" onclick="$onclick">$buttontext</button>
 TARGETS
 	print '</div>';	# End of div 'wrapLeft'
@@ -477,29 +495,6 @@ LAST
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
 
-#                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
-
-#                my $c = '0';
-
-#                foreach my $key (sort { ($a =~ /STB(\d+)/)[0] <=> ($b =~ /STB(\d+)/)[0] } keys %stbdata) {
-#                        if ($c >= $columns) {
-#                                print '</tr><tr>';
-#                                $c = '0';
-#                        }
-#                        my ($num) = $key =~ /STB(\d+)/;
-#			my $name = 'STB ' . $num;
-#                        $name = $stbdata{$key}{'Name'} if ((exists $stbdata{$key}{'Name'}) and ($stbdata{$key}{'Name'} =~ /\S+/));
-#print <<KEY;
-#<td><button id="$key" class="configButton" onClick="seqTextUpdate('$key','$name')">$name</button></td>
-#KEY
-#                        $c++;
-#                }
-#                print '</table></div>';
-#        } else {
-#                print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
-#        }
-	
-	
 	untie %groups;
 	untie %sequences;
 	untie %events;
