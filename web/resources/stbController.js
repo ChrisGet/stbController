@@ -887,6 +887,7 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 					if (id == 'passive') {
 						text = 'Deep Sleep';
 					}
+					text = text.replace("cursor ","");
 					var bits = text.split(" ");
 					var newtext = '';
 					for (var o = 0; o < bits.length; o++) {
