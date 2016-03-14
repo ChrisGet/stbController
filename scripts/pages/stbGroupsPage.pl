@@ -179,7 +179,7 @@ HEAD
                 my $c = '1';
                 while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+<td scope="col" width="80px"><button class="gridButton grpAdd" onclick="addGroupMulti('col$c')">Column $c</button></td>
 COL
                         $c++;
                 }
@@ -214,8 +214,9 @@ COL
                                         $onclick = '';
                                 }
 
+				my $location = 'col' . $c . 'row' . $r;
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick >$buttontext</button></td>
+<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick data-loc="$location">$buttontext</button></td>
 BOX
 
                                 $stbno++;
@@ -223,7 +224,7 @@ BOX
                         }
 
 print <<ROWEND;
-<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+<th><button id="Row $r" class="gridButton row" onclick="addGroupMulti('row$r')" type="button">Row $r</button></th></tr>
 ROWEND
 
                         $r++;

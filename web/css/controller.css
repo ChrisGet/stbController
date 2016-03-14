@@ -799,6 +799,9 @@ button.highlighted {
 .gridButton.row.inactive:hover {
 	cursor:auto;
 }
+.gridButton.grpAdd:hover {
+	cursor:pointer;
+}
 
 .stbButton {
    	border: 1px solid #999966;

@@ -1365,4 +1365,28 @@ function scheduleAdmin($option) {	// This function handles the Events Scheduler 
 }
 // ############### End of scheduleAdmin function
 
+function addGroupMulti($sel) {
+	var btns = document.querySelectorAll("[data-loc]");
+	var regex = '';
+
+	if ($sel.match(/row/)) {
+		regex = new RegExp($sel + "$");
+	} else if ($sel.match(/col/)) {
+		regex = new RegExp ($sel + 'row');
+	} else {
+		alert('Selection error');
+		return;
+	}
+
+	for (var i = 0; i < btns.length; i++) {
+		var data = btns[i].getAttribute('data-loc');
+		var match = regex.exec(data);
+		if (match) {
+			//matches++;
+			btns[i].click();
+		}
+	}
+}
+// ############### End of addGroupMulti function
+
 // end hiding script from old browsers -->
