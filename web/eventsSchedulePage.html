@@ -5,16 +5,14 @@
 	<div id="evSchedHeader">
 		<div id="schedAdmin">
 		</div>
-		<p style="font-size:25px;margin-top:3px;margin-bottom:0em;">Welcome to the Events Schedule Page</p>
-		<p style="font-size:20px;margin-top:2px;margin-bottom:5px;">Here you can setup events to be run on a regular schedule, or even just once</p>
+		<h1>Welcome to the Events Schedule Page</h1>
+		<p>Here you can setup events to be run on a regular schedule, or even just once</p>
 	</div>
 
 	<div id="evSchedPageAdd">
 		<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/eventSchedulePage.pl','action','Create');setTimeout(function(){bindTrigger()},500)">Click Here To Create A New Scheduled Event</button>
 	</div>
-	<div id="evSchedHeader">
-		<p style="font-size:20px;margin-bottom:5px;margin-top:5px;">The currently scheduled events are shown below:</p>
-	</div>
+	<p style="font-size:20px;margin-bottom:5px;margin-top:5px;">The currently scheduled events are shown below:</p>
 	<div id="evSchedsAvailable">
 	</div>
 </div>

@@ -25,6 +25,7 @@
 	margin-left:10px;
 	width:auto;
 	font-size:30px;
+	text-shadow:-1px 1px #49b0d0;
 }
 
 .topBarTextDynamic{
@@ -35,6 +36,7 @@
 	color:white;
 	background:transparent;
 	border:none;
+	text-shadow:-1px 1px #49b0d0;
 }
 .topBarTextDynamic:hover {
         cursor:pointer;
@@ -100,7 +102,7 @@ body {
 #welcomeText {
 	font-family:Helvetica, Arial, Sans-Serif;
 	font-size:20px;
-        color:#267A94;
+        color:#49b0d0;
 	margin-top:40px;
 	text-align:center;
 }
@@ -121,11 +123,11 @@ body {
 	border-radius:5px;
 	padding:3px;
 	max-height:100%;
-	overflow:scroll;
+	overflow:auto;
 }
 
 #sequenceButtons::-webkit-scrollbar { /* Hides scroll bars (Look terrible in Windows) */
-    display: none; 
+    	display: none;
 }
 
 .sequenceButton {
@@ -741,7 +743,7 @@ button.highlighted {
    	background: -moz-linear-gradient(top, #296a96, #1e7cba);
    	background: -ms-linear-gradient(top, #296a96, #1e7cba);
    	background: -o-linear-gradient(top, #296a96, #1e7cba);
-   	padding: 1px 3px;
+   	padding: 1px 1px;
    	-webkit-border-radius: 2px;
    	-moz-border-radius: 2px;
    	border-radius: 2px;
@@ -1076,10 +1078,35 @@ table.stbConfigGrid {
 #sequencesHeader {
 	font-family: Sky Text, Helvetica, Arial, Sans-Serif;	
 }
+#sequencesHeader h1 {
+	color:#ccc;
+	font-size:25px;
+	margin-top:3px;
+	margin-bottom:0px;
+}
+#sequencesHeader p {
+	font-size:20px;
+	margin-top:2px;
+	margin-bottom:5px;
+	color:white;
+}
 
 #stbGroupsHeader {
 	font-family: Sky Text, Helvetica, Arial, Sans-Serif;	
 }
+#stbGroupsHeader h1 {
+	color:#ccc;
+	font-size:25px;
+	margin-top:3px;
+	margin-bottom:0px;
+}
+#stbGroupsHeader p {
+	font-size:20px;
+	margin-top:2px;
+	margin-bottom:5px;
+	color:white;
+}
+
 
 .fancyCell {
 	background: #707070;
@@ -1214,8 +1241,11 @@ select:hover {
 
 .styledSelect {
 	padding:3px;
-	border:3px solid #267A94;
+	border:2px solid #cc6600;
+	border-radius:3px;
 	max-width:90px;
+	background-color:black;
+	color:white;
 }
 
 .stbDataFormTable {
@@ -1378,6 +1408,18 @@ input[type="text"]:focus {
 #evSchedHeader {
 	display:inline-block;
 	width:100%;
+}
+#evSchedHeader h1 {
+	color:#ccc;
+	font-size:25px;
+	margin-top:3px;
+	margin-bottom:0px;
+}
+#evSchedHeader p {
+	font-size:20px;
+	margin-top:2px;
+	margin-bottom:5px;
+	color:white;
 }
 
 #addSequenceDiv {
