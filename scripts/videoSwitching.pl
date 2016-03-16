@@ -56,8 +56,8 @@ sub video {
 
 		######## Switch up to 3 HDMI switches per STB
 		foreach my $switch (1..3) {
-			next if (!$boxinfo{"HDMIIP$switch"});
-			my $hdmi = new IO::Socket::INET(PeerAddr => $boxinfo{"HDMIIP$switch"}, PeerPort => $boxinfo{"HDMIPort$switch"}, Proto => 'tcp', Timeout => 1);
+			next if (!$boxinfo{"HDMIIP$switch"} or $boxinfo{"HDMIIP$switch"} !~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/);
+			my $hdmi = new IO::Socket::INET(PeerAddr => $boxinfo{"HDMIIP$switch"}, PeerPort => $boxinfo{"HDMIPort$switch"}, Proto => 'tcp', Timeout => 5);
 			if (!$hdmi) {
 				warn "Failed to connect to HDMI switch at " . $boxinfo{"HDMIIP$switch"} . " on port " . $boxinfo{"HDMIPort$switch"} . "\n";
 				next;
@@ -79,7 +79,7 @@ sub video {
 		}
 		######## Switch up to 3 HDMI switches per STB
 
-		next if (!$boxinfo{'SDIP'});
+		next if (!$boxinfo{'SDIP'} or $boxinfo{'SDIP'} !~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/);
 
 		my $svideo = new IO::Socket::INET(PeerAddr => $boxinfo{'SDIP'}, PeerPort => $boxinfo{'SDPort'}, Proto => 'tcp', Timeout => 1);
 		if (!$svideo) {

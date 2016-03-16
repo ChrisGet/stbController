@@ -5,6 +5,7 @@ use DBM::Deep;
 use Fcntl;
 use CGI;
 use Tie::File::AsHash;
+use Time::HiRes qw (sleep);
 
 my $query = CGI->new;
 print $query->header();
@@ -104,28 +105,118 @@ sub control {
 	my @stbs = split (',', $$boxes);			
 	tie my %stbData, 'DBM::Deep', {file => $stbDataFile, locking => 1, autoflush => 1, num_txns => 100};
 	
+	my %duskydata;
+
 	foreach my $stb (@stbs) {
 		my %boxdata = %{ $stbData{$stb}};		# Get the box details from the main %stbData hash 
 		my $type = $boxdata{'Type'} || '';		# Get the 'Type' for the STB to know what kind of control it uses (Dusky, Bluetooth, or IR)
 		warn "Error: Could not find control protocol for $stb, has this STB had its control type configured?\n" and next if (!$type);
-		my $pid = fork;
-        	if ($pid==0) {
-			# Fork the sendComms sub for each stb, inputting the stb, commands, and %boxdata for it
-			if ($logging) {
-                                $0 = "stbControl(Scheduler-$schedpid) - $stb - $type";
-                        } else {
-                                $0 = "stbControl - $stb - $type";
-                        }
-                	sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/);
-			sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
-			sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
-			sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
-	                exit;
-        	}
+
+		if ($type =~ /Dusky/) {		# If the STB is controlled via Dusky and Moxa, add it to the %duskydata hash for separate processing
+			my $moxaip = $boxdata{'MoxaIP'};
+                        my $moxaport = $boxdata{'MoxaPort'};
+                        my $duskyport = $boxdata{'DuskyPort'};
+			my $name = $boxdata{'Name'};
+			my $duskyinfo = $moxaip . '-' . $moxaport;
+			$duskydata{$duskyinfo}{$stb}{'Name'} = $name;
+			$duskydata{$duskyinfo}{$stb}{'DuskyPort'} = $duskyport;
+		} else {
+			my $pid = fork;
+        		if ($pid==0) {
+				# Fork the sendComms sub for each stb, inputting the stb, commands, and %boxdata for it
+				if ($logging) {
+                        	        $0 = "stbControl(Scheduler-$schedpid) - $stb - $type";
+	                        } else {
+        	                        $0 = "stbControl - $stb - $type";
+                	        }
+                		#sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/); # DISABLED. Dusky STBs now handled differently
+				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
+				sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
+				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
+	                	exit;
+	        	}
+		}
+	}
+
+	#### Now deal with the dusky controlled STBs
+	if (%duskydata) {
+		foreach my $dusky (keys %duskydata) {
+			my $duskycount = scalar keys %{$duskydata{$dusky}};
+			my $pid = fork;
+			if ($pid==0) {
+				if ($logging) {
+					$0 = "stbControl(Scheduler-$schedpid) - $duskycount Dusky STBs on Moxa $dusky";
+				} else {
+					$0 = "stbControl - $duskycount Dusky STBs on Moxa $dusky";
+				}
+				sendDuskyCommsNew(\$dusky,$commands,$duskydata{$dusky},\$logging,\$runningpids);
+				exit;
+			}
+		}
 	}
 
 	untie %stbData;
 } ## End of sub 'control'
+
+sub sendDuskyCommsNew {
+	use IO::Socket::INET;
+	my ($duskydetails,$commands,$boxdata,$logging,$runningpids) = @_;
+	if ($$logging) {
+		my $logpid = $$runningpids . $$;
+		system("touch $logpid");
+	}
+	my @commands = split(',', $$commands);
+	my $duskycomfile = $filedir . 'skyDuskyCommands.txt';
+
+	tie my %duskycoms, 'Tie::File::AsHash', $duskycomfile, split => ':' or die "Problem tying \%duskycoms to $duskycomfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
+
+	my ($moxaip,$moxaport) = $$duskydetails =~ /(\S+)\-(\d+)/;
+	if (!$moxaip) {
+		warn "ERROR: Moxa IP was not defined!\n";
+	} elsif (!$moxaport) {
+		warn "ERROR: Moxa Port was not defined!\n";
+	} else {
+
+		my $tries = '1';
+		my $dusky = '';
+		until (($dusky) or ($tries >= '50')) {
+			$dusky = new IO::Socket::INET(PeerAddr => $moxaip, PeerPort => $moxaport, Proto => 'tcp', Timeout => 3);
+			$tries++;
+		}
+
+		if ($dusky) {
+			foreach my $com (@commands) {
+                		if ($com =~ m/^t(\d+)$/i) {
+                        		sleep $1;
+	                        	next;
+        	        	}
+
+                		my $raw = $duskycoms{$com};
+                		unless(defined $raw) {          # 'defined' needs to be used to handle '0' value for the STB command
+	                        	warn "$com was not found to be a valid command\n" and next;     # If the requested command is not found in the commands database, print a warning and skip to the next command
+        	        	}
+
+				foreach my $box (keys %{$boxdata}) {
+					my $name = $$boxdata{$box}{'Name'};
+					my $duskyport = $$boxdata{$box}{'DuskyPort'};
+					my $fullcom = 'A+' . $duskyport . $raw . 'x';
+					$dusky->send($fullcom);
+					sleep(0.15);	# Sleep breifly to allow Dusky to process the command
+				}
+			}
+			$dusky->close;
+		} else {
+			warn "Failed to connect to dusky at IP $moxaip port $moxaport\n";
+		}
+	}
+
+	untie %duskycoms;
+
+	if ($$logging) {
+		my $logpid = $$runningpids . $$;
+		system("rm $logpid");
+	}
+}
 
 sub sendDuskyComms {
 	use IO::Socket::INET;
@@ -139,33 +230,36 @@ sub sendDuskyComms {
 	my $moxaip = $$boxdata{'MoxaIP'};
 	my $moxaport = $$boxdata{'MoxaPort'};
 	my $duskyport = $$boxdata{'DuskyPort'};
-	my $dusky;
-	my $tries = '1';
-	until (($dusky) or ($tries >= '50')) {
-		$dusky = new IO::Socket::INET(PeerAddr => $moxaip, PeerPort => $moxaport, Proto => 'tcp', Timeout => 3);
-		$tries++;
-	}
 
-	if ($dusky) {
-		tie my %duskycoms, 'Tie::File::AsHash', $duskycomfile, split => ':' or die "Problem tying \%duskycoms to $duskycomfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
+	tie my %duskycoms, 'Tie::File::AsHash', $duskycomfile, split => ':' or die "Problem tying \%duskycoms to $duskycomfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
 
-		foreach my $com (@commands) {
-			if ($com =~ m/^t(\d+)$/i) {
-				sleep $1;
-				next;
-			}
+	foreach my $com (@commands) {
+		if ($com =~ m/^t(\d+)$/i) {
+			sleep $1;
+			next;
+		}
+		my $tries = '1';
+		my $dusky = '';
+		until (($dusky) or ($tries >= '50')) {
+			$dusky = new IO::Socket::INET(PeerAddr => $moxaip, PeerPort => $moxaport, Proto => 'tcp', Timeout => 3);
+			sleep 1;
+			$tries++;
+		}
+
+		if ($dusky) {
 			my $raw = $duskycoms{$com};
 			unless(defined $raw) {		# 'defined' needs to be used to handle '0' value for the STB command
 				warn "$com was not found to be a valid command\n" and next;	# If the requested command is not found in the commands database, print a warning and skip to the next command
 			}
 			my $fullcom = 'A+' . $duskyport . $raw . 'x';
 			$dusky->send($fullcom);
+			$dusky->close;
+		} else {
+			warn "Dusky connection failed for $$stb\n";
 		}
-		$dusky->close;
-		untie %duskycoms;
-	} else {
-		warn "Dusky connection failed for $$stb\n";
 	}
+
+	untie %duskycoms;
 
 	if ($$logging) {
 		my $logpid = $$runningpids . $$;
