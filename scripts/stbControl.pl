@@ -6,6 +6,7 @@ use Fcntl;
 use CGI;
 use Tie::File::AsHash;
 use Time::HiRes qw (sleep);
+use FindBin qw($Bin);
 
 my $query = CGI->new;
 print $query->header();
@@ -14,11 +15,17 @@ chomp(my $fullpath = $ARGV[3] || '');
 my $maindir;
 if ($fullpath) {
 	$maindir = $fullpath;
+	chomp($maindir);
 } else {
-	chomp($maindir = (`cat homeDir.txt` || ''));
+	if ($Bin) {
+                $maindir = $Bin;
+                $maindir =~ s/\/\w+\/*$//;
+        } else {
+                chomp($maindir = (`cat homeDir.txt` || ''));
+                $maindir =~ s/\/$//;
+        }
 }
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
-$maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
 my $runningpids = $filedir . '/pidsRunning/';
 my $stbDataFile = ($maindir . '/config/stbDatabase.db');

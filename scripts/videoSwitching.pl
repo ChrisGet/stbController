@@ -6,13 +6,20 @@ use IO::Socket::INET;
 use Fcntl;
 use CGI;
 use Tie::File::AsHash;
+use FindBin qw($Bin);
 
 my $query = CGI->new;
 print $query->header();
 
-chomp(my $maindir = (`cat homeDir.txt` || ''));
+my $maindir;
+if ($Bin) {
+        $maindir = $Bin;
+        $maindir =~ s/\/\w+\/*$//;
+} else {
+        chomp($maindir = (`cat homeDir.txt` || ''));
+        $maindir =~ s/\/$//;
+}
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
-$maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $stbdatafile = ($maindir . '/config/stbDatabase.db');
