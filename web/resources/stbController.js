@@ -1338,10 +1338,9 @@ function clearSTBDataForm() {	// This function handles clearing of the current d
 
 	$('select').each(function(){
 		var id = $(this).attr('id');
-		var first = $('#' + id + " option:first").val();
-        	$(this).val(first);
-		if (id == 'type') {
-			stbTypeChoice(first);
+		if (!id.match(/^type$/)) {
+			var first = $('#' + id + " option:first").val();
+	        	$(this).val(first);
 		}
 	});	
 }
