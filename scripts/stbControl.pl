@@ -179,9 +179,9 @@ sub sendDuskyCommsNew {
 
 	my ($moxaip,$moxaport) = $$duskydetails =~ /(\S+)\-(\d+)/;
 	if (!$moxaip) {
-		warn "ERROR: Moxa IP was not defined!\n";
+		die "ERROR: Moxa IP was not defined!\n";
 	} elsif (!$moxaport) {
-		warn "ERROR: Moxa Port was not defined!\n";
+		die "ERROR: Moxa Port was not defined!\n";
 	} else {
 
 		my $tries = '1';
