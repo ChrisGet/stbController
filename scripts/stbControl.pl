@@ -88,13 +88,16 @@ if (!$targetstring or $targetstring !~ /\S+/) {
 if ($action =~ m/^Event$/i) {
 	tie my %seqs, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%seqs to $seqfile: $!\n";
 	my @sequences = split(',',$command);
+	my $seqcoms = '';
 	foreach my $seq (@sequences) {
 		$seq = uc($seq);
-		my $seqcoms = $seqs{$seq} || '';
-		warn "Sequence $seq was not found in the sequences file\n" and next if (!$seqcoms);
-		control(\$seqcoms,\$targetstring);
-		sleep 2;	# Sleep 2 seconds between each sequence
+		#warn "Sequence $seq was not found in the sequences file\n" and next if (!$seqcoms);
+		warn "Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
+		$seqcoms .= $seqs{$seq};
+		$seqcoms .= ',';
 	}
+
+	control(\$seqcoms,\$targetstring);
 	untie %seqs;
 }
 
