@@ -189,8 +189,8 @@ sub sendDuskyCommsNew {
 
 		my $tries = '1';
 		my $dusky = '';
-		until (($dusky) or ($tries >= '50')) {
-			$dusky = new IO::Socket::INET(PeerAddr => $moxaip, PeerPort => $moxaport, Proto => 'tcp', Timeout => 3);
+		until (($dusky) or ($tries >= '5')) {
+			$dusky = new IO::Socket::INET(PeerAddr => $moxaip, PeerPort => $moxaport, Proto => 'tcp', Timeout => 2);
 			$tries++;
 		}
 
