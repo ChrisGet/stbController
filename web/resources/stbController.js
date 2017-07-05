@@ -195,7 +195,16 @@ function stbControl($action,$commands) {	// This function handles the control of
 		return;
 	}
 
-	perlCall('','scripts/stbControl.pl','action',$action,'command',$commands,'info',comstring2);
+	// For STB control requests, we just need to fire the event and NOT wait for script output
+	$.ajax({
+                type: 'get',
+                timeout: 500,	// Force the Ajax call to timeout after half a second
+                url: 'cgi-bin/scripts/stbControl.pl',
+                data: { 'action' : $action,
+                        'command' : $commands,
+                        'info' : comstring2
+                },
+        });
 }
 // ############### End of stbControl function
 
