@@ -362,12 +362,13 @@ sub sendVNCComms {
         }
 
 	my $ip = $$boxdata{'VNCIP'};
-	my $port;
-	if ($$boxdata{'Type'} =~ /ethan/i) {
-		$port = '5900';
-	} else {
-		$port = '49160';
-	}
+	my $port = '49160';
+	#my $port;
+	#if ($$boxdata{'Type'} =~ /ethan/i) {
+	#	$port = '5900';
+	#} else {
+	#	$port = '49160';
+	#}
 	my $string = "SKY 000.001\n";
 	my $keytype = '4';
 	my $keydown = '1';
