@@ -22,7 +22,7 @@ window.onload = function () {	// Run these functions when the page first loads
                         mousemove: function(e) {
                                 var mousex = e.pageX + 20; //Get X coordinates
                                 var mousey = e.pageY + 10; //Get Y coordinates
-                                $('.tooltip').css({ top: mousey, left: mousex })
+                                $('.tooltip').css({ top: mousey, left: mousex, 'z-index': 10})
                         }
                 }, '.masterTooltip');
         });
@@ -32,24 +32,16 @@ window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes
 	logLastBoxes();
 }
 
-//$.ajaxSetup({ cache: false });
-
 var stbHash = {};	// Create the GLOBAL stbHash object (hash) to handle selected STBs from the grid
 var lastRow;		// Create the GLOBAL lastRow variable (scalar) to record last selected row
 var lastRowHL;		// Create the GLOBAL lastRowHL variable (scalar) to record last highlighted row
 
 function dateTime() {	// This function handles the updating of the real time server clock on the main page
-	var xmlhttp;
-	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	} else {// code for IE6, IE5
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-        xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		        var returned = xmlhttp.responseText;
-			var bits = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/showTime.pl',
+		success : function(result) {
+			var bits = result.split(',');
 		        var date = new Date();
 			var dayname = bits[0];
 		        var dayno = bits[1];
@@ -68,7 +60,7 @@ function dateTime() {	// This function handles the updating of the real time ser
 		        date.setSeconds(secs);
 
 		        var updateTime = setInterval(function() {	// Var updateTime holds the ID for this interval function. This can be cleared later
-		                var div = document.getElementById('dateTimeDiv');
+				var div = $('#dateTimeDiv');
 		                if (div) {
 		                        secs++;
         		                if (secs == 60) {
@@ -89,33 +81,24 @@ function dateTime() {	// This function handles the updating of the real time ser
                 		        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
                         		var timebit = parts[4];
 	                        	var datestring = timebit + ' - ' + datebit;
-	        	                $('#dateTimeDiv').html(datestring);	// Update the html in div 'dateTimeDiv' with the new date info
+	        	                $('#dateTimeDiv').html('<p>' + datestring + '</p>');	// Update the html in div 'dateTimeDiv' with the new date info
         	        	}
 	        	},1000);
 		}
-	}
-        xmlhttp.send(null);
-
+	});
 }
 // ############### End of dateTime function
 
 function announcements() {	// This function handles the server announcements section on the main page. It is only used for scheduled events info
-	var div = document.getElementById('messages');
+	var div = $('#messages');
 	if (div) {
-		var xmlhttp;
-		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-			xmlhttp=new XMLHttpRequest();
-		} else {// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", true);
-		xmlhttp.onreadystatechange=function(){
-	                if (xmlhttp.readyState==4) {
-			        var returned = xmlhttp.responseText;
-				$('#messages').html(returned);
+		$.ajax({
+			type : 'GET',
+			url : 'cgi-bin/scripts/messages.pl',
+			success : function(result) {
+				div.html('<p>' + result + '</p>');
 			}
-		}
-	        xmlhttp.send();
+		});
 	}
 	return;
 }
@@ -123,40 +106,27 @@ function announcements() {	// This function handles the server announcements sec
 
 function dynamicTitle($option) {	// This function handles the editing of the Title of the main page
 	if ($option == 'get') {
-		var xmlhttp;
-		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-  			xmlhttp=new XMLHttpRequest();
-  		} else {// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-
         	var date = Date();
-	        xmlhttp.open("GET","web/dynamicTitle.txt?"+date, true);
-		xmlhttp.onreadystatechange=function(){
-   	        	if (xmlhttp.readyState==4) {
-				var title = xmlhttp.responseText;
-
-				if (!title) {
+		$.ajax({
+			type : 'GET',
+			url : 'web/dynamicTitle.txt?' + date,
+			success : function(result) {
+				if (!result) {
 					$('#dynamicTitle').text('Click here to change the default title!');
 				} else {
-					var blankregex = /\S+/;
-                        		var notblank = blankregex.exec(title);
-					if (!notblank) {
+					if (!result.match(/\S+/)) {
 						$('#dynamicTitle').text('Click here to change the default title!');
 					} else {
-						if (title.match(/404 not found/i)) {
+						if (result.match(/404 not found/i)) {
 							$('#dynamicTitle').text('Click here to change the default title!');
 						} else {
-							$('#dynamicTitle').text(title);
+							$('#dynamicTitle').text(result);
 						}
 					}
 				}
 			}
-		}	
-	        xmlhttp.send(null);
-	}
-
-	if ($option == 'set') {
+		});
+	} else if ($option == 'set') {
 		var current = $('#dynamicTitle').text();
 		var newtitle = prompt("Please enter your new page title",current);
 		if (!newtitle) {
@@ -165,19 +135,29 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 			if (newtitle == current) {
 				return;
 			}
-			var blankregex = /\S+/;
-			var notblank = blankregex.exec(newtitle);
-			if (!notblank) {
+			if (!newtitle.match(/\S+/)) {
 				var conf = confirm('Your new page title is blank. If you select ok, the page title will be returned to the default. Do you want to proceed?');
 				if (conf == false) {
 					return;
 				}
 			}
-			alert('Your page title has been updated. The page will now be reloaded.');
-			perlCall('','scripts/editPageTitle.pl','title',newtitle);
-			setTimeout(function(){location.reload()},1000);
+			$.ajax({
+				type : 'POST',
+				url : 'cgi-bin/scripts/editPageTitle.pl',
+				data : {
+					'title' : newtitle,
+				},
+				success : function(result) {
+					alert('Title updated successfully!');
+					dynamicTitle('get');
+				},
+				error : function(xhr) {
+					alert('The request failed:' + xhr.statusText);
+				}
+			});
 		}
 	}
+	return;
 }
 // ############### End of dynamicTitle function
 
@@ -735,53 +715,58 @@ function seqValidate($origname) {	// This function handles validation and submit
 					var string = commands.join(',');
 					var text = '';
 					if ($origname != name) {
-						var xmlhttp;
-						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-							xmlhttp=new XMLHttpRequest();
-						} else {// code for IE6, IE5
-							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-						}	
-						xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
-						xmlhttp.send(null);
-						var returned = xmlhttp.responseText;
-						if (returned == 'Found') {
-							var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
-							if (c == false) {
-								$('#sequenceName').val($origname);
-								return;
+						$.ajax({
+							type : 'GET',
+							url : 'cgi-bin/scripts/sequenceControl.pl',
+							data : {
+								'action' : 'Search',
+								'sequence' : name,
+							},
+							success : function(result) {
+								if (result == 'Found') {
+									var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
+									if (c == false) {
+										$('#sequenceName').val($origname);
+										return;
+									}
+								}
+								text = 'Success! Sequence "' + $origname + '" was updated to "' + name + '"';
+								alert(text);
+								perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
+								pageCall('dynamicPage','web/sequencesPage.html');
+                						setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 							}
-						}
-
-						text = 'Success! Sequence "' + $origname + '" was update to "' + name + '"';
+						});
 					} else {
 						text = 'Success! Sequence "' + $origname + '" was updated';
+						alert(text);
+						perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
+						pageCall('dynamicPage','web/sequencesPage.html');
+                				setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 					}
-					alert(text);
-					perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
 				} else {
-					var xmlhttp;
-					if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-						xmlhttp=new XMLHttpRequest();
-					} else {// code for IE6, IE5
-						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
-					xmlhttp.send(null);
-					var returned = xmlhttp.responseText;
-					if (returned == 'Found') {
-						var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
-						if (c == false) {
-							return;
+					$.ajax({
+						type : 'GET',
+						url : 'cgi-bin/scripts/sequenceControl.pl',
+						data : {
+							'action' : 'Search',
+							'sequence' : name,
+						},
+						success : function(result) {
+							if (result == 'Found') {
+								var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
+								if (c == false) {
+									return;
+								}
+							}
+							var string = commands.join(',');
+							alert('Success! Event "' + name + '" has been created');
+							perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
+							pageCall('dynamicPage','web/sequencesPage.html');
+                					setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 						}
-					}
-
-					var string = commands.join(',');
-					alert('Success! Event "' + name + '" has been created');
-					perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
+					});
 				}
-
-				pageCall('dynamicPage','web/sequencesPage.html');
-                		setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 			}
 		}
 	}
@@ -815,29 +800,26 @@ function copySequence($seq) {
 
                 if (newseq.match(/\S+/)) {
                         if (!newseq.match(/[^\w\s]|\_+/)) {
-                                var xmlhttp;
-                                if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                                        xmlhttp=new XMLHttpRequest();
-                                } else {// code for IE6, IE5
-                                        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-                                }
-                                xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + newseq, true);
-                                xmlhttp.onreadystatechange=function(){
-                                        if (xmlhttp.readyState==4) {
-                                                var returned = xmlhttp.responseText;
-                                                if (returned == 'Found') {
-                                                        alert("A sequence already exists with the name \"" + newseq + "\". Please choose a different name");
-                                                        return;
-                                                } else {
+                                $.ajax({
+                                	type : 'GET',
+                                	url : 'cgi-bin/scripts/sequenceControl.pl',
+                                	data : {
+                                		'action' : 'Search',
+                                		'sequence' : newseq,
+                                	},
+                                	success : function(result) {
+                                		if (result == 'Found') {
+							alert("A sequence already exists with the name \"" + newseq + "\". Please choose a different name");
+							return;
+                                		} else {
                                                         perlCall('','scripts/sequenceControl.pl','action','Copy','sequence',newseq,'originalName',$seq);
                                                         newseq = newseq.toUpperCase();
                                                         alert("The sequence \"" + $seq + "\" was successfully copied to \"" + newseq + "\"");
                                                         pageCall('dynamicPage','web/sequencesPage.html');
                                                         setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-                                                }
-                                        }
-                                }
-                                xmlhttp.send(null);
+                                		}
+                                	}
+                                });
                         } else {
                                 alert('The new sequence name can only contain letters, numbers, and spaces');
                                 return;
@@ -851,35 +833,31 @@ function copySequence($seq) {
 // ############### End of copySequence function
 
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/sequencesPage.pl?action=Edit&sequence=" + $seq, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-			document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/sequencesPage.pl',
+		data : {
+			'action' : 'Edit',
+			'sequence' : $seq,
+		},
+		success : function(result) {
+			$('#dynamicPage').html(result);
 			editSequencePage2($seq);
 		}
-	}
-	xmlhttp.send(null);
+	});
 }
 // ############### End of editSequencePage function
 
 function editSequencePage2($seq) {	// This function handles the second part of editing an existing sequence (Existing sequence data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Show&sequence=" + $seq, true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
-			var commands = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceControl.pl',
+		data : {
+			'action' : 'Show',
+			'sequence' : $seq,
+		},
+		success : function(result) {
+			var commands = result.split(',');
 			for (var i = 0; i < commands.length; i++) {
 				var id = commands[i];
 				var text = id;
@@ -907,9 +885,10 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 					seqTextUpdate(id,newtext);
 				}
 			}	
+			
 		}
-	}
-    	xmlhttp.send(null);
+	
+	});
 }
 // ############### End of editSequencePage2 function
 
@@ -942,52 +921,58 @@ function groupValidate($origname) {	// This function handles validation and subm
 					var string = members.join(',');
 					var text = '';
 					if ($origname != name) {
-						var xmlhttp;
-						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-							xmlhttp=new XMLHttpRequest();
-						} else {// code for IE6, IE5
-							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-						}
-						xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
-						xmlhttp.send(null);
-						var returned = xmlhttp.responseText;
-						if (returned == 'Found') {
-							var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
-							if (c == false) {
-								$('#groupName').val($origname);
-								return;
+						$.ajax({
+							type : 'GET',
+							url : 'cgi-bin/scripts/stbGroupControl.pl',
+							data : {
+								'action' : 'Search',
+								'group' : name,
+							},
+							success : function(result) {
+								if (result == 'Found') {
+									var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
+									if (c == false) {
+										$('#groupName').val($origname);
+										return;
+									}
+								}
+								text = 'Success! Group "' + $origname + '" was updated to "' + name + '"';
+								alert(text);
+								perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
+								pageCall('dynamicPage','web/stbGroupsPage.html');
+								setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 							}
-						}
-
-						text = 'Success! Group "' + $origname + '" was update to "' + name + '"';
+						});
 					} else {
 						text = 'Success! Group "' + $origname + '" was updated';
+						alert(text);
+						perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
+						pageCall('dynamicPage','web/stbGroupsPage.html');
+						setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 					}
-					alert(text);
-					perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
 				} else {
-					var xmlhttp;
-					if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-						xmlhttp=new XMLHttpRequest();
-					} else {// code for IE6, IE5
-						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
-					xmlhttp.send(null);
-					var returned = xmlhttp.responseText;
-					if (returned == 'Found') {
-						var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
-						if (c == false) {
-							return;
+					$.ajax({
+						type : 'GET',
+						url : 'cgi-bin/scripts/stbGroupControl.pl',
+						data : {
+							'action' : 'Search',
+							'group' : name,
+						},
+						success : function(result) {
+							if (result == 'Found') {
+								var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
+								if (c == false) {
+									return;
+								}
+							}
+							var string = members.join(',');
+							alert('Success! Group "' + name + '" has been created');
+							perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
+							pageCall('dynamicPage','web/stbGroupsPage.html');
+                					setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 						}
-					}
-					var string = members.join(',');
-					alert('Success! Group "' + name + '" has been created');
-					perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
+					});
 				}
-
-				pageCall('dynamicPage','web/stbGroupsPage.html');
-                		setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 			}
 		}
 	}
@@ -1010,37 +995,31 @@ function deleteGroup($grp) {	// This function handles deletion of an existing ST
 // ############### End of deleteGroup function
 
 function editGroupPage($grp) {	// This function handles the first part of editing of an existing STB group (Initial page load)
-	//perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Edit','group',$grp);
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/stbGroupsPage.pl?action=Edit&group=" + $grp, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/stbGroupsPage.pl',
+		data : {
+			'action' : 'Edit',
+			'group' : $grp,
+		},
+		success : function(result) {
+                        $('#dynamicPage').html(result);
                         editGroupPage2($grp);
-                }
-        }
-        xmlhttp.send(null);
-	//setTimeout(function(){editGroupPage2($grp)},500);
+		}
+	});
 }
 // ############### End of editGroupPage function
 
 function editGroupPage2($grp) {	// This function handles the second part of editing of an existing STB group (Existing group data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Show&group=" + $grp, true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
-			var members = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/stbGroupControl.pl',
+		data : {
+			'action' : 'Show',
+			'group' : $grp,
+		},
+		success : function(result) {
+			var members = result.split(',');
 			for (var i = 0; i < members.length; i++) {
 				var bits = members[i].split("~");
 				var id = bits[0];
@@ -1052,26 +1031,25 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 				} else {
 					alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
 				}
-			}	
+			}
 		}
-	}
-    	xmlhttp.send(null);
+	});
 }
 // ############### End of editGroupPage2 function
 
 function focusEl($element) {	// This function handles focussing on the given element on the page
-	var xmlhttp;
-        if (window.XMLHttpRequest){
-                xmlhttp=new XMLHttpRequest();
-        } else {
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
+	//var xmlhttp;
+        //if (window.XMLHttpRequest){
+        //        xmlhttp=new XMLHttpRequest();
+        //} else {
+        //        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        //}
 
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById($element).innerHTML=xmlhttp.responseText;
-                }
-        }
+        //xmlhttp.onreadystatechange=function(){
+        //        if (xmlhttp.readyState==4) {
+        //                document.getElementById($element).innerHTML=xmlhttp.responseText;
+        //        }
+        //}
 	var elem = '#' + $element;
 	$(elem).focus();
 }
@@ -1243,39 +1221,35 @@ function scheduleStateChange($state,$id) {	// This function handles enabling and
 // ############### End of scheduleStateChange function
 
 function editSchedulePage($event) {	// This function handles the first part of editing an exisiting Scheduled Event (Initial page load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/eventSchedulePage.pl?action=Edit&event=" + $event, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
-                        editSchedulePage2($event);
-                }
-        }
-        xmlhttp.send(null);
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/eventSchedulePage.pl',
+		data : {
+			'action' : 'Edit',
+			'event' : $event,
+		},
+		success : function(result) {
+			$('#dynamicPage').html(result);
+			editSchedulePage2($event);
+		}
+	});
 }
 // ############### End of editSchedulePage function
 
 function editSchedulePage2($event) {	// This function handles the second part of editing an exisiting Scheduled Event (Existing event data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/eventScheduleControl.pl?action=Show&eventID=" + $event, true);
-	xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/eventScheduleControl.pl',
+		data : {
+			'action' : 'Show',
+			'eventID' : $event,
+		},
+		success : function(result) {
 			var stbregex = /Boxes\{(.+)\}Sequences/;
 			var seqregex = /Sequences\{(.+)\}/;
 
-			var stbmatch = stbregex.exec(returned);
-			var seqmatch = seqregex.exec(returned);
+			var stbmatch = stbregex.exec(result);
+			var seqmatch = seqregex.exec(result);
 
 			var members = stbmatch[1].split(',');
 			for (var i = 0; i < members.length; i++) {
@@ -1302,10 +1276,8 @@ function editSchedulePage2($event) {	// This function handles the second part of
 					seqTextUpdate(id,text,'sequenceEventArea');
 				}
 			}
-
 		}
-	}
-    	xmlhttp.send(null);
+	});
 }
 // ############### End of editSchedulePage2 function
 

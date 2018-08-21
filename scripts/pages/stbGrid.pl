@@ -69,37 +69,14 @@ sub loadGrid {
 	my $seqfile = $filedir . 'commandSequences.txt';
 	tie my %stbdata, 'DBM::Deep', {file => $stbdatabase,   locking => 1, autoflush => 1, num_txns => 100};
 
-	print '<div class="wrapLeft">';
-	##### Load the control buttons
-	open FH, '<', $contbtnfile or die "Unable to open $contbtnfile: $!\n";
-	my @control = <FH>;
-	close FH;
-	print @control;
-	##### Load the control buttons
-
-	print '<div id="middleBar">';		# Create the div for the middle bar that sits between the controller and the STB grid
-
-	##### Load the sequences buttons
-	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
-	print '<div id="sequenceButtons"><p style="font-size:25px;margin-top:0em;margin-bottom:0em;" value="Below are your custom built sequences. Go to the Sequences page to make more or edit the current ones" class="masterTooltip">Sequences</p>';
-
-	foreach my $seq (sort keys %sequences) {
-print <<BUTTON;
-<button id="$seq" class="sequenceButton" onclick="stbControl('Event','$seq')">$seq</button>
-BUTTON
-	}
-
-	print '<br></div>';
-	untie %sequences;
-	##### Load the sequences buttons
-
-	print '</div>';				# End of the middleBar div
-
 	##### Load the STB grid
 print <<TOP;
 <div id="stbGrid">
-<table style="border-spacing:0;">     
-<tr id="columns">
+	<div id="gridTitle">
+		<p>STB Selection</p>
+	</div>
+	<table id="stbGridTable">
+		<tr id="columns">
 TOP
 
 my $c = '1';
@@ -110,9 +87,9 @@ COL
 $c++;
 }
 
-print <<DESELECT;
-<td scope="col" width="60px"><button class="gridButton deselect" onClick="deselect()">Deselect</button></td></tr>
-DESELECT
+print <<CLEAR;
+<td scope="col" width="60px"><button class="gridButton clear" onClick="deselect()">CLEAR</button></td></tr>
+CLEAR
 
 my $r = '1';		# Set the Row count to 1
 my $stbno = '1';	# Set the STB count to 1
@@ -158,11 +135,47 @@ $r++;
 }
 
 print <<LAST;
-</tr></table><input type="hidden" id="matrixLoaded" />
+</tr></table>
+<input type="hidden" id="matrixLoaded" />
 <input type="hidden" id="totalRows" value="$rows"/></div>
 LAST
 
-print '</div>';		# End of the "wrapLeft" div
+	##### Load the control buttons
+	open FH, '<', $contbtnfile or die "Unable to open $contbtnfile: $!\n";
+	my @control = <FH>;
+	close FH;
+print <<CONTROL;
+<div id="controllerSection">
+	<div id="controllerTitle">
+		<p>Control</p>
+	</div>
+	@control
+</div>
+CONTROL
+	##### Load the control buttons
 
-untie %stbdata;
+	##### Load the sequences buttons
+	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
+	my $seqlist = '';
+	foreach my $seq (sort keys %sequences) {
+		$seqlist .= "<button id=\"$seq\" class=\"sequenceButton\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
+	}
+
+
+print <<SEQSEC;
+<div id="sequenceButtons">
+	<div id="sequencesHead" class="masterTooltip" value="Below are your custom built sequences. Go to the Sequences page to make more or edit the current ones">
+		<p>Sequences</p>
+	</div>
+	<div id="sequencesBody">
+		$seqlist
+	</div>
+</div>
+SEQSEC
+
+
+	untie %sequences;
+	##### Load the sequences buttons
+	
+	untie %stbdata;
 } ########## End of sub loadGrid ##########

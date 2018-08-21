@@ -17,7 +17,7 @@ B:0xEFB1
 back space:0xEF90
 backup:E002
 blue button:0xE203
-box office:0xEF00
+box office:EF00
 C:0xEFB2
 channel down:E007
 channel up:E006
@@ -31,7 +31,7 @@ fast forward:0xE405
 G:0xEFB6
 green button:E201
 H:0xEFB7
-help:0xE009
+help:E009
 home:0xEF88
 I:0xEFB8
 info:E00E
@@ -64,7 +64,7 @@ SPACE:0xEF91
 stop:E402
 T:0xEFC3
 TAB:0xEF8E
-text:0xE00F
+text:E00F
 tv guide:E00B
 U:0xEFC4
 V:0xEFC5

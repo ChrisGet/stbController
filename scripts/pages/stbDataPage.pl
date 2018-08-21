@@ -40,7 +40,7 @@ sub stbSelect {
 
 print <<HEAD;
 <div id="stbSelect">
-<p class="narrow">Click on a box below to manage its control, video, and DUT details configuration</p><br>
+<p class="narrow">Click on a box below to manage its control and video switching parameters</p>
 <table align="center">
 <tr id="columns">
 HEAD

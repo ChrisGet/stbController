@@ -1,82 +1,197 @@
-@charset "UTF-8";
-/* CSS Document */
-<style type="text/css">
-
-#page-container {       /* A stanza that starts # is an 'id' and a '.' is a 'class' */
-        width:100%;                     /* It is better to use classes and id's but it doesn't matter unless you are using inheritance */
-        margin-top: 0px; /* I learnt this later on in the process but as there are no ill effects I've left it as is */
-        margin:auto; 
-        background-color:#000;
-        color:#FEFDFD; 
+html, body {
+	display:inline-block;
+        font-family:Helvetica, Arial, Sans-Serif;
+	background-color:#f2f2f2;
+	height:100%;
+	width:100%;
+	margin:0;
+	font-size:0;
+	text-align:center;
 }
-
 #topBar {
-        margin-top: 0px;
-        margin-left:5px;
-        height:60px;
-        background-color:#252525;
+	display:inline-block;
+        height:8%;
+        width:100%;
 	text-align:left;
-	vertical-align:middle;
-	border-radius:4px;
+	box-shadow: 0 0 8px black;
+	background-color:#07575b;
 }
-
-#topBarText {
-	line-height:60px;	/* Keep this the same as the "height" value of #topbar so that text is centered */
-	margin-left:10px;
-	width:auto;
-	font-size:30px;
-	text-shadow:-1px 1px #49b0d0;
+#titleDiv {
+	display:inline-block;
+        height:100%;
+        width:15%;
+	vertical-align:top;
+	text-align:center;
 }
-
-.topBarTextDynamic{
-	line-height:100%;	/* Keep this the same as the "height" value of #topbar so that text is centered */
-	margin-left:10px;
+#dynamicTitle {
+	display:inline-block;
 	width:auto;
-	font-size:30px;
+	height:95%;
+	font-size:2vh;
+	color:#598234;
 	color:white;
-	background:transparent;
 	border:none;
-	text-shadow:-1px 1px #49b0d0;
+	background:none;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
 }
 .topBarTextDynamic:hover {
         cursor:pointer;
 }
-
-#menuBar {
-	margin-top: 5px;
-        margin-left:5px;
-        height:50px;
-        background-color:#252525;
-        text-align:left;
-	line-height:50px;
-	vertical-align:middle;
-	border-style:solid;
-	border-color: #707070 #252525 #707070 #252525;
-	border-radius:4px;
+#logo {
+        margin-right:10px;
+        float:right;
 }
-
-#messages {
-	float:left;
-	text-align:left;
-	margin-top:1px;
-	line-height:16px;
-	font-size:15px;
+#logo:hover {
+	cursor:pointer;	
 }
-
-#dateTimeDiv {
-	float:right;
+#menuButtonDiv {
 	display:inline-block;
-	color:white;
-	font-size:20px;
-	margin-right:10px;
+        height:100%;
+        width:40%;
+	vertical-align:bottom;
+	text-align:center;
+}
+.menuBtn {
+	display:inline-block;
+	height:50%;
+	width:12%;
+	margin:0 2%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	vertical-align:top;
+	background:none;
+	border:none;
+	border-radius:10px;
+	font-size:1.7vh;
+	color:#c4dfe6;
+}
+.menuBtn:hover {
+	cursor:pointer;
+	background-color:#003b46;
+}
+#messages {
+	display:inline-block;
+        height:100%;
+        width:15%;
+	text-align:center;
+	font-size:15px;
+	vertical-align:middle;
+	background-color:#333333;
+	background-color:#003b46;
+}
+#messages p {
+	display:inline-block;
+	margin:0;
+	font-size:1.5vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+#dateTimeDiv {
+	display:inline-block;
+        height:100%;
+        width:15%;
+	vertical-align:top;
+	text-align:center;
+}
+#dateTimeDiv p {
+	display:inline-block;
+	margin:0;
+	font-size:1.5vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:#aebd38;
+}
+#topDivEmpty {
+	display:inline-block;
+        height:100%;
+        width:15%;
+	vertical-align:top;
+	text-align:center;
+}
+
+#dynamicPage {
+	width:100%;
+	height:92%;
+	display:inline-block;
+}
+
+#welcomeDiv {
+	display:inline-block;
+	font-family:Helvetica, Arial, Sans-Serif;
+	width:70%;
+	height:80%;
+	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png");
+	background-size:40% auto, 40% auto;
+	background-position:bottom left, bottom right;
+	background-repeat:no-repeat, no-repeat;
+	margin-top:40px;
+	text-align:center;
+}
+#welcomeDiv h1 {
+	margin:0;
+	font-size:2.5vh;
+        color:#003b46;
+        position:relative;
+        top:10%;
+        transform:translateY(-10%);
+}
+#welcomeDiv h2 {
+	margin:0;
+	font-size:2vh;
+        color:#598234;
+        color:#003b46;
+        position:relative;
+        top:20%;
+        transform:translateY(-20%);
 }
 
 #stbGrid {
-	float:left;
-	margin-top:10px;
-	height:100%;
+/*	float:left;*/
+	position:relative;
+	display:inline-block;
+	margin-top:0.3%;
+	height:auto;
+	padding:2px;
+	overflow:hidden;
+/*	border:1px solid grey;*/
+	vertical-align:top;
+	padding-left:1.2%;
+	padding-top:1.3%;
+	height:95%;
+	max-width:65%;
 }
-
+#gridTitle {
+	position:absolute;
+	left:0;
+	top:0;
+	height:5%;
+	width:15%;
+	border-radius:5px;
+	border:1px solid #333333;
+}
+#gridTitle p {
+	display:inline-block;
+	font-size:1.5vh;
+	margin:0;
+	color:#333333;
+	position:relative;
+	top:12%;
+}
+#gridTableHolder {
+	display:inline-block;
+	position:absolute;
+	right:0;
+	bottom:0;
+	width:90%;
+	height:90%;
+	background-color:#cccccc;
+}
 #controls {
         margin-top:0px;
         margin-right: auto;
@@ -86,66 +201,112 @@
         border-collapse:collapse;
 }
 
-#controller-buttons {
-        float:right;
+#controllerSection {
+	display:inline-block;
+	position:relative;
+	width:20%;
+	height:90%;
+	vertical-align:top;
+	border-radius:5px;
+	padding-top:1.2%;
+	padding-left:1%;
+	margin-top:0.3%;
+	margin-left:1%;
+}
+#controllerTitle {
+	position:absolute;
+	left:0;
+	top:0;
+	height:5%;
+	width:17%;
+	border-radius:5px;
+	border:1px solid #333333;
+}
+#controllerTitle p {
+	display:inline-block;
+	font-size:1.5vh;
+	margin:0;
+	color:#333333;
+	position:relative;
+	top:12%;
+}
+#controllerButtons {
+	display:inline-block;
+	position:relative;
         width:auto;
-        margin-right:30px;
-}
-
-body {
-        font-family:Helvetica, Arial, Sans-Serif;
-        font-size:12px;
-        color:#267A94;
-        background-color:#000000;
-}
-
-#welcomeText {
-	font-family:Helvetica, Arial, Sans-Serif;
-	font-size:20px;
-        color:#49b0d0;
-	margin-top:40px;
-	text-align:center;
+        margin-left:1%;
+        background-color:#e6e6e6;
+	box-shadow:0 0 8px black;
+	border-radius:5px;
+	z-index:2;
 }
 
 #middleBar {
-	float:right;
-	width:180px;
-	height:800px;
-	margin-top:10px;
-	margin-right:20px;
-	margin-left:20px;
+/*	float:right;*/
+	display:inline-block;
+	width:10%;
+	height:98%;
+	text-align:center;
 }
 
 #sequenceButtons {
-	width:100%;
+	position:relative;
+	display:inline-block;
+	width:10%;
+	height:96%;
 	text-align:center;
-	border:3px solid #707070;
+	vertical-align:top;
 	border-radius:5px;
-	padding:3px;
-	max-height:100%;
-	overflow:auto;
+	padding-top:1.2%;
+	padding-left:1%;
+	margin-top:0.3%;
+	margin-left:2%;
 }
-
+#sequencesHead {
+	position:absolute;
+	top:0;
+	left:0;
+	display:inline-block;
+	width:50%;
+	height:5%;
+	border-radius:5px;
+	border:1px solid #333333;
+	z-index:0;
+}
+#sequencesHead p {
+	display:inline-block;
+	font-size:1.5vh;
+	margin:0;
+	color:#333333;
+	position:relative;
+	top:12%;
+}
+#sequencesBody {
+	position:relative;
+	display:inline-block;
+	width:95%;
+	max-height:90%;
+	overflow:auto;
+	padding-bottom:2%;
+	border-radius:5px;
+	background-color:#e6e6e6;
+	box-shadow:0 0 8px black;
+	z-index:2;
+}
 #sequenceButtons::-webkit-scrollbar { /* Hides scroll bars (Look terrible in Windows) */
     	display: none;
 }
 
 .sequenceButton {
-	border: 1px solid #96d1f8;
-        background: #65a9d7;
-        background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
-        background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
-        background: -moz-linear-gradient(top, #3e779d, #65a9d7);
-        background: -ms-linear-gradient(top, #3e779d, #65a9d7);
-        background: -o-linear-gradient(top, #3e779d, #65a9d7);
-	-webkit-border-radius:3px;
-        -moz-border-radius:3px;
+	border:1px solid white;
+        background:#07575b;
         border-radius:3px;
-	width:100%;
+	width:90%;
 	word-wrap:break-word;
-	margin-top:3px;
+	margin-top:1%;
+	margin-bottom:1%;
 	color:white;
-	font-size:15px;
+	font-size:1.3vh;
 	min-height:35px;
 }
 .sequenceButton:hover {
@@ -153,7 +314,9 @@ body {
         color: #ccc;
         cursor:pointer;
 }
-
+.sequenceButton:last-of-type {
+	margin-bottom:3%;
+}
 .menuButton {
    	border: 1px solid #96d1f8;
    	background: #65a9d7;
@@ -183,21 +346,6 @@ body {
 }
 .menuButton:active {
    	background: #267a94;
-}
-
-#dynamicPage {
-	width:100%;
-	margin:auto;
-	margin-left:5px;
-	display:inline-block;
-}
-
-#logo {
-        margin-right:10px;
-        float:right;
-}
-#logo:hover {
-	cursor:pointer;	
 }
 
 .userForm {
@@ -737,58 +885,51 @@ button.highlighted {
 
 .gridButton {
    	border: 1px solid #62a0c7;
-   	background: #1e7cba;
+   	/*background: #1e7cba;
    	background: -webkit-gradient(linear, left top, left bottom, from(#296a96), to(#1e7cba));
    	background: -webkit-linear-gradient(top, #296a96, #1e7cba);
    	background: -moz-linear-gradient(top, #296a96, #1e7cba);
    	background: -ms-linear-gradient(top, #296a96, #1e7cba);
-   	background: -o-linear-gradient(top, #296a96, #1e7cba);
-   	padding: 1px 1px;
-   	-webkit-border-radius: 2px;
-   	-moz-border-radius: 2px;
+   	background: -o-linear-gradient(top, #296a96, #1e7cba);*/
+   	background-color:#003b46;
+   	padding: 1% 1%;
    	border-radius: 2px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   	/*-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
    	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
+   	/*box-shadow: rgba(0,0,0,1) 0 1px 0;*/
    	color: white;
-   	font-size: 14px;
+   	font-size: 1.4vh;
    	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
-   	text-decoration: none;
    	vertical-align: middle;
    	width:100%;
+	height:100%;
+	border:none;
+   	white-space:nowrap;
 }
-.gridButton:hover {
+/*.gridButton:hover {
   	background: #144363;
 }
 .gridButton:active {
    	background: #267a94;
-}
+}*/
 
-.gridButton.deselect {
-   	border: 1px solid #999966;
-   	background: #999966;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#4d4c23), to(#999966));
-   	background: -webkit-linear-gradient(top, #4d4c23, #999966);
-   	background: -moz-linear-gradient(top, #4d4c23, #999966);
-   	background: -ms-linear-gradient(top, #4d4c23, #999966);
-   	background: -o-linear-gradient(top, #4d4c23, #999966);  
+.gridButton.clear {
+   	background-color:red;
 }
-.gridButton.deselect:hover {
-   	background: #4d4c23;
+.gridButton.clear:hover {
+   	background:#800000;
 	cursor:pointer;
-}
-.gridButton.deselect:active {
-   	background: #999966;
 }
 
 .gridButton.row {
-   	border: 1px solid #FFA347;
-   	background: #ff6600;
+   	/*border: 1px solid #FFA347;
+   	/*background: #ff6600;
    	background: -webkit-gradient(linear, left top, left bottom, from(#ff6600), to(#ff6600));
    	background: -webkit-linear-gradient(top, #ff6600, #ff6600);
    	background: -moz-linear-gradient(top, #ff6600, #ff6600);
    	background: -ms-linear-gradient(top, #ff6600, #ff6600);
-   	background: -o-linear-gradient(top, #ff6600, #ff6600);	
+   	background: -o-linear-gradient(top, #ff6600, #ff6600);*/
+   	background-color:orange;
 }
 .gridButton.row:hover {
    	background: #B24700;
@@ -806,25 +947,19 @@ button.highlighted {
 }
 
 .stbButton {
-   	border: 1px solid #999966;
-   	padding: 1px 3px;
-   	-webkit-border-radius: 2px;
-   	-moz-border-radius: 2px;
+/*   	padding: 1px 3px;*/
+ 	border:none;
    	border-radius: 2px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+/*   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
    	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
    	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	color: black;
-   	font-size: 13px;
+*/   	color: black;
+   	font-size: 1.4vh;
    	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
-   	text-decoration: none;
    	vertical-align: middle;
    	width:100%;
-}
-.stbButton:hover {
-   	font-weight:bold;
-   	font-size:13px;
-	cursor:pointer;
+   	height:100%;
+   	white-space:nowrap;
 }
 .stbButton.deselect {
    	background-color:white;
@@ -832,6 +967,7 @@ button.highlighted {
 }
 .stbButton.selected {
    	background-color:#FF6600;
+	color:white;
    	border:1px;
 }
 .stbButton.highlighted {
@@ -843,24 +979,50 @@ button.highlighted {
 	border:1px solid #96d1f8;
 	color:white;
 }
+.stbButton:hover {
+	background-color:black;
+	color:white;
+	cursor:pointer;
+}
 
 #stbSelect {
-	background-color:#252525;
+	display:inline-block;
         width:auto;
-        display:inline-block;
-        padding:10px;
-        margin-top:5px;	
-	-webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        border-radius: 4px;
-	border:2px solid #707070;
+        max-width:100%;
+        height:auto;
+        max-height:99%;
 	color:white;
 	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
 	font-size:25px;
 	font-weight:normal;
 	text-align:center;
+	overflow:auto;
+	padding:0 0.5%;
 }
+#stbSelect p {
+	color:black;
+	font-size:2vh;
+	margin:0.5%;
+}
+#stbGridTable {
+	display:block;
+	position:relative;
+	border-spacing:0;
+	background-color:#e6e6e6;
+	z-index:2;
+	border-radius:5px;
+	max-height:95%;
+	max-width:100%;
+	overflow:auto;
+	box-shadow:0 0 8px black;
 
+}
+#stbGridTable tr {
+	height:3%;
+}
+#stbGridTable td {
+	height:95%;
+}
 table.stbConfigGrid {
 	margin-left:auto;
 	margin-right:auto;
@@ -1064,7 +1226,7 @@ table.stbConfigGrid {
 	border-radius:5px;
 	padding:10px;
 	color:white;
-	font-size:15px Arial;
+	font-size:1.5vh;
 	word-wrap:break-word;	
 }
 
@@ -1451,4 +1613,9 @@ input[type="text"]:focus {
 	margin-top:10px;
 	border-radius:4px;
 	font-size:13px;
+}
+
+.masterTooltip .tooltip {
+	position:relative;
+	z-index:10;
 }
