@@ -19,6 +19,7 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 $maindir =~ s/\/$//;
 my $controlscript = $maindir . '/scripts/stbControl.pl';
 my $filedir = $maindir . '/files/';
+my $confdir = $maindir . '/config/';
 my $runningdir = $filedir . 'pidsRunning/';
 my $pauseddir = $filedir . 'pidsPaused/';
 my $statefile = $filedir . 'schedulerState.txt';
@@ -26,6 +27,20 @@ my $schedfile = ($filedir . 'eventSchedule.txt');
 my $sequencefile = ($filedir . 'commandSequences.txt');
 my $pidfile = $filedir . 'scheduler.pid';
 my $processdebugfile = $filedir . 'scheduledEventDebug.txt';
+my $stbdatafile = $confdir . 'stbData.json';
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+        local $/ = undef;
+        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %stbdata = %{$decoded};
+}
+
 tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
 tie my %sequencedata, 'Tie::File::AsHash', $sequencefile, split => ':' or die "Problem tying \%sequences to $sequencefile: $!\n"; 
 
@@ -238,13 +253,9 @@ sub showData {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
 		my @splits = split /\Q|/, $events{$$eventID};	# We use \Q to quote the | symbol otherwise it is treated as a metachar and the split fails
-		#my ($targets) = $events{$$eventID} =~ /\|(.[^\|]+)$/;
 		my $targets = $splits[7];
 		my @stbs = split(',',$targets);
 		my $resforgui = 'Boxes{';
-		use DBM::Deep;
-                my $stbdatafile = $maindir . '/config/stbDatabase.db';
-                tie my %stbdata, 'DBM::Deep', {file => $stbdatafile, locking => 1, autoflush => 1, num_txns => 100};
 		foreach my $stb (@stbs) {
 			if (exists $stbdata{$stb}) {
 				my $name = $stbdata{$stb}{'Name'} || '';

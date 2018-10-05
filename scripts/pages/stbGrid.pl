@@ -1,9 +1,9 @@
 #!/usr/bin/perl -w
-use strict;
 
+use strict;
 use CGI;
-use DBM::Deep;
 use Tie::File::AsHash;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -12,9 +12,12 @@ chomp(my $maindir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
+my $conffile = $confdir . 'stbGrid.conf';
 my $filedir = $maindir . '/files/';
 my $lastboxfile = $filedir . 'lastBoxes.txt';
-my $contbtnfile = $maindir . '/scripts/pages/controlButtons.html';
+my $seqfile = $filedir . 'commandSequences.txt';
+my $orderfile = $confdir . 'controllerPageOrder.conf';
+my $remfile = $confdir . 'controllerRemote.txt';
 my $confs = `ls -1 $confdir`;
 my %laststbs;
 chomp(my $lastboxstring = `cat $lastboxfile` || '');
@@ -23,32 +26,32 @@ for (@lastboxes) {
 	$laststbs{$_}++;
 }
 
-if ($confs !~ m/stbGrid.conf/) {
+#if ($confs !~ m/\bstbGrid.conf\b/) {
+if (!-e $conffile) {
 	createConf();
 } else {
-	loadGrid(\$confdir);
+	loadPage();
 }
 
 sub createConf {
-	my $rows = $query->textfield(-id=>'rows',-name=>'rows',-size=>'10');
-	my $columns = $query->textfield(-id=>'columns',-name=>'columns',-size=>'10');
+	my $rows = $query->textfield(-id=>'gridRowsText',-name=>'rows',-size=>'10',-maxlength=>'2');
+	my $columns = $query->textfield(-id=>'gridColumnsText',-name=>'columns',-size=>'10',-maxlength=>'2');
 	my $fontformat = '<font size="4" color="#267A94">';
-	print '<div class="wrapLeft shaded">';
+	print '<div class="errorDiv">';
 	print '<div class="userForm"><body>';
-	print "<p style=\"color:red;font-size:20px;margin-bottom:3px;margin-top:5px;\">No configuration files found for the STB grid:</p>";
+	print "<p style=\"color:orange;font-size:25px;margin:1% 0;\">! No configuration files found for the STB grid !</p>";
 
 print <<FORM;
 <form id="createGridConfig" name="createGridConfig">
-<p style="color:white;font-size:20px;margin-bottom:3px;margin-top:3px;">Set the following options to create your STB grid</p>
-<p style="color:red;font-size:20px;margin-bottom:3px;">NOTE: Once you have chosen the size of the grid it cannot be changed.</p>
-<p style="color:red;font-size:20px;margin-bottom:10px;margin-top:1px;">Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</p>
-<p style="color:#267A94;font-size:18px;margin-bottom:10px;margin-top:1px;">Select the number of columns:</p>
-$columns<br><br>
-<p style="color:#267A94;font-size:18px;margin-bottom:10px;margin-top:1px;">Select the number of rows:</p>
-$rows<br>
-<br><br>
+	<p style="color:white;font-size:20px;margin-bottom:3px;margin-top:3px;">Set the following options to create your STB grid</p>
+	<p style="color:red;font-size:20px;margin-bottom:3px;">Once you have chosen the size of the grid it cannot be changed.</p>
+	<p style="color:#cccccc;font-size:17px;margin-bottom:10px;margin-top:1px;">Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</p>
+	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:15px;">Select the number of columns:</p>
+	$columns
+	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:10px;">Select the number of rows:</p>
+	$rows
 </form>
-<button class="newSeqSubmit" style="float:none;" onclick="validate()">Create New Grid</button><br>
+<button class="newSeqSubmit" onclick="validate()">Create New Grid</button><br>
 </body>
 </div>
 </div>
@@ -56,22 +59,54 @@ FORM
 } 
 #################################################### End of sub createConf ####################################################
 
-sub loadGrid {
-	my ($confdir) = @_;
-	my $conffile = $$confdir . 'stbGrid.conf';
+sub loadPage {
+	my @order = ('loadSTBSelection','loadControl','loadSequences');	# This is the default order if there are issues with the config file
+	
+	chomp(my $orderconf = `cat $orderfile` // '');
+	if ($orderconf) {
+		my @bits = split('->',$orderconf);
+		if ($bits[0] and $bits[1] and $bits[2]) {
+			@order = ();
+			foreach my $bit (@bits) {
+				if ($bit =~ /^STBSelection|Control|Sequences$/) {
+					push(@order,'load' . $bit);
+				}
+			}
+		}
+	}
+
+	foreach my $load (@order) {
+		my $subref = \&$load;
+		&$subref();
+	}
+	
+	loadSettings();
+}
+
+sub loadSTBSelection {
+	my $conffile = $confdir . 'stbGrid.conf';
 	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
 	chomp(my @confdata = <FH>);
 	close FH;
 	my $confdata = join("\n", @confdata);
 	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
 	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
-	my $stbdatabase = $$confdir . 'stbDatabase.db';
-	my $seqfile = $filedir . 'commandSequences.txt';
-	tie my %stbdata, 'DBM::Deep', {file => $stbdatabase,   locking => 1, autoflush => 1, num_txns => 100};
+	my $stbdatafile = $confdir . 'stbData.json';
+	my $json = JSON->new->allow_nonref;
+	$json = $json->canonical('1');
+	
+	my %stbdata;
+	if (-e $stbdatafile) {
+		local $/ = undef;
+		open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+		my $data = <$fh>;
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
 
 	##### Load the STB grid
 print <<TOP;
-<div id="stbGrid">
+<div id="stbGrid" class="controllerPageSection">
 	<div id="gridTitle">
 		<p>STB Selection</p>
 	</div>
@@ -79,13 +114,13 @@ print <<TOP;
 		<tr id="columns">
 TOP
 
-my $c = '1';
-while ($c <= $columns) {
+	my $c = '1';
+	while ($c <= $columns) {
 print <<COL;
 <td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
 COL
-$c++;
-}
+		$c++;
+	}
 
 print <<CLEAR;
 <td scope="col" width="60px"><button class="gridButton clear" onClick="deselect()">CLEAR</button></td></tr>
@@ -135,26 +170,46 @@ $r++;
 }
 
 print <<LAST;
-</tr></table>
-<input type="hidden" id="matrixLoaded" />
-<input type="hidden" id="totalRows" value="$rows"/></div>
+		</tr>
+	</table>
+	<input type="hidden" id="matrixLoaded" />
+	<input type="hidden" id="totalRows" value="$rows"/>
+</div>
 LAST
+} ########## End of sub loadGrid ##########
 
-	##### Load the control buttons
-	open FH, '<', $contbtnfile or die "Unable to open $contbtnfile: $!\n";
-	my @control = <FH>;
-	close FH;
+sub loadControl {
+	my $choice = '';
+	if (open my $fh, '<', $remfile) {
+		local $/;
+		$choice = <$fh>;
+		close $fh;
+	}
+	
+	if ($choice) {
+		my $file = $maindir . '/scripts/pages/' . $choice . '.html';
+		if (-e $file) {
+			##### Load the control buttons
+			open FH, '<', $file or die "Unable to open $file: $!\n";
+			my @control = <FH>;
+			close FH;
 print <<CONTROL;
-<div id="controllerSection">
+<div id="controllerSection" class="controllerPageSection">
 	<div id="controllerTitle">
 		<p>Control</p>
 	</div>
-	@control
+	<div id="controllerButtons">
+		@control
+	</div>
 </div>
 CONTROL
-	##### Load the control buttons
+		} else {
+			die "ERROR: Could not locate remote file $file\n";
+		}
+	}
+}
 
-	##### Load the sequences buttons
+sub loadSequences {
 	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	my $seqlist = '';
 	foreach my $seq (sort keys %sequences) {
@@ -163,7 +218,7 @@ CONTROL
 
 
 print <<SEQSEC;
-<div id="sequenceButtons">
+<div id="sequenceButtons" class="controllerPageSection">
 	<div id="sequencesHead" class="masterTooltip" value="Below are your custom built sequences. Go to the Sequences page to make more or edit the current ones">
 		<p>Sequences</p>
 	</div>
@@ -175,7 +230,58 @@ SEQSEC
 
 
 	untie %sequences;
-	##### Load the sequences buttons
-	
-	untie %stbdata;
-} ########## End of sub loadGrid ##########
+}
+
+sub loadSettings {
+	my %orders = (	'STBSelection->Control->Sequences' => '1',
+			'STBSelection->Sequences->Control' => '1',
+			'Sequences->STBSelection->Control' => '1',
+			'Sequences->Control->STBSelection' => '1',
+			'Control->STBSelection->Sequences' => '1',
+			'Control->Sequences->STBSelection' => '1',
+		);
+	chomp(my $currentorder = `cat $orderfile` // '');
+
+	my $layoutdata = '';
+	foreach my $layout (sort keys %orders) {
+		my $sel = '';
+		if ($layout eq $currentorder) {
+			$sel = 'checked="checked"';
+		}
+		(my $pretty = $layout) =~ s/\-\>/ - /g;
+		$pretty =~ s/STBSelection/STB Selection/;
+$layoutdata .= <<INFO;
+<div class="layoutRow">
+	<div class="layoutTextHolder">
+		<p>$pretty</p>
+	</div>
+	<div class="layoutRadioHolder">
+		<input class="layoutRadio" type="radio" name="layoutRadios" value="$layout" $sel/>
+	</div>
+</div>
+INFO
+	}
+
+print <<DATA;
+<div id="controllerPageSettingsButton" onclick="ctrlSettings('show')">
+</div>
+<div id="controllerPageSettingsHolder">
+	<h1>Settings...</h1>
+	<button id="closeSettingsBtn" onclick="ctrlSettings('close')">CLOSE</button>
+	<div class="settingSection layout">
+		<div class="setSecHead">
+			<h2>Layout</h2>
+			<h3>Choose which order you would like the <span class='highlightSpan'>STB Selection</span>, <span class='highlightSpan'>Sequences</span>, and <span class='highlightSpan'>Control</span> sections to appear on the page.</h3>
+		</div>
+		<div class="setSecDetail">
+			<div class="layoutHolder">
+			$layoutdata
+			</div>
+			<div class="layoutSaveDiv">
+				<button id="saveLayoutBtn" onclick="saveLayoutChoice()">SAVE</button>
+			</div>
+		</div>
+	</div>
+</div>
+DATA
+}

@@ -3,7 +3,7 @@ use strict;
 
 use CGI;
 use Tie::File::AsHash;
-use DBM::Deep;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -21,6 +21,19 @@ my $filedir = $maindir . '/files/';
 my $statefile = $filedir . 'schedulerState.txt';
 my $eventsfile = ($filedir . 'eventSchedule.txt');
 my $htmldir = $maindir . '/scripts/pages/';
+my $stbdatafile = $confdir . 'stbData.json';
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+	local $/ = undef;
+	open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%stbdata = %{$decoded};
+}
 
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createEvSched(\$event) and exit if ($action =~ /^Create$|^Edit$/i);
@@ -110,8 +123,7 @@ ADMINTABLE
 		if ($data{'Active'} eq 'n') {
 			$togglebtn = "<button class=\"deactivateBtn\" onclick=\"scheduleStateChange(\'Enable\',\'$id\')\">Disabled<\/button>";
 		}
-		my $stbdatafile = $confdir . 'stbDatabase.db';
-		tie my %stbdata, 'DBM::Deep', {file => $stbdatafile,   locking => 1, autoflush => 1, num_txns => 100};
+
 		my $stbnames = '';
 		my @stbs = split(',',$data{'Boxes'});
 		foreach my $box (@stbs) {
@@ -130,7 +142,7 @@ ADMINTABLE
 				$stbnames .= " $box ,";
 			}
 		}
-		untie %stbdata;
+
 		$stbnames =~ s/\,$//;
 		$stbnames =~ s/^ //;
 
@@ -270,10 +282,8 @@ HEAD
 			}
 
 			if ($preset =~ /false/) {
-				#if ($$event) {
 				$customdayshead = 'fancyCell highlighted';
 				$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" onchange=\"eventRadioSwitch()\" checked>Custom Days";
-				#}
 			} else {
 				$presetshead = 'fancyCell highlighted';
 				$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" onchange=\"eventRadioSwitch()\" checked>Day Presets";
@@ -297,21 +307,16 @@ HEAD
 		if ($$event) {
 			if ($preset =~ /true/) {
 				$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-				#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);				
 			} else {
 				if ($dow =~ /$day/) {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\" checked>$day<br>";
-					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day,-selected=>1);
 				} else {
 					$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-					#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 				}
 			}
 		} else {
 			$html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
-			#$html = $query->checkbox(-name=>'dayCheck',-onchange=>'daysSelectedCheck()',-value=>$day);
 		}
-		#my $html = "<input type=\"checkbox\" name=\"dayCheck\" onchange=\"daysSelectedCheck()\" value=\"$day\">$day<br>";
 		push(@dayshtml,$html);
 	}
 
@@ -413,8 +418,7 @@ TARGETS
 print <<RIGHT;
 <div class="wrapLeft" style="margin-right:5px;">
 RIGHT
-	my $dbfile = $confdir . 'stbDatabase.db';
-        if (-e $dbfile) {
+        if (-e $stbdatafile) {
                 my $conffile = $confdir . 'stbGrid.conf';
                 open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
                 chomp(my @confdata = <FH>);
@@ -438,8 +442,6 @@ COL
                         $c++;
         	}
 
-		tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
-
              	my $r = '1';            # Set the Row count to 1
            	my $stbno = '1';        # Set the STB count to 1
 
@@ -453,7 +455,7 @@ COL
                         	my $buttontext;
                         	if (exists $stbdata{$id}) {
                         	} else {
-                        		%{$stbdata{$id}} = {};
+                        		%{$stbdata{$id}} = ();
                         	}
 
 				if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
@@ -489,8 +491,6 @@ print <<LAST;
 LAST
 
         	print '</div>';         # End of the "wrapLeft" div
-
-        	untie %stbdata;
         } else {
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
@@ -498,5 +498,4 @@ LAST
 	untie %groups;
 	untie %sequences;
 	untie %events;
-
 } # End of sub 'createEvSched'

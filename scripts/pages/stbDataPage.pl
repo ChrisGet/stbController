@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
-use strict;
 
+use strict;
 use CGI;
-use DBM::Deep;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -12,6 +12,10 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $confs = `ls -1 $confdir`;
+my $stbdatafile = $confdir . 'stbData.json';
+##### Create the JSON object for later use
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
 
 chomp(my $option = $query->param('option') || $ARGV[0] || '');
 chomp(my $box = $query->param('stb') || $ARGV[1] || '');
@@ -24,89 +28,98 @@ stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
 stbConfig(\$box,\'printIRTable') and exit if ($option =~ /printIR/i);
 
 sub stbSelect {
-	my $dbfile = $confdir . 'stbDatabase.db';
-	if (-e $dbfile) {
-		my $conffile = $confdir . 'stbGrid.conf';
-		if (! -e $conffile) {
-                        print "<div class=\"wrapLeft shaded\"><p style=\"color:red;font-size:20px;\">No STB Grid configuration found. Have you setup your STB Controller Grid yet?<\/p><\/div>";
-                        exit;
-                }
-        	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
-	        chomp(my @confdata = <FH>);
-	        close FH;
-	        my $confdata = join("\n", @confdata);
-	        my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
-	        my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+	my %stbdata;
+	my $conffile = $confdir . 'stbGrid.conf';
+	if (!-e $conffile) {
+		print '<div class="errorDiv"><h1>No STB Grid configuration found!<br><br>Select "Controller" from the top menu to get setup</h1></div>';
+		exit;
+	}
+	
+	if (-e $stbdatafile) {
+	        local $/ = undef;
+		open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+		my $data = <$fh>;
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
+	
+	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
+	chomp(my @confdata = <FH>);
+	close FH;
+	my $confdata = join("\n", @confdata);
+	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
+	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
 print <<HEAD;
 <div id="stbSelect">
-<p class="narrow">Click on a box below to manage its control and video switching parameters</p>
-<table align="center">
-<tr id="columns">
+	<div id="stbDataTextDiv">
+		<h2>STB Data Control</h2>
+		<p class="narrow">Click on a box to manage its control and video switching parameters</p>
+	</div>
+	<table align="center" style="border-collapse:collapse;">
+	<tr id="columns">
 HEAD
 
-		my $c = '1';
-		while ($c <= $columns) {
+	my $c = '1';
+	while ($c <= $columns) {
 print <<COL;
 <td scope="col" width="85px"><button class="gridButton">Column $c</button></td>
 COL
-			$c++;
+		$c++;
 	}
-
-			tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 	
-			my $r = '1';            # Set the Row count to 1
-			my $stbno = '1';        # Set the STB count to 1
+	my $r = '1';            # Set the Row count to 1
+	my $stbno = '1';        # Set the STB count to 1
 
-			while ($r <= $rows) {
-				$c = '1';               # Reset the Column count to 1
-				print "<tr id=\"Row$r\">";
-				while ($c <= $columns) {
-					my $id = "STB$stbno";
-					my $name = "col$c"."stb$stbno";
-					my $buttontext;
-					if (exists $stbdata{$id}) {
-					} else {
-						%{$stbdata{$id}} = {};
-					}
+	while ($r <= $rows) {
+		$c = '1';               # Reset the Column count to 1
+		print "<tr id=\"Row$r\">";
+		while ($c <= $columns) {
+			my $id = "STB$stbno";
+			my $name = "col$c"."stb$stbno";
+			my $buttontext;
+			if (!exists $stbdata{$id}) {
+				%{$stbdata{$id}} = ();
+			}
 
-					if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
-						$buttontext = $stbdata{$id}{'Name'};
-					} else {
-						$buttontext = "-";
-					}
+			if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
+				$buttontext = $stbdata{$id}{'Name'};
+			} else {
+				$buttontext = "-";
+			}
 
 print <<BOX;
 <td><button name="$name" id="$id" class="stbButton data" type="button" onClick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button></td>
 BOX
-	                		$stbno++;
-        	        		$c++;
-        			}
+	               	$stbno++;
+                	$c++;
+        	}
 
 print <<ROWEND;
 <th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
 ROWEND
 
-				$r++;
-			}
+		$r++;
+	}
 
 print <<LAST;
 </tr></table>
 </div>
 LAST
 
-			print '</div>';         # End of the "wrapLeft" div
-
-			untie %stbdata;
-	} else {
-		print "<div class=\"wrapLeft shaded\"><p style=\"color:red;font-size:20px;\">No STB Database found. Have you setup your STB Controller Grid yet?<\/p><\/div>";
-	}
+	print '</div>';         # End of the "wrapLeft" div
 }
 
 sub stbConfig {
 	my ($stb,$option) = @_;
-	my $dbfile = $confdir . 'stbDatabase.db';
-	tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+	my %stbdata;
+	if (-e $stbdatafile) {
+        	local $/ = undef;
+                open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+		my $data = <$fh>;
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
 
 	my ($num) = $$stb =~ /STB(\d+)/i;
 	my $name;

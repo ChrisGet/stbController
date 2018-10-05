@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
-use strict;
 
+use strict;
 use CGI;
 use Tie::File::AsHash;
 
@@ -23,6 +23,7 @@ my $seqfile = ($filedir . 'commandSequences.txt');
 my $image = $maindir . '/images/RT_Logo.png';
 my $htmldir = $maindir . '/scripts/pages/';
 my $conthtml = $htmldir . 'sequenceController.html';
+my $remfile = $confdir . 'sequencesRemote.txt';
 
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Create$/i);
@@ -80,80 +81,77 @@ SEQ
 
 sub createSeq {
 	my ($seq) = @_;
-	open my $fh, '<', $conthtml or die "Unable to open $conthtml: $!\n";
-	my @controller = <$fh>;
-	close $fh;
-	print '<div class="wrapLeft shaded">' , @controller;
-
-	my $headertext = 'Create New Command Sequence:';
+	my $choice = 'universalSeqRemote';
+	my @controller;
+	if (open my $fh, '<', $remfile) {
+		local $/;
+		$choice = <$fh>;
+		close $fh;
+	}
+	
+	my $file = $maindir . '/scripts/pages/' . $choice . '.html';
+	if (-e $file) {
+		open my $fh, '<', $file or die "Unable to open $file: $!\n";
+		@controller = <$fh>;
+		close $fh;
+	} else {
+		die "Could not find $file for the sequences remote.\n";
+	}
+	my $headertext = 'Sequences &#8594; Create';
 	my $defname;
 	my $commands;
-	my $buttontext = 'Create New Sequence';
+	my $buttontext = 'Create!';
 	my $onclick = 'seqValidate()';
 
 	if ($$seq) {
-		$headertext = "Edit Command Sequence for <font color\=\"#65a9d7\">\"$$seq\"<\/font>:";
+		$headertext = "Sequences \&\#8594; Edit <font color\=\"green\">\"$$seq\"<\/font>";
 		$defname = $$seq;
 		tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 		$commands = $sequences{$defname};		
-		$buttontext = "Update \"$defname\"";
+		$buttontext = 'Update!';
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "seqValidate(\'$defname\')";
 	}
 
 	my $timeouts = $query->popup_menu(-id=>'timeoutList',-name=>'timeoutList',-values=>['1','2','5','10'],-class=>'styledSelect');
-	my $tobtn = '<button class="menuButton" onclick="addSeqTO()">Add Timeout</button>';
+	my $tobtn = '<button class="seqTimeoutBtn" onclick="addSeqTO()">Add Timeout</button>';
 	my $namefield = $query->textfield(-id=>'sequenceName',-name=>'sequenceName',-size=>30,,-maxlength=>25,-default=>$defname);
 
-	
-
 print <<MAIN;
-<div id="seqMain" style="width:700px;">
-<h1 style="margin-bottom:0em;"><u>$headertext</u></h1>
-<p style="margin-top:2px;margin-bottom:5px;color:white;font-size:20px;">Click the buttons from the controller on the right to add them to the Sequence area below</p>
-<p style="margin-top:2px;color:white;font-size:18px;">You can insert new commands between existing sequence commands by placing the cursor where required</p>
-<p style="margin-top:2px;margin-bottom:5px;color:white;font-size:18px;">Click on a button within the Sequence Area to remove it</p>
-<table style="width:100%;">
-<tr><td><div style="float:left;">
-	<font size="6"><u>Sequence Area</u></font><br><br>
-	<table>
-		<tr>
-		<td><button class="menuButton" onclick="clearSeqArea('sequenceArea')">Clear Sequence Area</button></td>
-		</tr>
-	</table>
+<div id="sequencesPageHolder">
+	<div id="seqHeaderDiv">
+		<h1>$headertext</h1>
 	</div>
-</td>
-<td align="left" valign="bottom"><div style="margin-top:50px;">
-	<table>
-		<tr>
-		<td colspan="2" align="center"><font color="white" size="3">Please give your new sequence a name below</font></td>
-		</tr>
-		<tr>
-		<td><font size="5" color="#69ABBF">Name: </font></td>
-		<td>$namefield</td>
-		</tr>		
-	</table>
-</div>
-</td>
-<td valign="bottom"><div style="float:right;border:1px solid;">
-	<table>
-		<tr><td align="center"><font size="4" color="white">Timeout (seconds)</font></td></tr>
-		<tr height="7px"></tr>
-		<tr><td align="center">$timeouts</td></tr>
-		<tr height="7px"></tr>
-		<tr><td align="center">$tobtn</td></tr>
-	</table>
-</div>
-</td>
-</tr>
-</table>
-<div id="sequenceArea" contenteditable="true" style="width:75%;"></div>
-<div id="seqSubmitBtnDiv">
-	<button class="newSeqSubmit" onclick="$onclick">$buttontext</button>
-</div>
-</div>
+	<div id="seqMain">
+		<div id="seqHeadHolder">
+			<p class="seqInfo big">Click the buttons from the controller on the right to add them to the Sequence area below</p>
+			<p class="seqInfo med">You can insert new commands between existing sequence commands by placing the cursor where required</p>
+		</div>
+		<div id="seqContentHolder">
+			<div id="seqAreaTop">
+				<div class="seqTopSec">
+					<p>Sequence Name</p>
+					$namefield
+				</div>
+				<div class="seqTopSec">
+					<p>Add Timeout (Seconds)</p>
+					<input type="text" id="seqTimeoutText" maxlength="3" placeholder="Secs">
+					$tobtn
+				</div>
+			</div>
+			<div id="seqAreaMiddle">
+				<p class="seqInfo rem">** Click on a button within the Sequence Area to remove it **</p>
+			</div>
+			<div id="seqAreaBottom">
+				<button id="clearSeqAreaBtn" onclick="clearSeqArea('sequenceArea')">Clear Sequence Area</button>
+				<div id="sequenceArea" contenteditable="true"></div>
+				<button id="createSeqBtn" onclick="$onclick">$buttontext</button>
+			</div>
+		</div>
+	</div>
+	<div id="controllerButtons">
+		@controller
+	</div>
 </div>
 MAIN
-
-
 } # End of sub 'createSeq'

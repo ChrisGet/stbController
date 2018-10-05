@@ -1,16 +1,14 @@
 #!/usr/bin/perl -w
-use strict;
 
+use strict;
 use CGI;
 use Tie::File::AsHash;
-use DBM::Deep;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
-
 chomp(my $action = $query->param('action') || $ARGV[0] || '');
 chomp(my $group = $query->param('group') || $ARGV[1] || '');
-
 die "No Action given for stbGroupsPage.pl\n" if (!$action);
 die "Invalid Action \"$action\" given for stbGroupsPage.pl\n" if ($action !~ /^Menu$|^Create$|^Edit$/i);
 die "No STB group given to be edited for stbGroupsPage.pl\n" if (($action =~ /^Edit$/i) and (!$group));
@@ -22,6 +20,19 @@ my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $htmldir = $maindir . '/scripts/pages/';
+my $stbdatafile = $confdir . 'stbData.json';
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+        local $/ = undef;
+        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %stbdata = %{$decoded};
+}
 
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createGroup(\$group) and exit if ($action =~ /^Create$|^Edit$/i);
@@ -32,11 +43,6 @@ sub mainMenu {
 		print '<font size="4" color="red">You currently have no STB Groups</font>';
 		exit;
 	}
-
-	#### Load the STB Database so we can get the 'Name' of each stb
-	my $dbfile = $confdir . 'stbDatabase.db';
-	tie my %stbdata, 'DBM::Deep', {file => $dbfile, locking => 1, autoflush => 1, num_txns => 100};
-
 
 print <<STUFF;
 <table>
@@ -90,8 +96,6 @@ GROUP
 	
 		$colcount++;
 	}
-
-	untie %stbdata;
 	print '</tr></table>'
 } # End of sub 'mainMenu'
 
@@ -159,8 +163,7 @@ print <<MAIN;
 </div>
 MAIN
 
-	my $dbfile = $confdir . 'stbDatabase.db';
-	if (-e $dbfile) {
+	if (-e $stbdatafile) {
 		my $conffile = $confdir . 'stbGrid.conf';
         	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
 	        chomp(my @confdata = <FH>);
@@ -184,10 +187,8 @@ COL
                         $c++;
                 }
 
-                tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
-
-                my $r = '1';            # Set the Row count to 1
-               my $stbno = '1';        # Set the STB count to 1
+		my $r = '1';            # Set the Row count to 1
+		my $stbno = '1';        # Set the STB count to 1
 
                 while ($r <= $rows) {
                         $c = '1';               # Reset the Column count to 1
@@ -199,7 +200,7 @@ COL
                                 my $buttontext;
                                 if (exists $stbdata{$id}) {
                                 } else {
-                                        %{$stbdata{$id}} = {};
+                                        %{$stbdata{$id}} = ();
                                 }
 
                                 if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
@@ -236,8 +237,6 @@ print <<LAST;
 LAST
 
                 print '</div>';         # End of the "wrapLeft" div
-
-                untie %stbdata;
 	} else {
 		print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
 	}

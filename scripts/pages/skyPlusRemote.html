@@ -1,0 +1,51 @@
+<div id="remoteSelectorDiv">
+	<select id="remoteSelector">
+		<option value="skyPlusRemote" selected disabled>Sky Plus</option>
+		<option value="skyQRemote">Sky Q</option>
+		<option value="universalRemote">Universal</option>
+	</select>
+</div>
+<img src="/web/images/skyPlusRemote.png" width="100%" height="100%" alt="Sky Plus Remote">
+<button class="spRemBtn deepsleep" onclick="stbControl('control', 'passive')" title="Deep Sleep (Passive Standby)">Deep Sleep</button>
+<button class="spRemBtn sky" onclick="stbControl('control', 'sky')" title="Sky"></button>
+<button class="spRemBtn power" onclick="stbControl('control', 'power')" title="Power"></button>
+<button class="spRemBtn boxoffice" onclick="stbControl('control', 'box office')" title="Box Office"></button>
+<button class="spRemBtn services" onclick="stbControl('control', 'services')" title="Services"></button>
+<button class="spRemBtn tvguide" onclick="stbControl('control', 'tv guide')" title="TV Guide"></button>
+<button class="spRemBtn interactive" onclick="stbControl('control', 'interactive')" title="Interactive"></button>
+<button class="spRemBtn info" onclick="stbControl('control', 'information')" title="Info"></button>
+<button class="spRemBtn chanup" onclick="stbControl('control', 'channel up')" title="Channel Up"></button>
+<button class="spRemBtn chandown" onclick="stbControl('control', 'channel down')" title="Channel Down"></button>
+<button class="spRemBtn up" onclick="stbControl('control', 'cursor up')" title="Up"></button>
+<button class="spRemBtn down" onclick="stbControl('control', 'cursor down')" title="Down"></button>
+<button class="spRemBtn left" onclick="stbControl('control', 'cursor left')" title="Left"></button>
+<button class="spRemBtn right" onclick="stbControl('control', 'cursor right')" title="Right"></button>
+<button class="spRemBtn select2" onclick="stbControl('control', 'select')" title="Select"></button>
+<button class="spRemBtn text" onclick="stbControl('control', 'text')" title="Text"></button>
+<button class="spRemBtn backup" onclick="stbControl('control', 'backup')" title="Back Up"></button>
+<button class="spRemBtn help" onclick="stbControl('control', 'help')" title="Help"></button>
+<button class="spRemBtn rewind" onclick="stbControl('control', 'rewind')" title="Rewind"></button>
+<button class="spRemBtn play" onclick="stbControl('control', 'play')" title="Play"></button>
+<button class="spRemBtn pause" onclick="stbControl('control', 'pause')" title="Pause"></button>
+<button class="spRemBtn ffwd" onclick="stbControl('control', 'fast forward')" title="FFWD"></button>
+<button class="spRemBtn record" onclick="stbControl('control', 'record')" title="Record"></button>
+<button class="spRemBtn stop" onclick="stbControl('control', 'stop')" title="Stop"></button>
+<button class="spRemBtn red" onclick="stbControl('control', 'red button')" title="Red"></button>
+<button class="spRemBtn green" onclick="stbControl('control', 'green button')" title="Green"></button>
+<button class="spRemBtn yellow" onclick="stbControl('control', 'yellow button')" title="Yellow"></button>
+<button class="spRemBtn blue" onclick="stbControl('control', 'blue button')" title="Blue"></button>
+<button class="spRemBtn num one" onclick="stbControl('control', '1')" title="1"></button>
+<button class="spRemBtn num two" onclick="stbControl('control', '2')" title="2"></button>
+<button class="spRemBtn num three" onclick="stbControl('control', '3')" title="3"></button>
+<button class="spRemBtn num four" onclick="stbControl('control', '4')" title="4"></button>
+<button class="spRemBtn num five" onclick="stbControl('control', '5')" title="5"></button>
+<button class="spRemBtn num six" onclick="stbControl('control', '6')" title="6"></button>
+<button class="spRemBtn num seven" onclick="stbControl('control', '7')" title="7"></button>
+<button class="spRemBtn num eight" onclick="stbControl('control', '8')" title="8"></button>
+<button class="spRemBtn num nine" onclick="stbControl('control', '9')" title="9"></button>
+<button class="spRemBtn num zero" onclick="stbControl('control', '0')" title="0"></button>
+<div id="rowControlBtnDiv">
+	<button class="remoteRowBtn up" onclick="arrowDir('DEC')" title="Row Up"></button>
+	<div id="rowCtrlTextDiv"><p>ROW</p></div>
+	<button class="remoteRowBtn down" onclick="arrowDir('INC')" title="Row Down"></button>
+</div>

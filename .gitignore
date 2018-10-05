@@ -7,3 +7,7 @@
 **/homeDir.txt
 **/scheduler.pid
 **/dynamicTitle.txt
+**/controllerPageOrder.conf
+**/controllerRemote.txt
+**/sequencesRemote.txt
+**/stbData.json

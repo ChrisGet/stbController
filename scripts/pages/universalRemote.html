@@ -1,0 +1,91 @@
+<div id="remoteSelectorDiv">
+        <select id="remoteSelector">
+                <option value="universalRemote" selected disabled>Universal</option>
+                <option value="skyQRemote">Sky Q</option>
+                <option value="skyPlusRemote">Sky Plus</option>
+        </select>
+</div>
+<table id="powerbuttons">  <!-- First table is the two power buttons -->
+	<td><button class="power_deep" onclick="stbControl('control','passive')">DEEP SLEEP</button></td>
+	<td><button class="power_normal" onclick="stbControl('control','power')">POWER</button></td>
+</table>
+
+<table id="num_pad"> <!-- Next is the numeric keypad -->
+	<tr>
+		<td><center><button class="number masterTooltip" value=". , ; : '"  onClick="stbControl('control', '1')">1</button></center></td>
+		<td><center><button class="number masterTooltip" value="abc"  onClick="stbControl('control', '2')">2</button></center></td>
+		<td><center><button class="number masterTooltip" value="def"  onClick="stbControl('control', '3')">3</button></center></td>
+	</tr>
+	<tr>
+		<td><center><button class="number masterTooltip" value="ghi"  onClick="stbControl('control', '4')">4</button></center></td>
+		<td><center><button class="number masterTooltip" value="jkl"  onClick="stbControl('control', '5')">5</button></center></td>
+		<td><center><button class="number masterTooltip" value="mno"  onClick="stbControl('control', '6')">6</button></center></td>
+	</tr>
+	<tr>
+		<td><center><button class="number masterTooltip" value="pqrs"  onClick="stbControl('control', '7')">7</button></center></td>
+		<td><center><button class="number masterTooltip" value="tuv"  onClick="stbControl('control', '8')">8</button></center></td>
+		<td><center><button class="number masterTooltip" value="wxyz"  onClick="stbControl('control', '9')">9</button></center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><center><button class="number masterTooltip" value="space"  onClick="stbControl('control','0')">0</button></center></td>
+		<td></td>
+	</tr>
+</table>
+
+<table id="controls"> <!-- Seperate sub table (so it can align to the others but have a different width THIS IS THE MAIN KEY PANEL -->
+	<tr>
+		<td><center><button class="colourButton red" onClick="stbControl('control','red button')"></button></center></td>
+		<td><center><button class="colourButton green" onClick="stbControl('control','green button')"></button></center></td>
+		<td></td>
+		<td><center><button class="colourButton yellow" onClick="stbControl('control','yellow button')"></button></center></td>
+		<td><center><button class="colourButton blue" onClick="stbControl('control','blue button')"></button></center></td>
+		<td></td>
+	</tr>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:2vh;width:50px;" onClick="stbControl('control', 'rewind')"><<</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:2vh;" onClick="stbControl('control', 'stop')">STOP</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:2vh;" onClick="stbControl('control', 'play')">PLAY</button></center></td>
+		<td><center><button class="function" style="color:#ff4d4d; font-size:2vh;" onClick="stbControl('control', 'record')">RECORD</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:2vh;width:50px;" onClick="stbControl('control', 'fast forward')">>></button></center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><center><button class="function" style="color:white"; onClick="stbControl('control', 'help')">HELP</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:20px"; onClick="stbControl('control', 'pause')">PAUSE</button></center></td>
+		<td><center><button class="function" style="color:white"; onClick="stbControl('control', 'text')">TEXT</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="stbControl('control', 'channel up')">CH+</button><center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button class="function" style="color:white;" onClick="stbControl('control', 'box office')">BOX OFFICE</button></td>
+		<td><center><button class="function" style="color:#5D84AF;font-size:40px;font-family:Sky Text, Helvetica, Arial, Sans-Serif;" onClick="stbControl('control', 'sky')">SKY</button></center></td>
+		<td><center><button class="function" style="color:white;" onClick="stbControl('control', 'interactive')">INTERACTIVE</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onClick="stbControl('control', 'channel down')">CH-</button><center></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="bottom" align="right"><button class="corner topleft" onClick="stbControl('control', 'tv guide')">TV GUIDE /<br>HOME</button></td>
+		<td align="center"><button class="direction UpNav" onClick="stbControl('control', 'cursor up')"></button></td>
+		<td valign="bottom" align="left"><button class="corner topright" onClick="stbControl('control', 'services')">SERVICES</button></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="middle" align="right"><button class="direction LeftNav" onClick="stbControl('control', 'cursor left')"></button></td>
+		<td valign="middle" align="center"><button class="select" style="color:white;margin:auto;" onClick="stbControl('control', 'select')">SELECT</button></td>
+		<td valign="middle" align="left"><button class="direction RightNav" onClick="stbControl('control', 'cursor right')"></button></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="top" align="right"><button class="corner bottomleft" onClick="stbControl('control', 'information')">i</button></td>
+		<td valign="top" align="center"><button class="direction DownNav" onClick="stbControl('control', 'cursor down')"></button></td>
+		<td valign="top" align="left"><button class="corner bottomright" onClick="stbControl('control', 'backup')">BACK UP</button></td>
+	</tr>
+</table>
+<div id="rowControlBtnDiv">
+	<button class="remoteRowBtn up" onclick="arrowDir('DEC')" title="Row Up"></button>
+	<div id="rowCtrlTextDiv"><p>ROW</p></div>
+	<button class="remoteRowBtn down" onclick="arrowDir('INC')" title="Row Down"></button>
+</div>
+

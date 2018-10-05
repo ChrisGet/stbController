@@ -27,7 +27,7 @@ E:0xEFB4
 END:0xEF8A
 ESC:0xEF8D
 F:0xEFB5
-fast forward:0xE405
+fast forward:E405
 G:0xEFB6
 green button:E201
 H:0xEFB7
@@ -53,9 +53,9 @@ power:E000
 Q:0xEFC0
 R:0xEFC1
 record:0xE403
-red button:0xE200
+red button:E200
 RETURN:0xEF8F
-rewind:0xE407
+rewind:E407
 S:0xEFC2
 select:E001
 services:E00A

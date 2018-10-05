@@ -30,7 +30,6 @@ if ($schedpid) {
 		}
 	}
 
-	#chomp(my $runningtotal = `ls -l $runningdir | grep -v total | wc -l` || '');
 	chomp(my $runningtotal = `ps ax | grep "(Scheduler-$schedpid)" | grep -v grep | wc -l` || '');
 	chomp(my $pausedtotal = `ls -l $pauseddir | grep -v total | wc -l` || '');
 	my @parts = split(/MainLoop\s*-\s*/,$res);

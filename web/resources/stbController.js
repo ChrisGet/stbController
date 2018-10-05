@@ -25,7 +25,12 @@ window.onload = function () {	// Run these functions when the page first loads
                                 $('.tooltip').css({ top: mousey, left: mousex, 'z-index': 10})
                         }
                 }, '.masterTooltip');
-        });
+	});
+	//Bind the function for the remote control selection
+	$(document).on('change', '#remoteSelector', function() {
+		remoteChange(this);
+	});
+	
 }
 
 window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
@@ -662,7 +667,14 @@ function removeFromSeq($this,$area) {	// This function handles removing specific
 // ############### End of removeFromSeq function
 
 function addSeqTO() {	// This function handles adding of Timeouts to the dynamic area on the Sequences creation/editing pages
-	var timeout = document.getElementById('timeoutList').value;
+	var timeout = document.getElementById('seqTimeoutText').value;
+	if (!timeout) {
+		alert('Please enter a timeout value in seconds');
+		return;
+	} else if (timeout.match(/[^0-9]/)) {
+		alert('Timeout must be a numeric value');
+		return;
+	}
 	var id = 't' + timeout;
 	var text = 'Timeout (' + timeout + 's)';
 	seqTextUpdate(id,text);
@@ -1370,4 +1382,52 @@ function addGroupMulti($sel) {
 }
 // ############### End of addGroupMulti function
 
+function ctrlSettings($opt) {
+	if ($opt.match(/show/i)) {
+		$('#controllerPageSettingsHolder').css('display','inline-block');
+	} else {
+		$('#controllerPageSettingsHolder').css('display','none');	
+	}
+}
+
+function saveLayoutChoice() {
+	var selected;
+	$('.layoutRadio').each(function(i, obj) {
+		if ($(this).is(':checked')) {
+			//alert($(this).val());
+			selected = $(this).val();
+			return false;
+		}
+	});
+	
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'savelayout',
+			'data' : selected,
+		},
+		success : function(result) {
+			if (result) {
+				alert(result);
+			}
+		},
+	});
+}
+
+function remoteChange($this) {
+	var opt = $this.value;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/remoteSelect.pl',
+		data : {
+			'remote' : opt,
+		},
+		success : function(result) {
+			if (result) {
+				$('#controllerButtons').html(result);
+			}
+		},
+	});	
+}
 // end hiding script from old browsers -->
