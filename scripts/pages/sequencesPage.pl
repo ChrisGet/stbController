@@ -51,28 +51,20 @@ STUFF
 		my $titlestring = $sequences{$key} || '';
 
 print <<SEQ;
-<td style="padding:3px;width:auto;">
- <table class="roundedTable" style="width:100%;">
-  <tr>
-   <td colspan="3" align="center" class="fancyCell" style="width:250px;height:40px;border-radius:4px;">
-    <label class="seqLabel masterTooltip" value="Commands: $titlestring">$key</label>
-   </td>
-  </tr>
-  <tr>
-   <td align="center" width="33%">
-    <button class="seqListBtn" onclick="editSequencePage('$key')">Edit</button>
-   </td>
-   <td align="center" width="33%">
-    <button class="seqListBtn Del" onclick="deleteSequence('$key')">Delete</button>
-   </td>
-   <td align="center" width="33%">
-    <button class="evSchedAdmin pauseall" onclick="copySequence('$key')">Copy</button>
-   </td>
-  </tr>
- </table>
-</td>
+<div class="seqListBox">
+	<div class="seqListBoxTitleDiv masterTooltip" value="$titlestring">
+		<p>$key</p>
+	</div>
+	<div class="seqListBoxBtnsDiv">
+		<button class="seqListBtn Edit" title="Edit" onclick="editSequencePage('$key')"></button>
+		<button class="seqListBtn Copy" title="Copy" onclick="copySequence('$key')"></button>	
+		<button class="seqListBtn Del" title="Delete" onclick="deleteSequence('$key')"></button>
+	</div>
+</div>
+
+
+
 SEQ
-	
 		$colcount++;
 	}
 
@@ -104,7 +96,7 @@ sub createSeq {
 	my $onclick = 'seqValidate()';
 
 	if ($$seq) {
-		$headertext = "Sequences \&\#8594; Edit <font color\=\"green\">\"$$seq\"<\/font>";
+		$headertext = "Sequences \&\#8594; Edit \&\#8594; <font color\=\"green\">\"$$seq\"<\/font>";
 		$defname = $$seq;
 		tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 		$commands = $sequences{$defname};		
@@ -140,7 +132,7 @@ print <<MAIN;
 				</div>
 			</div>
 			<div id="seqAreaMiddle">
-				<p class="seqInfo rem">** Click on a button within the Sequence Area to remove it **</p>
+				<p class="seqInfo rem">Click on a button within the Sequence Area to remove it</p>
 			</div>
 			<div id="seqAreaBottom">
 				<button id="clearSeqAreaBtn" onclick="clearSeqArea('sequenceArea')">Clear Sequence Area</button>
@@ -149,8 +141,10 @@ print <<MAIN;
 			</div>
 		</div>
 	</div>
-	<div id="controllerButtons">
-		@controller
+	<div id="seqControllerHolder">
+		<div id="controllerButtons">
+			@controller
+		</div>
 	</div>
 </div>
 MAIN

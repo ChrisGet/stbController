@@ -185,7 +185,7 @@ sub loadControl {
 		$choice = <$fh>;
 		close $fh;
 	}
-	
+	chomp $choice;	
 	if ($choice) {
 		my $file = $maindir . '/scripts/pages/' . $choice . '.html';
 		if (-e $file) {

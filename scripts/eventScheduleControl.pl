@@ -3,6 +3,7 @@
 use strict;
 use CGI;
 use Tie::File::AsHash;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();

@@ -14,8 +14,15 @@ window.onload = function () {	// Run these functions when the page first loads
                                 // Hover over code
                                 var title = $(this).attr('value');
                                 $('<p class="tooltip"></p>').text(title).appendTo('body').fadeIn('fast');
+                        	//setTimeout(function() {
+                        	//	$('.tooltip').remove();
+                        	//},5000);
                         },
                         mouseleave: function() {
+                                // Hover out code
+                                $('.tooltip').remove();
+                        },
+                        click: function() {
                                 // Hover out code
                                 $('.tooltip').remove();
                         },
@@ -793,7 +800,6 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 	
 	if (c == true) {
 		perlCall('','scripts/sequenceControl.pl','action','Delete','sequence',$seq);
-		alert($seq + ' was deleted');
 		pageCall('dynamicPage','web/sequencesPage.html');
 		perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');
 	}
@@ -1297,9 +1303,6 @@ function editSchedulePage2($event) {	// This function handles the second part of
 function stbTypeChoice($option) {	// This function handles changing of an STB type in the STB Data page. It loads the appropriate control data input fields according to its control type i.e. Dusky, Bluetooth, etc
 	var tag = 'print' + $option;
 	var stb = document.getElementById("stbname").value;
-	if ($option.match(/Network/)) {
-		alert('NOTE: For network control to work, the STB MUST be on the same network as the machine hosting this controller');
-	}
 	perlCall('typeChange','scripts/pages/stbDataPage.pl','option',tag,'stb',stb);
 }
 // ############### End of stbTypeChoice function

@@ -1,18 +1,11 @@
-<head>
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-</head>
-<div class="wrapLeft shaded" style="width:95%">
-	<div id="evSchedHeader">
-		<div id="schedAdmin">
-		</div>
-		<h1>Welcome to the Events Schedule Page</h1>
+<div id="schedulePageMain">
+	<div id="schedulePageHeader">
+		<h1>Scheduled Events Control</h1>
 		<p>Here you can setup events to be run on a regular schedule, or even just once</p>
 	</div>
-
-	<div id="evSchedPageAdd">
-		<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/eventSchedulePage.pl','action','Create');setTimeout(function(){bindTrigger()},500)">Click Here To Create A New Scheduled Event</button>
+	<div id="schedAdmin">
 	</div>
-	<p style="font-size:20px;margin-bottom:5px;margin-top:5px;">The currently scheduled events are shown below:</p>
+	<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/eventSchedulePage.pl','action','Create');setTimeout(function(){bindTrigger()},500)">Create A New Scheduled Event</button>
 	<div id="evSchedsAvailable">
 	</div>
 </div>

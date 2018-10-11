@@ -44,11 +44,6 @@ sub mainMenu {
 		exit;
 	}
 
-print <<STUFF;
-<table>
-<tr>
-STUFF
-
 	my $colcount = '1';
 	foreach my $key (sort keys %groups) {
 		if ($colcount == '10') {
@@ -75,25 +70,16 @@ STUFF
 		$memberstring =~ s/\,$//;
 
 print <<GROUP;
-<td style="padding:3px;width:auto;">
- <table class="roundedTable" style="width:100%;">
-  <tr>
-   <td colspan="2" align="center" class="fancyCell" style="background-color:#C0C0C0;width:250px;height:40px;border-radius:4px;">
-    <label class="seqLabel masterTooltip" value="Members: $memberstring">$key</label>
-   </td>
-  </tr>
-  <tr>
-   <td align="center" width="50%">
-    <button class="seqListBtn" onclick="editGroupPage('$key')">Edit</button>
-   </td>
-   <td align="center" width="50%">
-    <button class="seqListBtn Del" onclick="deleteGroup('$key')">Delete</button>
-   </td>
-  </tr>
- </table>
-</td>
+<div class="stbGroupBox">
+	<div class="stbGroupBoxTitleDiv masterTooltip" value="$memberstring">
+		<p>$key</p>
+	</div>
+	<div class="stbGroupBoxBtnsDiv">
+		<button class="stbGroupBtn Edit" title="Edit" onclick="editGroupPage('$key')"></button>
+		<button class="stbGroupBtn Del" title="Delete" onclick="deleteGroup('$key')"></button>
+	</div>
+</div>
 GROUP
-	
 		$colcount++;
 	}
 	print '</tr></table>'
@@ -101,22 +87,22 @@ GROUP
 
 sub createGroup {
 	my ($group,$boxes) = @_;
-	print '<div class="wrapLeft shaded" style="width:650px;">';
+	#print '<div class="wrapLeft shaded" style="width:650px;">';
 
 
-	my $headertext = 'Create New STB Group:';
+	my $headertext = 'STB Group &#8594; Create';
 	my $defname;
 	my $members;
-	my $buttontext = 'Create New Group';
+	my $buttontext = 'Create!';
 	my $onclick = 'groupValidate()';
 	my $textfieldhead = 'Please give your new STB Group a name below';
 
 	if ($$group) {
-		$headertext = "Edit Group <font color\=\"#65a9d7\">\"$$group\"<\/font>:";
+		$headertext = "STB Group \&\#8594; Edit \&\#8594; <font color\=\"#65a9d7\">\"$$group\"<\/font>";
 		$defname = $$group;
 		tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
 		$members = $groups{$defname};
-		$buttontext = "Update Group \"$defname\"";
+		$buttontext = "Update!";
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "groupValidate(\'$defname\')";
 		$textfieldhead = 'Group Name';
@@ -124,43 +110,31 @@ sub createGroup {
 
 	my $namefield = $query->textfield(-id=>'groupName',-name=>'groupName',-size=>30,-maxlength=>25,-default=>$defname);
 
-	
-
 print <<MAIN;
-<div id="seqMain">
-<h1 style="margin-bottom:0em;"><u>$headertext</u></h1>
-<p style="margin-top:2px;margin-bottom:5px;color:white;font-size:20px;">Click the STBs from the grid on the right to add them to the Group Members area below</p>
-<p style="margin-top:2px;color:white;font-size:18px;">Click on a box within the Group Members Area to remove it</p>
-<table style="width:100%;">
-<tr><td><div style="float:left;">
-	<font size="6"><u>Group Members Area</u></font><br><br>
-	<table>
-		<tr>
-		<td><button class="menuButton" onclick="clearSeqArea('sequenceArea')">Clear Group Members Area</button></td>
-		</tr>
-	</table>
+<div id="stbGroupPageHolder">
+	<div id="stbGroupHeaderDiv">
+		<h1>$headertext</h1>
 	</div>
-</td>
-<td align="left" valign="bottom"><div style="margin-top:50px;">
-	<table width="100%">
-		<tr>
-		<td colspan="2" align="center"><font color="white" size="3">$textfieldhead</font></td>
-		</tr>
-		<tr>
-		<td><font size="5" color="#69ABBF">Name: </font></td>
-		<td>$namefield</td>
-		</tr>		
-	</table>
-</div>
-</td>
-</tr>
-</table>
-<div id="sequenceArea" contenteditable="true" style="width:100%;"></div>
-<div class="grpSubmitBtnDiv">
-	<button class="newSeqSubmit" onclick="$onclick">$buttontext</button>
-</div>
-</div>
-</div>
+	<div id="stbGroupInfoArea">
+		<div id="stbGroupHeadHolder">
+			<p class="seqInfo big">Select STBs from the grid on the right to add them to the Group area below</p>
+		</div>
+		<div id="stbGroupContentHolder">
+			<div id="stbGroupAreaTop">
+				<p>STB Group Name</p>
+				$namefield
+			</div>
+			<div id="stbGroupAreaMiddle">
+				<p class="stbGroupInfo rem">Click on a button within the Group Area to remove it</p>
+			</div>
+			<div id="stbGroupAreaBottom">
+				<button id="clearSTBGroupAreaBtn" onclick="clearSeqArea('sequenceArea')">Clear Group Area</button>
+				<div id="sequenceArea" contenteditable="true"></div>
+				<button id="createSTBGroupBtn" onclick="$onclick">$buttontext</button>
+			</div>
+		</div>
+	</div>	
+	<div id="stbGroupGridArea">
 MAIN
 
 	if (-e $stbdatafile) {
@@ -173,8 +147,6 @@ MAIN
 	        my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
 print <<HEAD;
-<div id="stbSelect">
-<p style="align:center;font-size:18px;margin-top:3px;margin-bottom:3px;">STB Selection Grid &nbsp&nbsp&nbsp<font color="red">( STBs named " - " or " : " cannot be selected )</font></p>
 <table style="border-spacing:0;" align="center">
 <tr id="columns">
 HEAD
@@ -217,7 +189,7 @@ COL
 
 				my $location = 'col' . $c . 'row' . $r;
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick data-loc="$location">$buttontext</button></td>
+<td><button name="$name" id="$id" class="stbButton data" $onclick data-loc="$location">$buttontext</button></td>
 BOX
 
                                 $stbno++;
@@ -232,11 +204,12 @@ ROWEND
                 }
 
 print <<LAST;
-</tr></table>
+			</tr>
+			</table>
+		</div>
+	</div>
 </div>
 LAST
-
-                print '</div>';         # End of the "wrapLeft" div
 	} else {
 		print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
 	}

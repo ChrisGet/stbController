@@ -1,12 +1,18 @@
 html, body {
 	display:inline-block;
-        font-family:Helvetica, Arial, Sans-Serif;
+        font-family:'Source Sans Pro', sans-serif, Helvetica, Arial, Sans-Serif;
 	background-color:#f2f2f2;
 	height:100%;
 	width:100%;
 	margin:0;
 	font-size:0;
 	text-align:center;
+}
+button {
+	font-family:inherit;
+}
+button:hover {
+	cursor:pointer;
 }
 #topBar {
 	display:inline-block;
@@ -44,6 +50,26 @@ html, body {
 #logo:hover {
 	cursor:pointer;	
 }
+#versionInfoDiv {
+	display:inline-block;
+	position:absolute;
+	bottom:0;
+	left:0;
+	height:3%;
+	width:100%;
+	background-color:#cccccc;
+}
+#versionInfoDiv p {
+	font-size:1.2vh;
+	color:#333333;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
+}
+#versionInfoDiv a {
+	text-decoration:none;
+}
 #menuButtonDiv {
 	display:inline-block;
         height:100%;
@@ -54,22 +80,23 @@ html, body {
 .menuBtn {
 	display:inline-block;
 	height:50%;
-	width:12%;
-	margin:0 2%;
+	width:auto;
+	margin:0 4%;
 	position:relative;
 	top:50%;
 	transform:translateY(-50%);
 	vertical-align:top;
 	background:none;
 	border:none;
-	border-radius:10px;
+/*	border-radius:10px;*/
 	font-size:1.5vh;
 	color:#c4dfe6;
 	padding:0;
 }
 .menuBtn:hover {
 	cursor:pointer;
-	background-color:#003b46;
+/*	border-top:1px solid #003b46;*/
+	border-bottom:3px solid #003b46;
 }
 #messages {
 	display:inline-block;
@@ -122,7 +149,6 @@ html, body {
 
 #welcomeDiv {
 	display:inline-block;
-	font-family:Helvetica, Arial, Sans-Serif;
 	width:70%;
 	height:80%;
 	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png");
@@ -151,7 +177,7 @@ html, body {
 }
 
 .controllerPageSection {
-	margin:0 1%;
+	margin:0 0.5%;
 }
 .controllerPageSection:first-of-type {
 	margin:0;
@@ -226,7 +252,7 @@ html, body {
 .setSecHead {
 	display:inline-block;
 	width:100%;
-	height:24%;
+	height:28%;
 	text-align:left;
 	border-bottom:1px solid white;
 	background-color:#07575b;
@@ -251,7 +277,7 @@ html, body {
 .setSecDetail {
 	display:inline-block;
 	width:100%;
-	height:75%;
+	height:70%;
 	text-align:center;
 }
 .setSecDetail p {
@@ -320,28 +346,25 @@ html, body {
 	transform:translateY(-50%);
 	width:60%;
 	height:20%;
-	background-color:rgba(255,255,255,0.8);
 	border:2px solid #33cc00;
 	border-radius:5px;
 	font-size:1.5vh;
-	color:green;
+	color:#33cc00;
 	padding:0;
-	background-clip:padding-box;
+	background:none;
 }
 
 #stbGrid {
-/*	float:left;*/
 	position:relative;
 	display:inline-block;
 	margin-top:0.3%;
 	height:auto;
 	padding:2px;
 	overflow:hidden;
-/*	border:1px solid grey;*/
 	vertical-align:top;
-	padding-left:1.2%;
-	padding-top:1.3%;
-	height:95%;
+/*	padding-left:1.2%;*/
+	padding-top:1.4%;
+	height:93%;
 	max-width:65%;
 }
 #gridTitle {
@@ -349,9 +372,9 @@ html, body {
 	left:0;
 	top:0;
 	height:5%;
-	width:15%;
+	width:10%;
 	border-radius:5px;
-	border:1px solid #333333;
+/*	border:1px solid #333333;*/
 }
 #gridTitle p {
 	display:inline-block;
@@ -359,7 +382,6 @@ html, body {
 	margin:0;
 	color:#333333;
 	position:relative;
-	top:12%;
 }
 #gridTableHolder {
 	display:inline-block;
@@ -383,12 +405,13 @@ html, body {
 	display:inline-block;
 	position:relative;
 	width:20%;
-	height:90%;
+	height:93%;
 	vertical-align:top;
 	border-radius:5px;
-	padding-top:1.2%;
-	padding-left:1%;
+	padding-top:1.4%;
+/*	padding-left:1%;*/
 	margin-top:0.3%;
+	margin-right:2%;
 }
 #controllerTitle {
 	position:absolute;
@@ -397,7 +420,7 @@ html, body {
 	height:5%;
 	width:17%;
 	border-radius:5px;
-	border:1px solid #333333;
+/*	border:1px solid #333333;*/
 }
 #controllerTitle p {
 	display:inline-block;
@@ -405,7 +428,6 @@ html, body {
 	margin:0;
 	color:#333333;
 	position:relative;
-	top:12%;
 }
 #controllerButtons {
 	display:inline-block;
@@ -416,10 +438,10 @@ html, body {
 	box-shadow:0 0 8px black;
 	border-radius:5px;
 	z-index:2;
+	overflow:auto;
 }
 
 #middleBar {
-/*	float:right;*/
 	display:inline-block;
 	width:10%;
 	height:98%;
@@ -430,12 +452,12 @@ html, body {
 	position:relative;
 	display:inline-block;
 	width:10%;
-	height:96%;
+	height:93%;
 	text-align:center;
 	vertical-align:top;
 	border-radius:5px;
-	padding-top:1.2%;
-	padding-left:1%;
+	padding-top:1.4%;
+/*	padding-left:1%;*/
 	margin-top:0.3%;
 }
 #sequencesHead {
@@ -446,7 +468,7 @@ html, body {
 	width:50%;
 	height:5%;
 	border-radius:5px;
-	border:1px solid #333333;
+/*	border:1px solid #333333;*/
 	z-index:0;
 }
 #sequencesHead p {
@@ -455,7 +477,6 @@ html, body {
 	margin:0;
 	color:#333333;
 	position:relative;
-	top:12%;
 }
 #sequencesBody {
 	position:relative;
@@ -511,7 +532,6 @@ html, body {
    	text-shadow: rgba(0,0,0,.4) 0 1px 0;
    	color: white;
    	font-size: 16px;
-   	font-family: Helvetica, Arial, Sans-Serif;
    	text-decoration: none;
    	vertical-align: middle;
 }
@@ -768,10 +788,9 @@ button.highlighted {
 
 .gridButton {
    	background-color:#003b46;
-   	padding: 0% 0.5%;
    	border-radius: 2px;
    	color: white;
-   	font-size: 1.4vh;
+   	font-size: 1.3vh;
    	vertical-align: middle;
    	width:100%;
 	height:100%;
@@ -806,7 +825,6 @@ button.highlighted {
    	border-radius: 2px;
       	color: black;
    	font-size: 1.4vh;
-   	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
    	vertical-align: middle;
    	width:100%;
    	height:100%;
@@ -844,7 +862,6 @@ button.highlighted {
 	color:white;
 	font-weight:normal;
 	text-align:center;
-	overflow:hidden;
 	position:relative;
 	margin-top:1%;
 }
@@ -869,7 +886,7 @@ button.highlighted {
 #stbGridTable tr {
 	height:3%;
 }
-#stbGridTable td {
+#stbGridTable td, th {
 	height:95%;
 }
 table.stbConfigGrid {
@@ -879,18 +896,27 @@ table.stbConfigGrid {
 #stbDataTextDiv {
 	display:inline-block;
 	position:absolute;
-	left:5%;
+	left:1%;
 	top:0;
 	width:20%;
 	height:20%;
 	text-align:left;
 }
+#stbDataTextDiv h1 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.8vh;
+	color:#333333;
+	font-weight:normal;
+}
 #stbDataTextDiv h2 {
 	display:inline-block;
 	width:100%;
 	margin:0.7% 0;
-	font-size:1.7vh;
+	font-size:1.5vh;
 	color:#333333;
+	font-weight:normal;
 }
 #stbDataTextDiv p {
 	display:inline-block;
@@ -898,6 +924,16 @@ table.stbConfigGrid {
 	margin:0.5%;
 	font-size:1.4vh;
 	color:#737373;
+}
+#stbDataGridDiv {
+	display:inline-block;
+	position:absolute;
+	right:1%;
+	top:0;
+	width:76%;
+	height:98.5%;
+	text-align:left;
+	overflow:auto;
 }
 .configButton {
 	border: 1px solid #96d1f8;
@@ -907,7 +943,6 @@ table.stbConfigGrid {
    	border-radius: 2px;
    	color:white;
    	font-size: 14px;
-   	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
    	text-decoration: none;
    	vertical-align: middle;
    	width:100%;
@@ -944,6 +979,14 @@ table.stbConfigGrid {
 	position:relative;
 	top:50%;
 	transform:translateY(-50%);
+}
+#seqControllerHolder {
+	display:inline-block;
+	width:45%;
+	height:88%;
+	vertical-align:top;	
+	overflow:auto;
+	padding-top:1%;
 }
 #seqMain {
 	display:inline-block;
@@ -1042,7 +1085,7 @@ table.stbConfigGrid {
 	display:inline-block;
 	height:5%;
 	width:100%;
-	text-align:left;
+	text-align:center;
 }
 #createSeqBtn {
 	display:inline-block;
@@ -1054,8 +1097,8 @@ table.stbConfigGrid {
 	background-color:#009900;
 	color:white;
 	position:absolute;
-	top:0;
-	right:0;
+	top:20%;
+	left:0;
 }
 #createSeqBtn:hover {
 	cursor:pointer;
@@ -1076,9 +1119,8 @@ table.stbConfigGrid {
 	font-size:1.3vh;
 	background-color:#ff6600;
 	color:white;
-	margin-left:5%;
 	position:absolute;
-	left:-26%;
+	left:0;
 	top:0;
 }
 #clearSeqAreaBtn:hover {
@@ -1086,8 +1128,9 @@ table.stbConfigGrid {
 	background-color:#b34700;
 }
 #sequenceArea {
-	float:left;
-	background-color:#C0C0C0;		
+	float:right;
+	background-color:white;
+	border:1px solid #003b46;
 	width:80%;
 	min-height:40%;
 	max-height:100%;
@@ -1095,21 +1138,21 @@ table.stbConfigGrid {
 	border-radius:4px;
 	font-size:13px;
 	overflow:auto;
+	text-align:left;
 }
 
 .seqAreaBtn {
 	border: 1px solid #0F313B;
-	-webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
         border-radius: 4px;	
 	margin-left:14px;
 	margin-top:3px;
-	background-color:white;
+	background-color:#003b46;
+	color:white;
 	height:auto;
-        font-size:13px;
+        font-size:1.3vh;
 }
 .seqAreaBtn:hover {
-	background-color:#AA030B;
+	background-color:#ff6600;
 	cursor:pointer;
 }
 
@@ -1131,6 +1174,9 @@ table.stbConfigGrid {
 	margin:3% 0;
 	display:inline-block;
 	word-wrap:break-word;	
+	position:absolute;
+	left:4%;
+	top:20%;
 }
 .newSeqSubmit:hover {
    	background: #235e11;
@@ -1148,7 +1194,6 @@ table.stbConfigGrid {
 
 .seqLabel {
 	font-size:16px;
-	font-family: Sky Text, Helvetica, Arial, Sans-Serif;
 	color:black;
 	word-wrap:break-word;
 	
@@ -1157,57 +1202,9 @@ table.stbConfigGrid {
 	cursor:context-menu;
 }
 
-.seqListBtn {
-   	border: 1px solid #96d1f8;
-   	background: #65a9d7;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
-   	background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -moz-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -ms-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -o-linear-gradient(top, #3e779d, #65a9d7);
-   	padding: 2px 5px;
-   	-webkit-border-radius: 3px;
-   	-moz-border-radius: 3px;
-   	border-radius: 3px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   	color: white;
-   	font-size: 13px;
-   	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
-   	text-decoration: none;
-   	vertical-align: middle;
-}
-.seqListBtn:hover {
-   	background: #28597a;
-	cursor:pointer;
-}
-.seqListBtn:active {
-   	background: #267a94;
-}
-
-.seqListBtn.Del {
-	border: 1px solid #cf4343;
-        background: #cc2f2f;
-        background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
-        background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -o-linear-gradient(top, #cc2f2f, #FF9999);
-}
-.seqListBtn.Del:hover {
-	background: #b80000;
-        cursor:pointer;
-}
-.seqListBtn.Del:active {
-	background: #b80000;
-}
-
 .wrapLeft {
 	float:left;
 	width:auto;
-	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
 	padding:3px;
 }
 .wrapLeft.shaded {
@@ -1222,7 +1219,6 @@ table.stbConfigGrid {
 .wrapRight {
 	float:right;
 	width:auto;
-	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
 	padding:3px;
 }
 .wrapRight.shaded {
@@ -1254,7 +1250,6 @@ table.stbConfigGrid {
 }
 
 #sequencesHeader {
-	font-family: Sky Text, Helvetica, Arial, Sans-Serif;	
 }
 #sequencesHeader h1 {
 	color:#ccc;
@@ -1268,23 +1263,6 @@ table.stbConfigGrid {
 	margin-bottom:5px;
 	color:white;
 }
-
-#stbGroupsHeader {
-	font-family: Sky Text, Helvetica, Arial, Sans-Serif;	
-}
-#stbGroupsHeader h1 {
-	color:#ccc;
-	font-size:25px;
-	margin-top:3px;
-	margin-bottom:0px;
-}
-#stbGroupsHeader p {
-	font-size:20px;
-	margin-top:2px;
-	margin-bottom:5px;
-	color:white;
-}
-
 
 .fancyCell {
 	background: #707070;
@@ -1355,7 +1333,6 @@ td.cellInfo {
    	color: black;
    	font-size: 13px;
 	font-weight:bold;
-   	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
    	text-decoration: none;
    	vertical-align: middle;
 }
@@ -1385,7 +1362,6 @@ td.cellInfo {
    	color: black;
 	font-weight:bold;
    	font-size: 13px;
-   	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
    	text-decoration: none;
    	vertical-align: middle;
 }
@@ -1396,17 +1372,18 @@ td.cellInfo {
 .deactivateBtn:active {
 	background: #b80000;
 }
-
-.trigger.radiooff {
-	width:12px;
-	height:12px;
+.trigger {
+	display:inline-block;
+	width:10%;
+	height:50%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
+	padding:0;
 }
-.trigger.radiooff:hover {
+.trigger:hover {
 	cursor:pointer;
-}
-.trigger.radioon {
-	width:15px;
-	height:15px;
 }
 
 input[type='checkbox']:hover {
@@ -1427,26 +1404,47 @@ select:hover {
 }
 
 .stbDataFormTable {
-	border:2px solid white;
-	border-radius:3px;
-	margin-top:3px;
+	margin-top:1%;
 	width:100%;
-	background-color:#C0C0C0;
+	height:18%;
 	color:black;
-	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
-	font-size:14px;
+	font-size:1.3vh;
+	border-top:2px solid #cccccc;
 }
 .stbDataFormTable th {
-	border:1px solid black;
         border-radius:3px;
-	font-size:15px;
+	font-size:1.6vh;
+	text-align:left;
+	font-weight:normal;
+}
+.stbDataFormTable b {
+	font-weight:normal;
 }
 .stbDataFormTable.DUT {
-	width:auto;
+	border:none;
+	border-bottom:2px solid #cccccc;
+	height:60%;
+	margin-top:3%;
+}
+.stbDataFormTable.DUT td {
+	display:inline-block;
+	width:48%;
+	text-align:right;
+}
+.stbDataFormTable.ctrltype {
+	border:none;
+	height:20%;
+}
+.stbDataFormTable.ctrltype td {
+	display:inline-block;
+	width:48%;
+	text-align:right;
 }
 .stbDataFormTable.First {
 	font-size:18px;
 	text-align:center;
+	border-top:none;
+	text-align:left;
 }
 
 h2.narrow {
@@ -1460,16 +1458,13 @@ p.narrow {
 }
 
 #typeChange {
-	margin-top:20px;
+	display:inline-block;
+	text-align:left;
+	width:100%;
+	height:40%;
+	margin-top:10%;
 }
 
-/*input[type="text"] {
-	border radius:3px;
-}
-
-input[type="text"]:focus {
-	background:#009933;
-}*/
 
 .evSchedAdmin {
    	padding: 2px 5px;
@@ -1482,7 +1477,6 @@ input[type="text"]:focus {
    	text-shadow: rgba(0,0,0,.4) 0 1px 0;
    	color: white;
    	font-size: 13px;
-   	font-family:Sky Text, Helvetica, Arial, Sans-Serif;
    	text-decoration: none;
    	vertical-align: middle;
 }
@@ -1621,14 +1615,17 @@ input[type="text"]:focus {
 }
 
 #sequenceEventArea {
-	float:left;
 	background-color:#C0C0C0;		
 	width:100%;
-	min-height:100px;
+	height:95%;
 	word-wrap:break-word;
-	margin-top:10px;
 	border-radius:4px;
-	font-size:13px;
+	font-size:1.3vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);	
+	overflow:auto;
+	border:1px solid #333333;
 }
 
 .masterTooltip .tooltip {
@@ -2264,3 +2261,1033 @@ input[type="text"]:focus {
 	height:20px;
 	text-align:center;
 }
+
+/** STB Data Page - Existing STB Data **/
+#stbDataDivHolder {
+	display:inline-block;
+	width:40%;
+	height:60%;
+	margin-top:0.5%;
+}
+#stbDataDivHead {
+	display:inline-block;
+	width:100%;
+	height:8%;
+	position:relative;
+	text-align:left;
+	border-bottom:1px solid #333333;
+}
+#stbDataDivHead p {
+	display:inline-block;
+	font-size:2.2vh;
+	color:#333333;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+#stbDataDivBody {
+	display:inline-block;
+	width:100%;
+	height:90%;
+	position:relative;
+}
+.stbDataTextField {
+	display:inline-block;
+	border:1px solid #333333;
+	font-size:1.3vh;
+	border-radius:3px;
+	text-align:center;
+}
+.stbDataTextField.right {
+	float:right;
+}
+.stbDataSelect {
+	display:inline-block;
+	border:1px solid #333333;
+	font-size:1.3vh;
+	border-radius:3px;
+	color:white;
+	background-color:#333333;
+	text-align:center;
+}
+
+.stbDataBtn {
+	display:inline-block;
+	border-radius:5px;
+	border:none;
+	color:white;
+	height:5%;
+	width:20%;
+	font-size:1.5vh;
+}
+.stbDataBtn:hover {
+	cursor:pointer;
+}
+.stbDataBtn.submit {
+	background-color:#009900;
+	position:absolute;
+	bottom:2%;
+	right:2%;
+}
+.stbDataBtn.submit:hover {
+	background-color:#006600;
+}
+.stbDataBtn.clear {
+	background-color:#ff6600;
+	position:absolute;
+	top:2%;
+	left:-25%;
+}
+.stbDataBtn.clear:hover {
+	background-color:#b34700;
+}
+#editSTBConfigForm {
+	display:inline-block;
+	width:100%;
+	height:100%;
+	border-bottom:1px solid #333333;
+	border:none;
+/*	background-color:#e6e6e6;
+	box-shadow:0 0 8px black;*/
+	border-radius:5px;
+	margin-top:1%;
+}
+.stbDataWrapRight {
+	display:inline-block;
+	float:right;
+	width:45%;
+	height:60%;
+}
+.stbDataWrapLeft {
+	display:inline-block;
+	float:left;
+	width:50%;
+	height:100%;
+}
+#stbDataNoteDiv {
+	display:inline-block;
+	position:absolute;
+	left:105%;
+	top:60%;
+	transform:translateY(-60%);
+	width:40%;
+	height:20%;
+	border-radius:5px;
+	background-color:#07575b;
+	text-align:center;
+}
+#stbDataNoteDiv p {
+	display:inline-block;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.5vh;
+	color:white;
+	margin:0;
+}
+
+/** STB Data Page - Existing STB Data **/
+
+/** Sequences Page **/
+#sequencesPageMain {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:98%;
+	margin-top:1%;
+}
+#sequencesPageHeader {
+	position:absolute;
+	left:1%;
+	top:0;
+	width:20%;
+	height:20%;
+	text-align:left;
+}
+#sequencesPageHeader h1 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.8vh;
+	color:#333333;
+	font-weight:normal;
+}
+#sequencesPageHeader h2 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.5vh;
+	color:#333333;
+	font-weight:normal;
+}
+#sequencesPageHeader p {
+	display:inline-block;
+	width:100%;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#737373;
+}
+#sequencesAvailable {
+	display:inline-block;
+	width:75%;
+	height:100%;
+	float:right;
+	margin-right:2%;
+	overflow:auto;
+	text-align:left;
+}
+.seqListBox {
+	display:inline-block;
+	width:12%;
+	height:8%;
+	margin:0.2%;
+	background-color:#07575b;
+	border-radius:5px;
+	overflow:hidden;
+	border:1px solid #07575b;
+}
+.seqListBoxTitleDiv {
+	display:inline-block;
+	width:100%;
+	height:60%;
+	position:relative;
+	text-align:center;
+	background-color:white;
+}
+.seqListBoxTitleDiv p {
+	display:inline-block;
+	margin:0;
+	font-size:1.5vh;
+	color:#07575b;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+.seqListBoxBtnsDiv {
+	display:inline-block;
+	width:100%;
+	height:40%;
+	position:relative;
+	text-align:center;
+}
+.seqListBtn {
+   	border:none;
+   	border-radius: 3px;
+   	color:white;
+   	font-size:1.2vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	height:80%;
+	width:25%;
+	margin:0 3%;
+	background:url("../images/delSeq.png");
+	background-size:30% auto;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+.seqListBtn:hover {
+	cursor:pointer;
+	background-color:rgba(255,255,255,0.5);
+	background-color:white;
+}
+.seqListBtn.Del {
+	background-image:url("../images/delSeq.png");
+}
+.seqListBtn.Del:hover {
+}
+.seqListBtn.Edit {
+	background-image:url("../images/editSeq.png");
+}
+.seqListBtn.Edit:hover {
+}
+.seqListBtn.Copy {
+	background-image:url("../images/copySeq.png");
+}
+.seqListBtn.Copy:hover {
+}
+/** Sequences Page **/
+
+/** STB Groups Page **/
+#stbGroupsPageMain {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:98%;
+	margin-top:1%;
+}
+#stbGroupsHeader {
+	position:absolute;
+	left:1%;
+	top:0;
+	width:20%;
+	height:20%;
+	text-align:left;
+}
+#stbGroupsHeader h1 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.8vh;
+	color:#333333;
+	font-weight:normal;
+}
+#stbGroupsHeader h2 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.5vh;
+	color:#333333;
+	font-weight:normal;
+}
+#stbGroupsHeader p {
+	display:inline-block;
+	width:100%;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#737373;
+}
+#stbGroupsAvailable {
+	display:inline-block;
+	width:75%;
+	height:100%;
+	float:right;
+	margin-right:2%;
+	overflow:auto;
+	text-align:left;
+}
+.stbGroupBox {
+	display:inline-block;
+	width:12%;
+	height:8%;
+	margin:0.2%;
+	background-color:#07575b;
+	border-radius:5px;
+	overflow:hidden;
+	border:1px solid #07575b;
+}
+.stbGroupBoxTitleDiv {
+	display:inline-block;
+	width:100%;
+	height:60%;
+	position:relative;
+	text-align:center;
+	background-color:white;
+}
+.stbGroupBoxTitleDiv p {
+	display:inline-block;
+	margin:0;
+	font-size:1.5vh;
+	color:#07575b;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+.stbGroupBoxBtnsDiv {
+	display:inline-block;
+	width:100%;
+	height:40%;
+	position:relative;
+	text-align:center;
+}
+.stbGroupBtn {
+   	border:none;
+   	border-radius: 3px;
+   	color:white;
+   	font-size:1.2vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	height:80%;
+	width:25%;
+	margin:0 3%;
+	background:url("../images/delSeq.png");
+	background-size:30% auto;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+.stbGroupBtn:hover {
+	cursor:pointer;
+	background-color:rgba(255,255,255,0.5);
+	background-color:white;
+}
+.stbGroupBtn.Del {
+	background-image:url("../images/delSeq.png");
+}
+.stbGroupBtn.Del:hover {
+}
+.stbGroupBtn.Edit {
+	background-image:url("../images/editSeq.png");
+}
+.stbGroupBtn.Edit:hover {
+}
+.stbGroupBtn.Copy {
+	background-image:url("../images/copySeq.png");
+}
+.stbGroupBtn.Copy:hover {
+}
+.newSTBGroup {
+	border:none;
+	background-color:#29a329;
+   	padding: 5px 10px;
+   	border-radius: 5px;	
+   	color: #ffffff;
+   	font-size: 16px;
+	display:inline-block;
+	word-wrap:break-word;	
+	position:absolute;
+	left:4%;
+	top:20%;
+}
+.newSTBGroup:hover {
+   	background: #235e11;
+   	color: #ffffff;
+	cursor:pointer;
+}
+#stbGroupPageHolder {
+	display:inline-block;
+	width:98%;
+	height:98%;
+}
+#stbGroupHeaderDiv {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	position:relative;
+	text-align:left;
+	margin-bottom:1%;
+	border-bottom:1px solid #737373;
+}
+#stbGroupHeaderDiv h1 {
+	display:inline-block;
+	font-size:2.2vh;
+	colour:green;
+	margin:0;
+	color:#c4dfe6;
+	color:#333333;
+	font-weight:normal;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+#stbGroupInfoArea {
+	display:inline-block;
+	width:20%;
+	height:91.5%;
+	vertical-align:top;
+}
+#stbGroupGridArea {
+	display:inline-block;
+	min-width:20%;
+	max-width:75%;
+	height:91.5%;
+	overflow:auto;	
+	vertical-align:top;
+	margin-left:3%;
+}
+#stbGroupHeadHolder {
+	display:inline-block;
+	width:100%;
+	height:8%;
+	text-align:left;
+}
+.stbGroupInfo {
+	display:inline-block;
+	color:#333333;
+	margin:0.5%;
+}
+.stbGroupInfo.big {
+	font-size:1.8vh;
+	margin-bottom:2%;
+}
+.stbGroupInfo.med {
+	font-size:1.6vh;
+	color:green;
+}
+.stbGroupInfo.rem {
+	font-size:1.5vh;
+	color:#b34700;
+}
+#stbGroupContentHolder {
+	display:inline-block;
+	width:100%;
+	height:90%;
+	text-align:right;	
+}
+#stbGroupAreaTop {
+	display:inline-block;
+	height:10%;
+	width:100%;
+}
+#stbGroupAreaTop p {
+	display:inline-block;
+	width:70%;
+	font-size:1.5vh;
+	margin:2% 0;
+	text-align:center;
+}
+#groupName {
+	display:inline-block;
+	width:70%;
+	height:30%;
+	border-radius:3px;
+	border:1px solid #333333;
+	text-align:center;
+	font-size:1.5vh;
+}
+#stbGroupAreaMiddle {
+	display:inline-block;
+	height:5%;
+	width:100%;
+	text-align:center;
+}
+#createSTBGroupBtn {
+	display:inline-block;
+	width:15%;
+	height:55px;
+	border:none;
+	border-radius:3px;
+	font-size:1.2vh;
+	background-color:#009900;
+	color:white;
+	position:absolute;
+	top:20%;
+	left:0;
+}
+#createSTBGroupBtn:hover {
+	cursor:pointer;
+	background-color:#006600;
+}
+#stbGroupAreaBottom {
+	display:inline-block;
+	height:80%;
+	width:100%;
+	position:relative;
+}
+#clearSTBGroupAreaBtn {
+	display:inline-block;
+	width:15%;
+	height:55px;
+	border:none;
+	border-radius:3px;
+	font-size:1.3vh;
+	background-color:#ff6600;
+	color:white;
+	position:absolute;
+	left:0;
+	top:0;
+}
+#clearSTBGroupAreaBtn:hover {
+	cursor:pointer;
+	background-color:#b34700;
+}
+/** STB Groups Page **/
+
+/** Events Schedule Page **/
+#schedulePageMain {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:98%;
+	margin-top:1%;
+}
+#schedulePageHeader {
+	position:absolute;
+	left:1%;
+	top:0;
+	width:20%;
+	height:20%;
+	text-align:left;
+}
+#schedulePageHeader h1 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.8vh;
+	color:#333333;
+	font-weight:normal;
+}
+#schedulePageHeader h2 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.5vh;
+	color:#333333;
+	font-weight:normal;
+}
+#schedulePageHeader p {
+	display:inline-block;
+	width:100%;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#737373;
+}
+#evSchedsAvailable {
+	display:inline-block;
+	width:75%;
+	height:96.5%;
+	float:right;
+	overflow:auto;
+	text-align:left;
+}
+#eventSchedulePageHolder {
+	display:inline-block;
+	width:99%;
+	height:96.5%;
+}
+#evSchedPageHeaderDiv {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	position:relative;
+	text-align:left;
+	margin-bottom:1%;
+	border-bottom:1px solid #737373;
+}
+#evSchedPageHeaderDiv h1 {
+	display:inline-block;
+	font-size:2.2vh;
+	colour:green;
+	margin:0;
+	color:#c4dfe6;
+	color:#333333;
+	font-weight:normal;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+
+#eventScheduleInfoArea {
+	display:inline-block;
+	width:30%;
+	height:91.5%;
+	vertical-align:top;
+}
+#eventScheduleGridArea {
+	display:inline-block;
+	min-width:20%;
+	max-width:65%;
+	height:91.5%;
+	overflow:auto;	
+	vertical-align:top;
+	margin-left:2%;
+}
+.evSchedSection {
+	display:inline-block;
+	vertical-align:top;
+	position:relative;
+}
+.evSchedSection.processRepeat {
+	width:100%;
+	height:10%;
+	border-radius:5px;
+	background-color:white;
+	box-shadow:0 0 8px black;
+}
+.evSchedSection.dayOpts {
+	width:100%;
+	height:10%;
+	border-radius:5px;
+	background-color:white;
+	margin-top:1%;
+	box-shadow:0 0 8px black;
+}
+.evSchedSection.seqs {
+	width:100%;
+	height:25%;
+	border-radius:5px;
+	background-color:white;
+	margin-top:1%;
+	box-shadow:0 0 8px black;
+}
+.evSchedSection.groups {
+	width:100%;
+	height:25%;
+	border-radius:5px;
+	background-color:white;
+	margin-top:1%;
+	box-shadow:0 0 8px black;
+}
+.evSchedSection.seqHead {
+	height:15%;
+	width:100%;
+	text-align:left;
+}
+.evSchedSection.seqHead p {
+	display:inline-block;
+	font-size:1.6vh;
+	margin:0 3%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	vertical-align:top;
+}
+.evSchedSection.seqHead.smaller {
+	height:10%;
+	width:100%;
+	text-align:left;
+}
+.evSchedSection.seqHead.smaller p {
+	display:inline-block;
+	font-size:1.3vh;
+	margin:0 3%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	vertical-align:top;
+}
+.evSchedSection.seqBody {
+	height:75%;
+	width:100%;
+	text-align:left;
+}
+.evSchedSection.head {
+	height:30%;
+	width:100%;
+}
+.evSchedSection.head p {
+	display:inline-block;
+	font-size:1.3vh;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	vertical-align:top;
+}
+.evSchedSection.head.main p {
+	display:inline-block;
+	font-size:1.5vh;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	vertical-align:top;
+}
+.evSchedSection.halfInner {
+	width:48%;
+	height:100%;
+	margin:0 0.5%;
+}
+.evSchedSection.third {
+	width:32% !important;
+	height:100%;
+	margin:0 0.5%;
+}
+.evSchedSection.quarter {
+	width:24% !important;
+	height:100%;
+	margin:0 0.5%;
+}
+.evSchedSection.dow {
+	width:13% !important;
+	height:95%;
+	margin:1% 0.5% 1% 0.5%;
+}
+.evSchedSection.dow p {
+	display:inline-block;
+	width:100%;
+	font-size:1.3vh;
+	margin:2%;
+	vertical-align:top;
+}
+.evSchedSection.underHead {
+	height:70%;
+	width:100%;
+}
+.evSchedSection.twothirds {
+	width:64% !important;
+	height:100%;
+	margin:0 0.5%;
+}
+.evSchedSelect {
+	display:inline-block;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	width:80%;
+	height:60%;
+	border:1px solid #333333;
+	background-color:#333333;
+	color:white;
+	font-size:1.3vh;
+	border-radius:5px;
+	text-align:center;
+}
+.evSchedSelect.skinny {
+	width:80%;
+	height:30%;
+	top:0;
+	transform:none;
+	margin-top:5%;
+}
+.dayOptsCheck {
+	height:30%;
+	width:30%;
+}
+#addEvSchedSeqButton {
+	display:inline-block;
+	width:60%;
+	height:30%;
+	border:none;
+	background-color:#00ace6;
+	color:white;
+	border-radius:5px;
+	font-size:1.5vh;
+	margin-top:7%;
+	padding:0;
+}
+#addEvSchedSeqButton:hover {
+	background-color:#0086b3;
+}
+#clearEvSeqAreaBtn {
+	display:inline-block;
+	width:20%;
+	height:20%;
+	border:none;
+	border-radius:3px;
+	font-size:1.1vh;
+	background-color:#ff6600;
+	color:white;
+	position:absolute;
+	left:0;
+	bottom:2%;
+	padding:0;
+}
+#clearEvSeqAreaBtn:hover {
+	cursor:pointer;
+	background-color:#b34700;
+}
+.eventGroupArea {
+	background-color:#C0C0C0 !important;
+	width:100% !important;
+	height:95% !important;
+	word-wrap:break-word !important;
+	border-radius:4px !important;
+	font-size:1.3vh !important;
+	position:relative !important;
+	top:50% !important;
+	transform:translateY(-50%) !important;
+	overflow:auto !important;
+}
+#addEvSchedGroupButton {
+	display:inline-block;
+	width:50%;
+	height:30%;
+	border:none;
+	background-color:#00ace6;
+	color:white;
+	border-radius:5px;
+	font-size:1.5vh;
+	margin-top:7%;
+	padding:0;
+}
+#addEvSchedGroupButton:hover {
+	background-color:#0086b3;
+}
+#clearEvGroupAreaBtn {
+	display:inline-block;
+	width:20%;
+	height:20%;
+	border:none;
+	border-radius:3px;
+	font-size:1.1vh;
+	background-color:#ff6600;
+	color:white;
+	position:absolute;
+	left:0%;
+	bottom:2%;
+	padding:0;
+}
+#clearEvGroupAreaBtn:hover {
+	cursor:pointer;
+	background-color:#b34700;
+}
+#scheduledEventSubmitBtn {
+	position:relative;
+	top:0;
+	left:0;
+	transform:none;
+	padding:0;
+	width:20%;
+	height:5%;
+	font-size:1.7vh;
+}
+
+#evSchedAdminDiv {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	position:relative;
+}
+.evSchedAdminBtn {
+	display:inline-block;
+	height:60%;
+	width:7%;
+	border:none;
+	border-radius:3px;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.4vh;
+	color:white;
+	margin-right:1%;
+	vertical-align:top;
+	background-color:black;
+}
+.evSchedAdminBtn.disable {
+	width:10%;
+	background-color:#d54444;
+	border:1px solid #7d1c1c;
+	margin-right:10%;
+}
+.evSchedAdminBtn.disable:hover {
+	background-color:#800000;
+}
+.evSchedAdminBtn.enable {
+	width:10%;
+	background-color:#00b33c;
+	border:1px solid #004d1a;
+	margin-right:1%;
+}
+.evSchedAdminBtn.enable:hover {
+	background-color:#00802b;
+}
+.evSchedAdminBtn.stopall {
+	background-color:#d54444;
+}
+.evSchedAdminBtn.stopall:hover {
+	background-color:#a62626;
+}
+.evSchedAdminBtn.pauseall {
+	background-color:#ffad33;
+}
+.evSchedAdminBtn.pauseall:hover {
+	background-color:#e68a00;
+}
+.evSchedAdminBtn.resumeall {
+	background-color:#00b33c;
+}
+.evSchedAdminBtn.resumeall:hover {
+	background-color:#00802b;
+}
+#evSchedListHeader {
+	display:inline-block;
+	width:100%;
+	height:4.5%;
+	text-align:center;
+	background-color:#07575b;
+	position:relative;
+	border-radius:5px;
+}
+.evSchedDisabledText {
+	display:inline-block;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.6vh;
+	font-weight:normal;
+	color:red;
+	width:70%;
+	vertical-align:top;
+}
+#evSchedList {
+	display:inline-block;
+	width:100%;
+	height:90%;
+	text-align:center;
+	overflow:auto;
+}
+.evSchedRow {
+	display:inline-block;
+	width:99%;
+	height:8%;
+	border-radius:5px;
+}
+.evSchedRow:nth-of-type(even) {
+	background-color:#d9d9d9;
+}
+.evSchedRowSec {
+	display:inline-block;
+	width:10%;
+	height:100%;
+	vertical-align:top;
+	float:left;
+}
+.evSchedRowSec h2 {
+	display:inline-block;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.7vh;
+	font-weight:normal;
+	color:white;
+}
+.evSchedRowSec p {
+	display:inline-block;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.4vh;
+	font-weight:normal;
+	color:black;
+}
+.evSchedRowSec.event {
+	width:15%;
+}
+.evSchedRowSec.targets {
+	width:24.4%;
+}
+.schedListBtn {
+   	border:none;
+   	border-radius:10px;
+   	font-size:1.2vh;
+	height:45%;
+	width:25%;
+	margin:0 3%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	background:url("../images/editSeq.png");
+	background-size:auto 50%;
+	background-position:center center;
+	background-repeat:no-repeat;	
+}
+.schedListBtn:hover {
+	background-color:rgba(0,0,0,0.3);
+}
+.schedListBtn.edit {
+	background-image:url("../images/editSeq.png");
+}
+.schedListBtn.del {
+	background-image:url("../images/delSeq.png");
+}
+.schedToggleBtn {
+   	border:none;
+   	border-radius:5px;
+   	font-size:1.2vh;
+	height:45%;
+	width:40%;
+	margin:0 3%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	padding:0;
+	color:white;
+}
+.schedToggleBtn.active {
+	background-color:#00b33c;
+}
+.schedToggleBtn.active:hover {
+	background-color:#00802b;
+}
+.schedToggleBtn.inactive {
+	background-color:#d54444;
+}
+.schedToggleBtn.inactive:hover {
+	background-color:#a62626;
+}
+/** Events Schedule Page **/
