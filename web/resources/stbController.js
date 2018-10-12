@@ -136,6 +136,10 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 						}
 					}
 				}
+			},
+			error : function() {
+				$('#dynamicTitle').text('Click here to change the default title!');
+	
 			}
 		});
 	} else if ($option == 'set') {
@@ -203,22 +207,23 @@ function stbControl($action,$commands) {	// This function handles the control of
 function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4) {	// This function allows running of any script from within this javascript
 	var regex = /\S+/;
 	var elemmatch = regex.exec($element);
-	var xmlhttp;
-	if (window.XMLHttpRequest){
-		xmlhttp=new XMLHttpRequest();
-	} else {
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
 
-	xmlhttp.open("GET","cgi-bin/" + $script +"?"+$param1 + "=" + $value1 + "&"+$param2+"="+$value2 + "&"+$param3+"="+$value3 + "&"+$param4+"="+$value4,true);
-	xmlhttp.onreadystatechange=function(){
-		if (xmlhttp.readyState==4) {
-			if (elemmatch) {	// If a html element has been defined in $element, put the script output in to that element
-				document.getElementById($element).innerHTML=xmlhttp.responseText;
+	var dataObj = {};
+	if ($param1) {dataObj[$param1] = $value1}
+	if ($param2) {dataObj[$param2] = $value2}
+	if ($param3) {dataObj[$param3] = $value3}
+	if ($param4) {dataObj[$param4] = $value4}
+
+	$.ajax({
+		type: 'GET',
+		url: 'cgi-bin/' + $script,
+		data: dataObj,
+		success : function(result) {
+			if (elemmatch) {
+				$('#' + $element).html(result);
 			}
 		}
-	}
-	xmlhttp.send(null);
+	});
 
 	// Reset the sequenceIndex to 1
 	sequenceIndex = '1';
@@ -226,20 +231,16 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 // ############### End of perlCall function
 
 function pageCall ($element, $page) {	// This function allows calling of html pages
-	var xmlhttp;
-        if (window.XMLHttpRequest){                                                
-                xmlhttp=new XMLHttpRequest();
-        } else {                    
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
-        }
-
-	xmlhttp.open("GET",$page);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById($element).innerHTML=xmlhttp.responseText;
-                }
-        }
-	xmlhttp.send();
+	$.ajax({
+		type: 'GET',
+		url: $page,
+		success : function(result) {
+			$('#' + $element).html(result);
+		},
+		error : function() {
+			alert('Oops an error occurred when accessing that page. If the problem persists, contact you system administrator for assistance');
+		}
+	});
 }
 // ############### End of pageCall function
 
@@ -299,7 +300,6 @@ function validate() {	// This function validates and submits the data given when
 	alert('Congratulations! Your new grid has been created');
 	document.getElementById('dynamicPage').innerHTML = '<p style="font-size:30px;">Loading The New Grid, Please Wait ...</p>';
 	setTimeout(function(){perlCall('dynamicPage','scripts/pages/stbGrid.pl')},3000);
-	//return false;
 }
 // ############### End of validate function
 
@@ -583,7 +583,16 @@ var sequenceIndex = '1';	// Create the GLOBAL sequenceIndex variable (scalar) an
 
 function seqTextUpdate($id,$text,$area) {	// This function handles the first part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
 	if (!$area) {
-		$area = '';
+		$area = 'sequenceArea';
+	}
+	
+	if ($id.match(/^STB\d+$/)) {
+		var exists = $('#' + $area).find("[name='" + $id + "']")[0];
+		if (exists) {
+			var text = $(exists).attr("value");
+			alert('This STB is already selected');
+			return;
+		}
 	}
 
 	var btn = document.createElement("input");
@@ -1056,18 +1065,6 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 // ############### End of editGroupPage2 function
 
 function focusEl($element) {	// This function handles focussing on the given element on the page
-	//var xmlhttp;
-        //if (window.XMLHttpRequest){
-        //        xmlhttp=new XMLHttpRequest();
-        //} else {
-        //        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        //}
-
-        //xmlhttp.onreadystatechange=function(){
-        //        if (xmlhttp.readyState==4) {
-        //                document.getElementById($element).innerHTML=xmlhttp.responseText;
-        //        }
-        //}
 	var elem = '#' + $element;
 	$(elem).focus();
 }
@@ -1107,17 +1104,14 @@ function eventScheduleEndHourControl() {
 		}
 		newhtml += "<option value='" + num + "'>" + num + '</option>';
 	}
-	//newhtml += "<option value='0'>0</option>";
 	$('#everyhrend').html(newhtml);
 }
 
 function eventRadioSwitch($element) {
 	$('input[type=radio]').each(function(){
 		if ($(this).is(":checked")) {
-			var parent = $(this).parents('td').attr('class','fancyCell highlighted');
 			$(this).attr('class','trigger radioon');
 		} else {
-			var parent = $(this).parents('td').attr('class','fancyCell cellImportant');
 			$(this).attr('class','trigger radiooff');
 		}
 	});

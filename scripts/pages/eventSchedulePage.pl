@@ -260,26 +260,19 @@ HEAD
 	my $everymindata = $query->popup_menu(-id=>'everyminutes',-name=>'everyminutes',-values=>[@everymins],-default=>$everymin,-class=>'evSchedSelect');
 	my $everyhrstartdata = $query->popup_menu(-id=>'everyhrstart',-name=>'everyhrstart',-values=>[@hours],-default=>$everyhrstart,-class=>'evSchedSelect',-onChange=>'eventScheduleEndHourControl()');
 	my $everyhrenddata = $query->popup_menu(-id=>'everyhrend',-name=>'everyhrend',-values=>[@evhrs],-default=>$everyhrend,-class=>'evSchedSelect');
-	#my $everymindata = $query->popup_menu(-id=>'minutes',-name=>'minutes',-values=>[@mins],-default=>$min,-class=>'evSchedSelect');
-
 
 	my $mindata = $query->popup_menu(-id=>'minutes',-name=>'minutes',-values=>[@mins],-default=>$min,-class=>'evSchedSelect');
 	my $hourdata = $query->popup_menu(-id=>'hours',-name=>'hours',-values=>[@hours],-default=>$hour,-class=>'evSchedSelect');
 	my $domdata = $query->popup_menu(-id=>'dom',-name=>'dom',-values=>[@dom],-default=>$dom,-class=>'evSchedSelect');
 	my $monthdata = $query->popup_menu(-id=>'month',-name=>'month',-values=>[@months],-default=>$month,-class=>'evSchedSelect');
 	my $dayoptsdata = $query->popup_menu(-id=>'dayopts',-name=>'dayopts',-values=>[@dayoptions],-default=>$dow,-class=>'evSchedSelect');
-	#my $daysdata = $query->popup_menu(-id=>'days',-name=>'days',-values=>[@days],-default=>$dow,-class=>'evSchedSelect');
 	
 	my $presetradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" onchange=\"eventRadioSwitch()\">Day Presets";
 	my $customradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" onchange=\"eventRadioSwitch()\">Custom Days";
 
 	my $preset = 'false';
-	my $presetshead = 'fancyCell cellImportant';
-	my $customdayshead = 'fancyCell cellImportant';
 	my $everyxminsradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"timeOption\" value=\"everyxmins\" onchange=\"eventRadioSwitch()\"/>";
 	my $normalradio = "<input class=\"trigger radiooff\" type=\"radio\" name=\"timeOption\" value=\"normalmins\" onchange=\"eventRadioSwitch()\"/>";
-	my $everyhead = 'fancyCell cellImportant';
-	my $normalhead = 'fancyCell cellImportant';
 
 	if ($event) {
 		if ($$event) {
@@ -290,19 +283,15 @@ HEAD
 			}
 
 			if ($preset =~ /false/) {
-				$customdayshead = 'fancyCell highlighted';
 				$customradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayCustom\" onchange=\"eventRadioSwitch()\" checked>Custom Days";
 			} else {
-				$presetshead = 'fancyCell highlighted';
 				$presetradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"dayOption\" value=\"dayPresets\" onchange=\"eventRadioSwitch()\" checked>Day Presets";
 			}
 
 			if ($mintype =~ /every/) {
-				$everyhead = 'fancyCell highlighted';
 				$everyxminsradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"timeOption\" value=\"everyxmins\" onchange=\"eventRadioSwitch()\" checked/>Process repeats every (x) minutes";
 			} else {
 				if ($mintype =~ /normal/) {
-					$normalhead = 'fancyCell highlighted';
 					$normalradio = "<input class=\"trigger radioon\" type=\"radio\" name=\"timeOption\" value=\"normalmins\" onchange=\"eventRadioSwitch()\" checked/>Process runs once at the set time";
 				}
 			}
@@ -490,7 +479,6 @@ GROUPS
 	print '</div>';	# End of div 'eventScheduleInfoArea'
 
 	###### Print the STB Grid for STB selection
-
         if (-e $stbdatafile) {
                 my $conffile = $confdir . 'stbGrid.conf';
                 open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
@@ -502,7 +490,7 @@ GROUPS
 
 print <<HEAD;
 <div id="eventScheduleGridArea">
-	<div id="stbSelect" style="margin-top:2px;padding:5px;">
+	<div id="stbSelect" style="margin-top:0;">
 		<table style="border-spacing:0;" align="center">
 			<tr id="columns">
 HEAD

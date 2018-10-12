@@ -34,8 +34,10 @@ if ($schedpid) {
 	chomp(my $pausedtotal = `ls -l $pauseddir | grep -v total | wc -l` || '');
 	my @parts = split(/MainLoop\s*-\s*/,$res);
 	my $wanted = $parts[1];
-	$wanted =~ s/next:/\<font color\=\"\#267A94\"\>$bullet Next scheduled event -- \<\/font\>\<font color\=\"white\"\>/;
-        print $wanted . '</font><br>';
+	my @bits = split(/\s+/,$wanted);
+	my $string = '<font color="#00ace6">' . $bullet . 'Next scheduled event:</font><br><font color="white">' . "$bits[0] $bits[1] $bits[2] $bits[3] $bits[5] at $bits[4]</font><br>";
+	$string =~ s/next://;
+	print $string;
 
 	if ($runningtotal) {
 		$runningtotal =~ s/\s+//g;
@@ -45,13 +47,13 @@ if ($schedpid) {
 			print "\<font color\=\"red\"\>$bullet !! Warning !! There is currently $runningtotal event running\<\/font\>";
 		}
 	} else {
-		print "\<font color\=\"green\"\>$bullet No events currently running\<\/font\>";
+		print "\<font color\=\"\#00e600\"\>$bullet No events currently running\<\/font\>";
 	}
 
 	if ($pausedtotal) {
-		print "\<br\>\<font color\=\"orange\"\>$bullet Alert! You have paused events\<\/font\>";
+		print "\<br\>\<font color\=\"\#ff9933\"\>$bullet Alert! You have paused events\<\/font\>";
 	} else {
-		print "\<br\>\<font color\=\"green\"\>$bullet No events currently paused\<\/font\>";
+		print "\<br\>\<font color\=\"\#00e600\"\>$bullet No events currently paused\<\/font\>";
 	}
 
 	### Run the cleanUp sub routine

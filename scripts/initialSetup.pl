@@ -11,6 +11,7 @@ my $dirfile = $maindir . 'files/homeDir.txt';
 my $scriptfile = $maindir . 'scripts/homeDir.txt';
 my $webpagesfile = $maindir . 'scripts/pages/homeDir.txt';
 my $formsfile = $maindir . 'scripts/pages/forms/homeDir.txt';
+my $titlefile = $webdir . 'dynamicTitle.txt';
 
 my @files = ($dirfile , $scriptfile , $webpagesfile , $formsfile);
 
@@ -23,5 +24,8 @@ for (@files) {
 
 system("chmod -R 775 $maindir");
 system("chmod -R 777 $filedir");
-system("chmod 777 $webdir/dynamicTitle.txt");
+if (!-e $titlefile) {	# If a title file does not exist, create it
+	system("echo \"STB Controller\" > $titlefile");
+}
+system("chmod 777 $titlefile");
 system("chmod -R 777 $configdir");

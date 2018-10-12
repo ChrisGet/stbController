@@ -211,6 +211,6 @@ print <<LAST;
 </div>
 LAST
 	} else {
-		print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
+		print "<font size=\"5\" color=\"red\">No STB Database found. Configure a STB on the \"STB Data\" page first<\/font>";
 	}
 } # End of sub 'createGroup'

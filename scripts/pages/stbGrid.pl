@@ -178,7 +178,7 @@ LAST
 } ########## End of sub loadGrid ##########
 
 sub loadControl {
-	my $choice = '';
+	my $choice = 'universalRemote';
 	if (open my $fh, '<', $remfile) {
 		local $/;
 		$choice = <$fh>;
@@ -214,7 +214,9 @@ sub loadSequences {
 	foreach my $seq (sort keys %sequences) {
 		$seqlist .= "<button id=\"$seq\" class=\"sequenceButton\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
 	}
-
+	if (!$seqlist) {
+		$seqlist = '<p style="font-size:1.5vh;">No sequences found</p>';
+	}
 
 print <<SEQSEC;
 <div id="sequenceButtons" class="controllerPageSection">

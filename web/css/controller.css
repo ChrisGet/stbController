@@ -43,13 +43,6 @@ button:hover {
 .topBarTextDynamic:hover {
         cursor:pointer;
 }
-#logo {
-        margin-right:10px;
-        float:right;
-}
-#logo:hover {
-	cursor:pointer;	
-}
 #versionInfoDiv {
 	display:inline-block;
 	position:absolute;
@@ -88,14 +81,12 @@ button:hover {
 	vertical-align:top;
 	background:none;
 	border:none;
-/*	border-radius:10px;*/
 	font-size:1.5vh;
 	color:#c4dfe6;
 	padding:0;
 }
 .menuBtn:hover {
 	cursor:pointer;
-/*	border-top:1px solid #003b46;*/
 	border-bottom:3px solid #003b46;
 }
 #messages {
@@ -126,7 +117,7 @@ button:hover {
 #dateTimeDiv p {
 	display:inline-block;
 	margin:0;
-	font-size:1.5vh;
+	font-size:1.7vh;
 	position:relative;
 	top:50%;
 	transform:translateY(-50%);
@@ -362,7 +353,6 @@ button:hover {
 	padding:2px;
 	overflow:hidden;
 	vertical-align:top;
-/*	padding-left:1.2%;*/
 	padding-top:1.4%;
 	height:93%;
 	max-width:65%;
@@ -372,9 +362,9 @@ button:hover {
 	left:0;
 	top:0;
 	height:5%;
-	width:10%;
+	width:auto;
 	border-radius:5px;
-/*	border:1px solid #333333;*/
+	padding:0 1%;
 }
 #gridTitle p {
 	display:inline-block;
@@ -397,7 +387,7 @@ button:hover {
         margin-right: auto;
         margin-left:auto;
         padding:0;
-        width:350px;
+        width:100%;
         border-collapse:collapse;
 }
 
@@ -409,7 +399,6 @@ button:hover {
 	vertical-align:top;
 	border-radius:5px;
 	padding-top:1.4%;
-/*	padding-left:1%;*/
 	margin-top:0.3%;
 	margin-right:2%;
 }
@@ -418,9 +407,9 @@ button:hover {
 	left:0;
 	top:0;
 	height:5%;
-	width:17%;
+	width:auto;
 	border-radius:5px;
-/*	border:1px solid #333333;*/
+	padding:0 1%;
 }
 #controllerTitle p {
 	display:inline-block;
@@ -441,13 +430,6 @@ button:hover {
 	overflow:auto;
 }
 
-#middleBar {
-	display:inline-block;
-	width:10%;
-	height:98%;
-	text-align:center;
-}
-
 #sequenceButtons {
 	position:relative;
 	display:inline-block;
@@ -457,7 +439,6 @@ button:hover {
 	vertical-align:top;
 	border-radius:5px;
 	padding-top:1.4%;
-/*	padding-left:1%;*/
 	margin-top:0.3%;
 }
 #sequencesHead {
@@ -465,11 +446,11 @@ button:hover {
 	top:0;
 	left:0;
 	display:inline-block;
-	width:50%;
+	width:auto;
 	height:5%;
 	border-radius:5px;
-/*	border:1px solid #333333;*/
 	z-index:0;
+	padding:0 1%;
 }
 #sequencesHead p {
 	display:inline-block;
@@ -514,35 +495,6 @@ button:hover {
 .sequenceButton:last-of-type {
 	margin-bottom:3%;
 }
-.menuButton {
-   	border: 1px solid #96d1f8;
-   	background: #65a9d7;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
-   	background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -moz-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -ms-linear-gradient(top, #3e779d, #65a9d7);
-   	background: -o-linear-gradient(top, #3e779d, #65a9d7);
-   	padding: 2px 6px;
-   	-webkit-border-radius: 5px;
-   	-moz-border-radius: 5px;
-   	border-radius: 5px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   	color: white;
-   	font-size: 16px;
-   	text-decoration: none;
-   	vertical-align: middle;
-}
-.menuButton:hover {
-   	background: #28597a;
-   	color: #ccc;
-	cursor:pointer;
-}
-.menuButton:active {
-   	background: #267a94;
-}
 
 .userForm {
 	height:100%;
@@ -569,21 +521,14 @@ button.highlighted {
 	border:1px solid black;
 }
 
-#stbDetailsTable {
-	border:1px solid black;
-	float:right;
-	margin-top:20px;
-}
-
 #powerbuttons   {
         margin:auto;
-        width:200px;
-        height:68px;
+        width:auto;
+        height:63px;
         border:0; 
         border-spacing: 4px;
 
 }
-
 .power_deep {
         background-color:#AA030B;
         display:inline-block;
@@ -599,7 +544,6 @@ button.highlighted {
         background-color:#d60000;
 	cursor:pointer;
 }
-
 .power_normal {
         display:inline-block;
         color:white;
@@ -616,7 +560,6 @@ button.highlighted {
         background-color:#d60000;
 	cursor:pointer;
 }
-
 .number {
         display:inline-block;
         background-color:#333333;
@@ -633,7 +576,6 @@ button.highlighted {
         background-color:#666666;
 	cursor:pointer;
 }
-
 #num_pad        {
         margin:auto;
         width:auto;
@@ -641,7 +583,6 @@ button.highlighted {
         border:0; 
         border-spacing: 2px;
 }
-
 .function {
         display:inline-block;
         background-color:#07575b;
@@ -1093,7 +1034,7 @@ table.stbConfigGrid {
 	height:55px;
 	border:none;
 	border-radius:3px;
-	font-size:1.2vh;
+	font-size:1.5vh;
 	background-color:#009900;
 	color:white;
 	position:absolute;
@@ -1183,9 +1124,6 @@ table.stbConfigGrid {
    	color: #ffffff;
 	cursor:pointer;
 }
-.newSeqSubmit:active {
-   	background: #235e11;
-}
 .newSeqSubmit.create {
 	float:left;
         margin-top:1px;
@@ -1246,38 +1184,6 @@ table.stbConfigGrid {
 	word-wrap:break-word;	
 }
 
-.roundedTable {
-	border:1px solid;
-	-webkit-border-radius:5px;
-        -moz-border-radius:5px;
-	border-radius:5px;
-}
-
-#sequencesHeader {
-}
-#sequencesHeader h1 {
-	color:#ccc;
-	font-size:25px;
-	margin-top:3px;
-	margin-bottom:0px;
-}
-#sequencesHeader p {
-	font-size:20px;
-	margin-top:2px;
-	margin-bottom:5px;
-	color:white;
-}
-
-.fancyCell {
-	background: #707070;
-        background: -webkit-gradient(linear, left top, left bottom, from(#707070), to(#C0C0C0));
-        background: -webkit-linear-gradient(top, #707070, #C0C0C0);
-        background: -moz-linear-gradient(top, #707070, #C0C0C0);
-        background: -ms-linear-gradient(top, #707070, #C0C0C0);
-        background: -o-linear-gradient(top, #707070, #C0C0C0);
-	border-radius:3px;
-}
-
 table.Bordered {
 	border-radius:5px;
 	border:2px solid grey;
@@ -1319,63 +1225,6 @@ td.cellInfo {
 	word-wrap:break-word;
 }
 
-.activateBtn {
-	border: 1px solid #68b351;
-   	background: #7eab71;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
-   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
-   	background: -moz-linear-gradient(top, #397a27, #7eab71);
-   	background: -ms-linear-gradient(top, #397a27, #7eab71);
-   	background: -o-linear-gradient(top, #397a27, #7eab71);
-   	padding: 2px 5px;
-   	-webkit-border-radius: 10px;
-   	-moz-border-radius: 10px;
-   	border-radius: 10px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	color: black;
-   	font-size: 13px;
-	font-weight:bold;
-   	text-decoration: none;
-   	vertical-align: middle;
-}
-.activateBtn:hover {
-   	background: #235e11;
-	cursor:pointer;
-}
-.activateBtn:active {
-   	background: #235e11;
-}
-
-.deactivateBtn {
-	border: 1px solid #cf4343;
-        background: #cc2f2f;
-        background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
-        background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
-        background: -o-linear-gradient(top, #cc2f2f, #FF9999);
-   	padding: 2px 5px;
-   	-webkit-border-radius: 10px;
-   	-moz-border-radius: 10px;
-   	border-radius: 10px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	color: black;
-	font-weight:bold;
-   	font-size: 13px;
-   	text-decoration: none;
-   	vertical-align: middle;
-}
-.deactivateBtn:hover {
-	background: #b80000;
-	cursor:pointer;
-}
-.deactivateBtn:active {
-	background: #b80000;
-}
 .trigger {
 	display:inline-block;
 	width:10%;
@@ -1396,15 +1245,6 @@ input[type='checkbox']:hover {
 
 select:hover {
 	cursor:pointer;
-}
-
-.styledSelect {
-	padding:3px;
-	border:2px solid #cc6600;
-	border-radius:3px;
-	max-width:90px;
-	background-color:black;
-	color:white;
 }
 
 .stbDataFormTable {
@@ -1467,106 +1307,6 @@ p.narrow {
 	width:100%;
 	height:40%;
 	margin-top:10%;
-}
-
-
-.evSchedAdmin {
-   	padding: 2px 5px;
-   	-webkit-border-radius: 3px;
-   	-moz-border-radius: 3px;
-   	border-radius: 3px;
-   	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	box-shadow: rgba(0,0,0,1) 0 1px 0;
-   	text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   	color: white;
-   	font-size: 13px;
-   	text-decoration: none;
-   	vertical-align: middle;
-}
-.evSchedAdmin.disable {
-   	border: 1px solid #cf4343;
-   	background: #cc2f2f;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
-   	background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -o-linear-gradient(top, #cc2f2f, #FF9999);
-}
-.evSchedAdmin.disable:hover {
-   	background: #b80000;
-	cursor:pointer;
-}
-.evSchedAdmin.disable:active {
-   	background: #b80000;
-}
-
-.evSchedAdmin.enable {
-   	border: 1px solid #68b351;
-   	background: #7eab71;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
-   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
-   	background: -moz-linear-gradient(top, #397a27, #7eab71);
-   	background: -ms-linear-gradient(top, #397a27, #7eab71);
-   	background: -o-linear-gradient(top, #397a27, #7eab71);
-}
-.evSchedAdmin.enable:hover {
-   	background: #235e11;
-	cursor:pointer;
-}
-.evSchedAdmin.enable:active {
-   	background: #235e11;
-}
-
-.evSchedAdmin.stopall {
-   	border: 1px solid #cf4343;
-   	background: #cc2f2f;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#cc2f2f), to(#FF9999));
-   	background: -webkit-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -moz-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -ms-linear-gradient(top, #cc2f2f, #FF9999);
-   	background: -o-linear-gradient(top, #cc2f2f, #FF9999);
-}
-.evSchedAdmin.stopall:hover {
-   	background: #b80000;
-	cursor:pointer;
-}
-.evSchedAdmin.stopall:active {
-   	background: #b80000;
-}
-
-.evSchedAdmin.pauseall {
-   	border: 1px solid #FFCC00;
-   	background: #E68A00;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#E68A00), to(#F2C480));
-   	background: -webkit-linear-gradient(top, #E68A00, #F2C480);
-   	background: -moz-linear-gradient(top, #E68A00, #F2C480);
-   	background: -ms-linear-gradient(top, #E68A00, #F2C480);
-   	background: -o-linear-gradient(top, #E68A00, #F2C480);
-}
-.evSchedAdmin.pauseall:hover {
-   	background: #FF6600;
-	cursor:pointer;
-}
-.evSchedAdmin.pauseall:active {
-   	background: #FF6600;
-}
-
-.evSchedAdmin.resumeall {
-   	border: 1px solid #68b351;
-   	background: #7eab71;
-   	background: -webkit-gradient(linear, left top, left bottom, from(#397a27), to(#7eab71));
-   	background: -webkit-linear-gradient(top, #397a27, #7eab71);
-   	background: -moz-linear-gradient(top, #397a27, #7eab71);
-   	background: -ms-linear-gradient(top, #397a27, #7eab71);
-   	background: -o-linear-gradient(top, #397a27, #7eab71);
-}
-.evSchedAdmin.resumeall:hover {
-   	background: #235e11;
-	cursor:pointer;
-}
-.evSchedAdmin.resumeall:active {
-   	background: #235e11;
 }
 
 #schedAdmin {
@@ -1926,9 +1666,7 @@ p.narrow {
 	display:block;
 	background:none;
 	border:none;
-	/*background-color:rgba(255,255,255,0.3);*/
 	border-radius:4px;
-	/*box-shadow:inset 0 0 0 1px red;*/
 	border-radius:50%;
 }
 .spRemBtn:hover {
@@ -2352,8 +2090,6 @@ p.narrow {
 	height:100%;
 	border-bottom:1px solid #333333;
 	border:none;
-/*	background-color:#e6e6e6;
-	box-shadow:0 0 8px black;*/
 	border-radius:5px;
 	margin-top:1%;
 }
@@ -2493,23 +2229,16 @@ p.narrow {
 }
 .seqListBtn:hover {
 	cursor:pointer;
-	background-color:rgba(255,255,255,0.5);
-	background-color:white;
+	background-color:rgba(255,255,255,0.3);
 }
 .seqListBtn.Del {
 	background-image:url("../images/delSeq.png");
 }
-.seqListBtn.Del:hover {
-}
 .seqListBtn.Edit {
 	background-image:url("../images/editSeq.png");
 }
-.seqListBtn.Edit:hover {
-}
 .seqListBtn.Copy {
 	background-image:url("../images/copySeq.png");
-}
-.seqListBtn.Copy:hover {
 }
 /** Sequences Page **/
 
@@ -2613,23 +2342,16 @@ p.narrow {
 }
 .stbGroupBtn:hover {
 	cursor:pointer;
-	background-color:rgba(255,255,255,0.5);
-	background-color:white;
+	background-color:rgba(255,255,255,0.3);
 }
 .stbGroupBtn.Del {
 	background-image:url("../images/delSeq.png");
 }
-.stbGroupBtn.Del:hover {
-}
 .stbGroupBtn.Edit {
 	background-image:url("../images/editSeq.png");
 }
-.stbGroupBtn.Edit:hover {
-}
 .stbGroupBtn.Copy {
 	background-image:url("../images/copySeq.png");
-}
-.stbGroupBtn.Copy:hover {
 }
 .newSTBGroup {
 	border:none;
