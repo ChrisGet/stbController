@@ -26,7 +26,6 @@ for (@lastboxes) {
 	$laststbs{$_}++;
 }
 
-#if ($confs !~ m/\bstbGrid.conf\b/) {
 if (!-e $conffile) {
 	createConf();
 } else {
@@ -51,7 +50,7 @@ print <<FORM;
 	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:10px;">Select the number of rows:</p>
 	$rows
 </form>
-<button class="newSeqSubmit" onclick="validate()">Create New Grid</button><br>
+<button class="newSeqSubmit createGrid" onclick="validate()">Create New Grid</button><br>
 </body>
 </div>
 </div>

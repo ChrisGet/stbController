@@ -1191,7 +1191,11 @@ table.stbConfigGrid {
         margin-top:1px;
         display:inline-block;
 }
-
+.newSeqSubmit.createGrid {
+	position:static;
+	top:0;
+	left:0;
+}
 .seqLabel {
 	font-size:16px;
 	color:black;
