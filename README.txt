@@ -18,9 +18,10 @@
 	- Schedule::Cron
 	- Time::HiRes
 	- FindBin
+	-JSON
 
 - Handy cpan command for installing these modules (While in the cpan shell)
-install DBM::Deep IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Time::HiRes FindBin
+install DBM::Deep IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Time::HiRes FindBin JSON
 
 ############## STEP 3:
 - Set up the web server:-
