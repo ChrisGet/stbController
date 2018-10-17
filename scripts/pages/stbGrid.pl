@@ -79,7 +79,7 @@ sub loadPage {
 		&$subref();
 	}
 	
-	loadSettings();
+	#loadSettings();
 }
 
 sub loadSTBSelection {
@@ -145,14 +145,22 @@ while ($r <= $rows) {
 		} else {
 			$buttontext = "-";
 		}
-
+		my $style = 'style="';
+		if (exists $stbdata{$id}{'ButtonColour'}) {
+			$style .= 'background-color:' . $stbdata{$id}{'ButtonColour'} . ';';
+		}
+		if (exists $stbdata{$id}{'ButtonTextColour'}) {
+			$style .= 'color:' . $stbdata{$id}{'ButtonTextColour'} . ';';
+		}
+		$style .= '"';
+		
 		if ($buttontext =~ /^\s*\:\s*$/) {
 print <<BOX;
 <td></td>
 BOX
 		} else {
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton deselect" type="button" onClick="colorToggle('$id')">$buttontext</button></td>
+<td><button name="$name" id="$id" class="stbButton deselect" type="button" onClick="colorToggle('$id')" $style>$buttontext</button></td>
 BOX
 		}
 
@@ -175,6 +183,16 @@ print <<LAST;
 	<input type="hidden" id="totalRows" value="$rows"/>
 </div>
 LAST
+	##### Print the STB grid row selection restriction stuff
+	my $restrictfile = $confdir . 'gridRowRestriction.conf';
+	if (-e $restrictfile) {
+		chomp(my $opt = `cat $restrictfile` // '');
+		if ($opt) {
+			if ($opt =~ /^on$/i) {
+				print '<input type="hidden" id="restrictSTBGridRows" value="on">';
+			}
+		}
+	}
 } ########## End of sub loadGrid ##########
 
 sub loadControl {

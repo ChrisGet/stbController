@@ -51,6 +51,7 @@ stopScheduler() and exit if ($action =~ m/^Stop$/i);
 reloadScheduler() and exit if ($action =~ m/^Reload$/i);
 addEvent(\$eventID,\$details) and exit if ($action =~ m/^Add$|^Edit$/i);
 deleteEvent(\$eventID) and exit if ($action =~ m/^Delete$/i);
+copyEvent() and exit if ($action eq 'Copy');
 enableEvent(\$eventID) and exit if ($action =~ m/^Enable$/i);
 disableEvent(\$eventID) and exit if ($action =~ m/^Disable$/i);
 disableScheduler() and exit if ($action =~ m/^DisableSchedule$/i);
@@ -94,22 +95,16 @@ sub addEvent {
 	}
 	##### Do this for 'Edit' Action
 
-	my $newID;
-	my @nums = ('0'..'9');
-	my $length = 4;
-	my $number = '';
-
-RANDOM: {
-	for (1..$length) {
-		$number .= $nums[int rand @nums];
+	my $newid = '';
+	my @range = (1000 .. 9999);
+	until ($newid) {
+		my $no = $range[int rand(@range)];
+		if (!exists $events{$no}) {
+			$newid = $no;
+		}
 	}
-	if (exists $events{$number}) {
-		$number = '';
-		redo RANDOM;
-	} 
-} # End of 'RANDOM' code block
 
-	$events{$number} = $newdetails;
+	$events{$newid} = $newdetails;
 
 	chomp(my $schedstate = `cat $statefile` || '');
         if (!$schedstate) {
@@ -120,6 +115,22 @@ RANDOM: {
 
 	return;
 } ### End of sub 'addEvent'
+
+sub copyEvent {
+	if (exists $events{$eventID}) {
+		my $tocopy = $events{$eventID};
+		my $newid = '';
+		my @range = (1000 .. 9999);
+		until ($newid) {
+			my $no = $range[int rand(@range)];
+			if (!exists $events{$no}) {
+				$newid = $no;
+			}
+		}
+		$events{$newid} = $tocopy;
+	}	
+	return;	
+}
 
 sub deleteEvent {
 	my ($eventID) = @_;

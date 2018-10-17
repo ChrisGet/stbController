@@ -6,9 +6,9 @@
 	<script type="text/javascript" src="web/resources/stbController.js"></script>
 	<link href="web/css/controller.css" rel="stylesheet" type="text/css"/>
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-	<title>RT STB Control</title>
+	<title>STB Control</title>
 	<meta name="description" content="Multi Sky STB Contoller" />
-	<link rel="shortcut icon" href="web/images/RT_Icon.ico?v=2" />
+	<link rel="shortcut icon" href="web/images/directional.png" />
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
 	
 </head>
@@ -26,6 +26,7 @@
 			<button class="menuBtn" value="Sequences" onclick="pageCall('dynamicPage','web/sequencesPage.html');logLastBoxes();perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');focusEl('sequencesAvailable')">Sequences</button>
 			<button class="menuBtn" value="Events Schedule" onclick="pageCall('dynamicPage','web/eventsSchedulePage.html');logLastBoxes();perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')">Schedule</button>
 			<button class="menuBtn" value="STB Groups" onclick="pageCall('dynamicPage','web/stbGroupsPage.html');logLastBoxes();perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu');focusEl('stbGroupsAvailable')">Groups</button>
+			<button class="menuBtn" value="Settings" onclick="perlCall('dynamicPage','scripts/pages/settingsPage.pl')">Settings</button>
 		</div>
 		<div id="messages" value="Check here for server announcements (Updated every minute)" class="masterTooltip"></div>
 		<div id="dateTimeDiv" value="Current Server Time" class="masterTooltip"></div>

@@ -407,6 +407,9 @@ function deselect() {	// This function handles the deselect button on the STB gr
 // ############### End of deselect function
 
 function colorToggle($id,$override,$highlight){	// This function handles the STB grid manipulation. It handles which STBs are selected for control, which should be highlighted, and which need video switching to be done
+	if (!$id) {
+		return;
+	}
 	var item = document.getElementById($id);
 
 	// Return if item is not defined
@@ -441,31 +444,34 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 		return;
 	}
 
-	// The code below will check to see if the user has selected more than one STB in the same column. 
-	// The last clicked cell in a column will be selected while the rest will be deselected
-	var naym = item.name;
-	var myColMatch = /col(\d+)s(tb)/;
-	var match = myColMatch.exec(naym);
-	var colNo = match[0];
-	for (var key in stbHash) {
-		if (key == $id) continue;		// If the key and $id are the same, skip to the next iteration
-		var thing = document.getElementById(key);
-		var matchName = thing.name;
-		if(matchName.indexOf(colNo) == 0){
-			document.getElementById(key).className = 'stbButton deselect';
-	               	delete stbHash[key];
+	var restrict = $('#restrictSTBGridRows').val();
+	if (restrict) {
+		// The code below will check to see if the user has selected more than one STB in the same column. 
+		// The last clicked cell in a column will be selected while the rest will be deselected
+		var naym = item.name;
+		var myColMatch = /col(\d+)s(tb)/;
+		var match = myColMatch.exec(naym);
+		var colNo = match[0];
+		for (var key in stbHash) {
+			if (key == $id) continue;		// If the key and $id are the same, skip to the next iteration
+			var thing = document.getElementById(key);
+			var matchName = thing.name;
+			if(matchName.indexOf(colNo) == 0){
+				document.getElementById(key).className = 'stbButton deselect';
+	        		delete stbHash[key];
+			}
+		}
+		
+		for (var key in highlightedSTBs) {
+			var thing = document.getElementById(key);
+        		var matchName = thing.name;
+        		if(matchName.indexOf(colNo) == 0){
+                		document.getElementById(key).className = 'stbButton deselect';
+                		delete highlightedSTBs[key];
+        		}
 		}
 	}
-
-	for (var key in highlightedSTBs) {
-		var thing = document.getElementById(key);
-                var matchName = thing.name;
-                if(matchName.indexOf(colNo) == 0){
-                        document.getElementById(key).className = 'stbButton deselect';
-                        delete highlightedSTBs[key];
-                }
-	}
-
+	
 	if (item.className == 'stbButton deselect') {
 		item.className = 'stbButton selected';
 		stbHash[$id] = 1;
@@ -494,19 +500,11 @@ function rows($row) {	// This function handles the row selection buttons on the 
 		lastRow = $row;
 		lastRowHL = '';
 		override = 'selected';
-		for (var stb in stbHash) {
-                	document.getElementById(stb).className = 'stbButton deselect';
-              	}
-        	stbHash = {};
 	} else {
 		if(lastRow == $row) {
 			override = 'highlighted';
 			lastRowHL = $row;
 			lastRow = '';
-			for (var stb in stbHash) {
-                		document.getElementById(stb).className = 'stbButton deselect';
-              		}
-        		stbHash = {};
 		} else {
 			lastRow = $row;
 			lastRowHL = '';
@@ -515,15 +513,17 @@ function rows($row) {	// This function handles the row selection buttons on the 
 				document.getElementById(stb).className = 'stbButton deselect';
 			}
 			highlightedSTBs = {};
-
-			for (var stb in stbHash) {
-				document.getElementById(stb).className = 'stbButton deselect';
-			}
-			stbHash = {};
-			
 		}
 	}
 
+	var restrict = $('#restrictSTBGridRows').val();
+	if (restrict) {
+		for (var stb in stbHash) {
+		      document.getElementById(stb).className = 'stbButton deselect';
+		}
+		stbHash = {};
+	}
+	
 	for(var i=0;i<count;i++) {	// While 'i' is less than the number of cells
 		var cell = row.getElementsByTagName("button")[i];	// Locate the button in that cell and save it in 'cell'
 		if (!cell) {
@@ -541,6 +541,12 @@ function rows($row) {	// This function handles the row selection buttons on the 
 // ############### End of rows function
 
 function arrowDir($opt) {	// This function handles the Row Up and Down buttons on the STB controller
+	var restrict = $('#restrictSTBGridRows').val();
+	if (!restrict) {
+		alert('This feature is disabled while the "STB Grid Row Selection" option is disabled in the settings.');
+		return;
+	}
+
 	var lastRow2;
 	if (lastRow) {
 		lastRow2 = lastRow;
@@ -1047,6 +1053,7 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 		},
 		success : function(result) {
 			var members = result.split(',');
+			var deconfcnt = 0;
 			for (var i = 0; i < members.length; i++) {
 				var bits = members[i].split("~");
 				var id = bits[0];
@@ -1056,8 +1063,11 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 				if (!match)  {
 					seqTextUpdate(id,text);
 				} else {
-					alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+					deconfcnt++;
 				}
+			}
+			if (deconfcnt) {
+				alert(deconfcnt + ' STB(s) that were a member of this group have since been deconfigured or setup as a spacer. They will not be listed in the Group Members area below and will be removed from this group when you hit Update');
 			}
 		}
 	});
@@ -1209,6 +1219,16 @@ function deleteSchedule($id) {	// This function handles deletion of an existing 
        		return;
 	}
 	perlCall('','scripts/eventScheduleControl.pl','action','Delete','eventID',$id);
+	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+}
+// ############### End of deleteSchedule function
+
+function copySchedule($id) {	// This function handles deletion of an existing Scheduled Event
+	var c = confirm('Copying this scheduled event will mean you may have 2 sets of commands being sent to the same STBs at the same time which can cause issues. Be sure to amend the copied event to avoid clashes. Continue?');
+	if (c == false) {
+       		return;
+	}
+	perlCall('','scripts/eventScheduleControl.pl','action','Copy','eventID',$id);
 	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
 // ############### End of deleteSchedule function
@@ -1427,4 +1447,64 @@ function remoteChange($this) {
 		},
 	});	
 }
+
+function seqRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','seqListRow');
+	} else {
+		clicked.attr('class','seqListRow focussed');
+	}
+}
+
+function evSchedRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','evSchedRow');
+	} else {
+		clicked.attr('class','evSchedRow focussed');
+	}
+}
+function groupRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','groupListRow');
+	} else {
+		clicked.attr('class','groupListRow focussed');
+	}
+}
+
+function rowRestrictionToggle($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	var switc = 'on';
+	if (classa.match(/on/)) {
+		clicked.attr('class','rowRestrictSlider off');
+		switc = 'off';
+	} else {
+		clicked.attr('class','rowRestrictSlider on');
+	}
+	
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'rowrestrict',
+			'state' : switc,
+		},
+		success : function(result) {
+			if (result) {
+				if (result.match(/^ERROR/)) {
+					alert(result);
+					perlCall('dynamicPage','scripts/pages/settingsPage.pl');
+				}
+			}
+		},
+	});
+	
+}
+
 // end hiding script from old browsers -->

@@ -112,11 +112,13 @@ HEAD
 		my $months = numbersToDays(\$data{'Month'},\'month');
 		$$months =~ s/_/ /g;
 		my $days = numbersToDays(\$data{'DOW'},\'dow');
+		$$days =~ s/,/, /g;
 		my $dom = $data{'DOM'};
 		$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
 		my $togglebtn = "<button class=\"schedToggleBtn active\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Enabled<\/button>";
-		my $editbtn = "<button class=\"schedListBtn edit\" onclick=\"editSchedulePage(\'$id\')\"><\/button>";
-		my $delbtn = "<button class=\"schedListBtn del\" onclick=\"deleteSchedule(\'$id\')\"><\/button>";
+		my $editbtn = "<button class=\"schedListBtn edit\" title=\"Edit\" onclick=\"editSchedulePage(\'$id\')\"><\/button>";
+		my $delbtn = "<button class=\"schedListBtn del\" title=\"Delete\" onclick=\"deleteSchedule(\'$id\')\"><\/button>";
+		my $copybtn = "<button class=\"schedListBtn copy\" title=\"Copy\" onclick=\"copySchedule(\'$id\')\"><\/button>";
 		if ($data{'Active'} eq 'n') {
 			$togglebtn = "<button class=\"schedToggleBtn inactive\" onclick=\"scheduleStateChange(\'Enable\',\'$id\')\">Disabled<\/button>";
 		}
@@ -145,9 +147,8 @@ HEAD
 
 		my $eventdata = $data{'Event'};
 		$eventdata =~ s/,/, /g;
-
 print <<SCHED;
-	<div class="evSchedRow">
+	<div class="evSchedRow" onclick="evSchedRowHighlight(this)" title="Click to toggle highlight">
 		<div class="evSchedRowSec"><p>$time</p></div>
 		<div class="evSchedRowSec"><p>$dom</p></div>
 		<div class="evSchedRowSec"><p>$$months</p></div>
@@ -156,6 +157,7 @@ print <<SCHED;
 		<div class="evSchedRowSec targets"><p>$stbnames</p></div>
 		<div class="evSchedRowSec">
 			$editbtn
+			$copybtn
 			$delbtn
 		</div>
 		<div class="evSchedRowSec">
@@ -458,7 +460,7 @@ print <<GROUPS;
 	</div>
 	<div class="evSchedSection seqBody">
 		<div class="evSchedSection twothirds">
-			<div id="sequenceArea" class="eventGroupArea" contenteditable="true">
+			<div id="sequenceArea" class="eventGroupArea" contenteditable="true" style="float:none;">
 			</div>
 		</div>
 		<div class="evSchedSection third">

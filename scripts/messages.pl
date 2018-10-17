@@ -21,7 +21,7 @@ if ($schedpid) {
 	chomp(my $schedstate = `cat $statefile` || '');
 	chomp(my $res = `ps ax | grep \"\^\\s\*$schedpid\" | grep -v grep` || '');
 	if ($schedstate =~ /^Disabled$/i) {
-		print "<font color=\"red\">> Scheduler is currently Disabled</font>";
+		print "<font color=\"red\">! Scheduler is currently disabled !</font>";
 		exit;
 	} else {
 		if (!$res) {
@@ -35,7 +35,7 @@ if ($schedpid) {
 	my @parts = split(/MainLoop\s*-\s*/,$res);
 	my $wanted = $parts[1];
 	my @bits = split(/\s+/,$wanted);
-	my $string = '<font color="#00ace6">' . $bullet . 'Next scheduled event:</font><br><font color="white">' . "$bits[0] $bits[1] $bits[2] $bits[3] $bits[5] at $bits[4]</font><br>";
+	my $string = '<font color="#00ace6">Next scheduled event</font><br><font color="white">' . "$bits[0] $bits[1] $bits[2] $bits[3] $bits[5] at $bits[4]</font><br>";
 	$string =~ s/next://;
 	print $string;
 

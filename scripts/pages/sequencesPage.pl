@@ -35,12 +35,14 @@ sub mainMenu {
 		print '<font size="4" color="red">You currently have no Command Sequences</font>';
 		exit;
 	}
-
-print <<STUFF;
-<table>
-<tr>
-STUFF
-
+print <<HEAD;
+<div id="sequenceListHeader">
+	<div class="seqListRowSec header"><h2>Sequence Name</h2></div>
+	<div class="seqListRowSec comlist header"><h2>Commands</h2></div>
+	<div class="seqListRowSec manage header"><h2>Manage</h2></div>
+</div>
+<div id="sequenceListDiv">
+HEAD
 	my $colcount = '1';
 	foreach my $key (sort keys %sequences) {
 		if ($colcount == '8') {
@@ -49,26 +51,27 @@ STUFF
 		}
 		
 		my $titlestring = $sequences{$key} || '';
+		my @coms = split(',',$titlestring);
+		my $comstring = '';
+		foreach my $com (@coms) {
+			$comstring .= '<div class="seqListIconOuter"><div class="seqListIcon"><p>' . $com . '</p></div><div class="seqListArrowDiv"></div></div>';
+		}
 
 print <<SEQ;
-<div class="seqListBox">
-	<div class="seqListBoxTitleDiv masterTooltip" value="$titlestring">
-		<p>$key</p>
-	</div>
-	<div class="seqListBoxBtnsDiv">
+<div class="seqListRow" onclick="seqRowHighlight(this)" title="Click to toggle highlight">
+	<div class="seqListRowSec"><p>$key</p></div>
+	<div class="seqListRowSec comlist"><div class="comStringHolder">$comstring</div></div>
+	<div class="seqListRowSec manage header">
 		<button class="seqListBtn Edit" title="Edit" onclick="editSequencePage('$key')"></button>
 		<button class="seqListBtn Copy" title="Copy" onclick="copySequence('$key')"></button>	
-		<button class="seqListBtn Del" title="Delete" onclick="deleteSequence('$key')"></button>
+		<button class="seqListBtn Del" title="Delete" onclick="deleteSequence('$key')"></button>	
 	</div>
 </div>
-
-
-
 SEQ
 		$colcount++;
 	}
-
-	print '</tr></table>'
+	
+	print '</div>';
 }
 
 sub createSeq {

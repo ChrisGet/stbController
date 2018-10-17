@@ -44,6 +44,14 @@ sub mainMenu {
 		exit;
 	}
 
+print <<HEAD;
+<div id="groupListHeader">
+	<div class="groupListRowSec header"><h2>Group Name</h2></div>
+	<div class="groupListRowSec memlist header"><h2>Members</h2></div>
+	<div class="groupListRowSec manage header"><h2>Manage</h2></div>
+</div>
+<div id="groupListDiv">
+HEAD
 	my $colcount = '1';
 	foreach my $key (sort keys %groups) {
 		if ($colcount == '10') {
@@ -65,16 +73,15 @@ sub mainMenu {
 					$name = 'Spacer';
 				}
 			}
-			$memberstring .= "$name,";
+			$memberstring .= "<div class=\"stbGroupIcon\"><p>$name</p></div>";
 		}
 		$memberstring =~ s/\,$//;
 
 print <<GROUP;
-<div class="stbGroupBox">
-	<div class="stbGroupBoxTitleDiv masterTooltip" value="$memberstring">
-		<p>$key</p>
-	</div>
-	<div class="stbGroupBoxBtnsDiv">
+<div class="groupListRow" onclick="groupRowHighlight(this)" title="Click to toggle highlight">
+	<div class="groupListRowSec"><p>$key</p></div>
+	<div class="groupListRowSec memlist"><div class="memStringHolder">$memberstring</div></div>
+	<div class="groupListRowSec manage header">
 		<button class="stbGroupBtn Edit" title="Edit" onclick="editGroupPage('$key')"></button>
 		<button class="stbGroupBtn Del" title="Delete" onclick="deleteGroup('$key')"></button>
 	</div>
@@ -82,14 +89,11 @@ print <<GROUP;
 GROUP
 		$colcount++;
 	}
-	print '</tr></table>'
+	print '</div>'
 } # End of sub 'mainMenu'
 
 sub createGroup {
 	my ($group,$boxes) = @_;
-	#print '<div class="wrapLeft shaded" style="width:650px;">';
-
-
 	my $headertext = 'STB Group &#8594; Create';
 	my $defname;
 	my $members;
