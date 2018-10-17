@@ -4,6 +4,7 @@
 - Go to the scripts directory and run "perl initialSetup.pl" as root. This will set up file permissions as well as 
 	other things for the controller
 
+- Upgrading to version 2.1 - Within the scripts directory, run the convertSTBDB.pl script. This will convert the old STB 	database file to the new JSON format.
 
 ############## STEP 2:
 - Below is a list of perl modules that the controller requires. These can be installed using CPAN.
@@ -51,7 +52,6 @@ install DBM::Deep IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::A
 	  which links to the "stbController/scripts/" directory.
 	- Create a symbolic link called "web" which links to the "stbController/web" directory.
 	- Create a symbolic link called "index.html" which links to the "stbController/web/index.html" file.
-	- NOTE: File and folder permissions may have to be tweaked according to your Apache setup. Keep an eye on the error log file
-		for your web page to see where these need to be changed if needed.
+	- NOTE: File and folder permissions may have to be tweaked according to your Apache setup. Keep an eye on the error log file for your web page to see where these need to be changed if needed.
 
 - Once the directories and symbolic links are created you should be good to go. Navigate to your web page to view the stbController
