@@ -44,6 +44,7 @@ my $newenc = $json->pretty->encode(\%filtered);
 if (open my $fh, '+>', $jsonfile) {
 	print $fh $newenc;
 	close $fh;
+	system("chmod 777 $jsonfile");
 } else {
 	print "Failed to open $jsonfile for writing: $!\n";
 }
