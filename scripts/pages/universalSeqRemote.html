@@ -1,0 +1,86 @@
+<div id="remoteSelectorDiv">
+        <select id="remoteSelector" class="seqRemSel">
+                <option value="universalSeqRemote" selected disabled>Universal</option>
+                <option value="skyQSeqRemote">Sky Q</option>
+                <option value="skyPlusSeqRemote">Sky Plus</option>
+        </select>
+</div>
+<table id="powerbuttons">  <!-- First table is the two power buttons -->
+	<td><button class="power_deep" onclick="seqTextUpdate('passive','Deep Sleep')">DEEP SLEEP</button></td>
+	<td><button class="power_normal" onclick="seqTextUpdate('power','Power')">POWER</button></td>
+</table>
+
+<table id="num_pad"> <!-- Next is the numeric keypad -->
+	<tr>
+		<td><center><button class="number masterTooltip" value=". , ; : '"  onclick="seqTextUpdate('1','1')">1</button></center></td>
+		<td><center><button class="number masterTooltip" value="abc"  onclick="seqTextUpdate('2','2')">2</button></center></td>
+		<td><center><button class="number masterTooltip" value="def"  onclick="seqTextUpdate('3','3')">3</button></center></td>
+	</tr>
+	<tr>
+		<td><center><button class="number masterTooltip" value="ghi"  onclick="seqTextUpdate('4','4')">4</button></center></td>
+		<td><center><button class="number masterTooltip" value="jkl"  onclick="seqTextUpdate('5','5')">5</button></center></td>
+		<td><center><button class="number masterTooltip" value="mno"  onclick="seqTextUpdate('6','6')">6</button></center></td>
+	</tr>
+	<tr>
+		<td><center><button class="number masterTooltip" value="pqrs"  onclick="seqTextUpdate('7','7')">7</button></center></td>
+		<td><center><button class="number masterTooltip" value="tuv"  onclick="seqTextUpdate('8','8')">8</button></center></td>
+		<td><center><button class="number masterTooltip" value="wxyz"  onclick="seqTextUpdate('9','9')">9</button></center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><center><button class="number masterTooltip" value="space"  onclick="seqTextUpdate('0','0')">0</button></center></td>
+		<td></td>
+	</tr>
+</table>
+
+<table id="controls"> <!-- Seperate sub table (so it can align to the others but have a different width THIS IS THE MAIN KEY PANEL -->
+	<tr>
+		<td><center><button class="colourButton red" onclick="seqTextUpdate('red button','Red Button')"></button></center></td>
+		<td><center><button class="colourButton green" onclick="seqTextUpdate('green button','Green Button')"></button></center></td>
+		<td></td>
+		<td><center><button class="colourButton yellow" onclick="seqTextUpdate('yellow button','Yellow Button')"></button></center></td>
+		<td><center><button class="colourButton blue" onclick="seqTextUpdate('blue button','Blue Button')"></button></center></td>
+		<td></td>
+	</tr>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:2vh;width:50px;" onclick="seqTextUpdate('rewind','Rewind')"><<</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:2vh;" onclick="seqTextUpdate('stop','Stop')">STOP</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:2vh;" onclick="seqTextUpdate('play','Play')">PLAY</button></center></td>
+		<td><center><button class="function" style="color:#ff4d4d; font-size:2vh;" onclick="seqTextUpdate('record','Record')">RECORD</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:2vh;width:50px;" onclick="seqTextUpdate('fast forward','Fast Forward')">>></button></center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><center><button class="function" style="color:white"; onclick="seqTextUpdate('help','Help')">HELP</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;font-size:20px"; onclick="seqTextUpdate('pause','Pause')">PAUSE</button></center></td>
+		<td><center><button class="function" style="color:white"; onclick="seqTextUpdate('text','Text')">TEXT</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onclick="seqTextUpdate('channel up','Channel Up')">CH+</button><center></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button class="function" style="color:white;" onclick="seqTextUpdate('box office','Box Office')">BOX OFFICE</button></td>
+		<td><center><button class="function" style="color:#5D84AF;font-size:40px;font-family:Sky Text, Helvetica, Arial, Sans-Serif;" onclick="seqTextUpdate('sky','Sky')">SKY</button></center></td>
+		<td><center><button class="function" style="color:white;" onclick="seqTextUpdate('interactive','Interactive')">INTERACTIVE</button></center></td>
+		<td><center><button class="function" style="color:#F0F9FF;margin:auto;font-size:12px;width:50px;" onclick="seqTextUpdate('channel down','Channel Down')">CH-</button><center></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="bottom" align="right"><button class="corner topleft" onclick="seqTextUpdate('tv guide','TV Guide')">TV GUIDE /<br>HOME</button></td>
+		<td align="center"><button class="direction UpNav" onclick="seqTextUpdate('cursor up','Up')"></button></td>
+		<td valign="bottom" align="left"><button class="corner topright" onclick="seqTextUpdate('services','Services')">SERVICES</button></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="middle" align="right"><button class="direction LeftNav" onclick="seqTextUpdate('cursor left','Left')"></button></td>
+		<td valign="middle" align="center"><button class="select" style="color:white;margin:auto;" onclick="seqTextUpdate('select','Select')">SELECT</button></td>
+		<td valign="middle" align="left"><button class="direction RightNav" onclick="seqTextUpdate('cursor right','Right')"></button></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="top" align="right"><button class="corner bottomleft" onclick="seqTextUpdate('information','Info')">i</button></td>
+		<td valign="top" align="center"><button class="direction DownNav" onclick="seqTextUpdate('cursor down','Down')"></button></td>
+		<td valign="top" align="left"><button class="corner bottomright" onclick="seqTextUpdate('backup','Back Up')">BACK UP</button></td>
+	</tr>
+</table>
+

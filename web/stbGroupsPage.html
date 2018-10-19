@@ -1,18 +1,9 @@
-<head>
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-</head>
-<div class="wrapLeft shaded">
+<div id="stbGroupsPageMain">
 	<div id="stbGroupsHeader">
-		<h1>Welcome to the STB Groups Page</h1>
-		<p>Setting up STB groups will allow you to group boxes in to families.<br>These can later be used to run specific commands, sequences, or events on a single or multiple groups</p>
+		<h1>STB Group Control</h1>
+		<h2>Setting up STB groups will allow you to group boxes in to families</h2>
+		<p>These can later be used to run specific commands, sequences, or events on a single or multiple groups</p>
 	</div>
-
-	<div id="stbGroupsPageAdd">
-		<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Create')">Click Here To Create A New STB Group</button>
-	</div>
-	<br><br>
-	<p style="font-size:20px;margin-top:10px;margin-bottom:0em;">The currently configured STB groups are shown below:</p>
-	<p style="font-size:17px;margin-top:0em;color:white;">(Hover the mouse cursor over the group name text to see which STBs are in that group)</p>
-	<div id="stbGroupsAvailable">
-	</div>
+	<button class="newSTBGroup create" onclick="perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Create')">Create A New STB Group</button>
+	<div id="stbGroupsAvailable"></div>
 </div>

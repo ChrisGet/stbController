@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use DBM::Deep;
+use JSON;
 use IO::Socket::INET;
 use Fcntl;
 use CGI;
@@ -22,7 +22,20 @@ if ($Bin) {
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 my $filedir = $maindir . '/files/';
 my $groupsfile = ($filedir . 'stbGroups.txt');
-my $stbdatafile = ($maindir . '/config/stbDatabase.db');
+my $confdir = ($maindir . '/config/');
+my $stbdatafile = $confdir . 'stbData.json';
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+        local $/ = undef;
+        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %stbdata = %{$decoded};
+}
 
 chomp(my $stbs = $query->param('stbs') || $ARGV[0] || '');
 
@@ -55,7 +68,6 @@ video(\$targetstring);
 sub video {
 	my ($stbs) = @_;
 	my @boxes = split(',', $$stbs);
-	tie my %stbdata, 'DBM::Deep', {file => $stbdatafile, locking => 1, autoflush => 1, num_txns => 100};
 	foreach my $box (@boxes) {
 		my %boxinfo = %{$stbdata{$box}};
 		warn "No video control data found for $box\n" and next if (!%boxinfo);

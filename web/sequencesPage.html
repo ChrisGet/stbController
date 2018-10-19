@@ -1,18 +1,9 @@
-<head>
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-</head>
-<div class="wrapLeft shaded">
-	<div id="sequencesHeader">
-		<h1>Welcome to the Command Sequences Page</h1>
-		<p>Command Sequences allow you send multiple button press commands to STBs at the click of a single button</p>
+<div id="sequencesPageMain">
+	<div id="sequencesPageHeader">
+		<h1>Command Sequence Control</h1>
+		<h2>Command Sequences allow you to send multiple button press commands to STBs at the click of a single button</h2>
+		<p>Any sequences you have already created will be shown to the right. Hover your mouse over the title to see at a glance what commands that sequences contains</p>
 	</div>
-
-	<div id="seqPageAdd">
-		<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Create');">Click Here To Create A New Command Sequence</button>
-	</div>
-	<br><br>
-	<p style="font-size:20px;margin-top:10px;margin-bottom:0em;">The currently available command sequences are shown below:</p>
-	<p style="font-size:17px;margin-top:0em;color:white;">(Hover the mouse cursor over the sequence name text to see its current commands)</p>
-	<div id="sequencesAvailable">
-	</div>
+	<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Create');">Create A New Command Sequence</button>
+	<div id="sequencesAvailable"></div>
 </div>

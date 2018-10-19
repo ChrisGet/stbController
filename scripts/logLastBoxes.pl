@@ -2,7 +2,6 @@
 use strict;
 
 use CGI;
-use DBM::Deep;
 
 my $query = CGI->new;
 print $query->header();

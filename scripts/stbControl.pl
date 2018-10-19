@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use DBM::Deep;
+use JSON;
 use Fcntl;
 use CGI;
 use Tie::File::AsHash;
@@ -27,11 +27,24 @@ if ($fullpath) {
 }
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 my $filedir = $maindir . '/files/';
+my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
-my $stbDataFile = ($maindir . '/config/stbDatabase.db');
 my $groupsfile = ($filedir . 'stbGroups.txt');
 my $seqfile = ($filedir . 'commandSequences.txt');
 my $pidfile = ($filedir . 'scheduler.pid');
+my $stbdatafile = $confdir . 'stbData.json';
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+        local $/ = undef;
+        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %stbdata = %{$decoded};
+}
 
 chomp(my $action = $ARGV[0] // $query->param('action') // '');
 chomp(my $command = $ARGV[1] // $query->param('command') // '');
@@ -91,7 +104,6 @@ if ($action =~ m/^Event$/i) {
 	my $seqcoms = '';
 	foreach my $seq (@sequences) {
 		$seq = uc($seq);
-		#warn "Sequence $seq was not found in the sequences file\n" and next if (!$seqcoms);
 		warn "Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
 		$seqcoms .= $seqs{$seq};
 		$seqcoms .= ',';
@@ -113,12 +125,10 @@ if ($logging) {
 sub control {
 	my ($commands,$boxes) = @_;	# All input args are scalar references at this point
 	my @stbs = split (',', $$boxes);			
-	tie my %stbData, 'DBM::Deep', {file => $stbDataFile, locking => 1, autoflush => 1, num_txns => 100};
-	
 	my %duskydata;
 
 	foreach my $stb (@stbs) {
-		my %boxdata = %{ $stbData{$stb}};		# Get the box details from the main %stbData hash 
+		my %boxdata = %{ $stbdata{$stb}};		# Get the box details from the main %stbData hash 
 		my $type = $boxdata{'Type'} || '';		# Get the 'Type' for the STB to know what kind of control it uses (Dusky, Bluetooth, or IR)
 		warn "Error: Could not find control protocol for $stb, has this STB had its control type configured?\n" and next if (!$type);
 
@@ -139,7 +149,6 @@ sub control {
 	                        } else {
         	                        $0 = "stbControl - $stb - $type";
                 	        }
-                		#sendDuskyComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Dusky/); # DISABLED. Dusky STBs now handled differently
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 				sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
 				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
@@ -164,8 +173,6 @@ sub control {
 			}
 		}
 	}
-
-	untie %stbData;
 } ## End of sub 'control'
 
 sub sendDuskyCommsNew {
@@ -363,12 +370,6 @@ sub sendVNCComms {
 
 	my $ip = $$boxdata{'VNCIP'};
 	my $port = '49160';
-	#my $port;
-	#if ($$boxdata{'Type'} =~ /ethan/i) {
-	#	$port = '5900';
-	#} else {
-	#	$port = '49160';
-	#}
 	my $string = "SKY 000.001\n";
 	my $keytype = '4';
 	my $keydown = '1';
@@ -458,5 +459,4 @@ sub sendVNCComms {
 		$last = eval $last;
 		return ($first,$last);
 	}
-
 }

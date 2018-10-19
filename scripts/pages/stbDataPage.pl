@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
-use strict;
 
+use strict;
 use CGI;
-use DBM::Deep;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -12,6 +12,10 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $confs = `ls -1 $confdir`;
+my $stbdatafile = $confdir . 'stbData.json';
+##### Create the JSON object for later use
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
 
 chomp(my $option = $query->param('option') || $ARGV[0] || '');
 chomp(my $box = $query->param('stb') || $ARGV[1] || '');
@@ -24,89 +28,101 @@ stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
 stbConfig(\$box,\'printIRTable') and exit if ($option =~ /printIR/i);
 
 sub stbSelect {
-	my $dbfile = $confdir . 'stbDatabase.db';
-	if (-e $dbfile) {
-		my $conffile = $confdir . 'stbGrid.conf';
-		if (! -e $conffile) {
-                        print "<div class=\"wrapLeft shaded\"><p style=\"color:red;font-size:20px;\">No STB Grid configuration found. Have you setup your STB Controller Grid yet?<\/p><\/div>";
-                        exit;
-                }
-        	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
-	        chomp(my @confdata = <FH>);
-	        close FH;
-	        my $confdata = join("\n", @confdata);
-	        my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
-	        my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+	my %stbdata;
+	my $conffile = $confdir . 'stbGrid.conf';
+	if (!-e $conffile) {
+		print '<div class="errorDiv"><h1>No STB Grid configuration found!<br><br>Select "Controller" from the top menu to get setup</h1></div>';
+		exit;
+	}
+	
+	if (-e $stbdatafile) {
+	        local $/ = undef;
+		open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+		my $data = <$fh>;
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
+	
+	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
+	chomp(my @confdata = <FH>);
+	close FH;
+	my $confdata = join("\n", @confdata);
+	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
+	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
 print <<HEAD;
 <div id="stbSelect">
-<p class="narrow">Click on a box below to manage its control, video, and DUT details configuration</p><br>
-<table align="center">
-<tr id="columns">
+	<div id="stbDataTextDiv">
+		<h1>STB Data Control</h1>
+		<h2>Click on a box to manage its control and video switching parameters</h2>
+	</div>
+	<div id="stbDataGridDiv">
+		<table align="center" style="border-collapse:collapse;float:left;">
+		<tr id="columns">
 HEAD
 
-		my $c = '1';
-		while ($c <= $columns) {
+	my $c = '1';
+	while ($c <= $columns) {
 print <<COL;
 <td scope="col" width="85px"><button class="gridButton">Column $c</button></td>
 COL
-			$c++;
+		$c++;
 	}
-
-			tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
 	
-			my $r = '1';            # Set the Row count to 1
-			my $stbno = '1';        # Set the STB count to 1
+	my $r = '1';            # Set the Row count to 1
+	my $stbno = '1';        # Set the STB count to 1
 
-			while ($r <= $rows) {
-				$c = '1';               # Reset the Column count to 1
-				print "<tr id=\"Row$r\">";
-				while ($c <= $columns) {
-					my $id = "STB$stbno";
-					my $name = "col$c"."stb$stbno";
-					my $buttontext;
-					if (exists $stbdata{$id}) {
-					} else {
-						%{$stbdata{$id}} = {};
-					}
+	while ($r <= $rows) {
+		$c = '1';               # Reset the Column count to 1
+		print "<tr id=\"Row$r\">";
+		while ($c <= $columns) {
+			my $id = "STB$stbno";
+			my $name = "col$c"."stb$stbno";
+			my $buttontext;
+			if (!exists $stbdata{$id}) {
+				%{$stbdata{$id}} = ();
+			}
 
-					if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
-						$buttontext = $stbdata{$id}{'Name'};
-					} else {
-						$buttontext = "-";
-					}
+			if ((exists $stbdata{$id}{'Name'}) and ($stbdata{$id}{'Name'} =~ /\S+/)) {
+				$buttontext = $stbdata{$id}{'Name'};
+			} else {
+				$buttontext = "-";
+			}
 
 print <<BOX;
 <td><button name="$name" id="$id" class="stbButton data" type="button" onClick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button></td>
 BOX
-	                		$stbno++;
-        	        		$c++;
-        			}
+	               	$stbno++;
+                	$c++;
+        	}
 
 print <<ROWEND;
 <th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
 ROWEND
 
-				$r++;
-			}
+		$r++;
+	}
 
 print <<LAST;
-</tr></table>
+		</tr>
+		</table>
+	</div>
 </div>
 LAST
 
-			print '</div>';         # End of the "wrapLeft" div
-
-			untie %stbdata;
-	} else {
-		print "<div class=\"wrapLeft shaded\"><p style=\"color:red;font-size:20px;\">No STB Database found. Have you setup your STB Controller Grid yet?<\/p><\/div>";
-	}
+	print '</div>';         # End of the "wrapLeft" div
 }
 
 sub stbConfig {
 	my ($stb,$option) = @_;
-	my $dbfile = $confdir . 'stbDatabase.db';
-	tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+	my %stbdata;
+	if (-e $stbdatafile) {
+        	local $/ = undef;
+                open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+		my $data = <$fh>;
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
 
 	my ($num) = $$stb =~ /STB(\d+)/i;
 	my $name;
@@ -121,13 +137,15 @@ sub stbConfig {
 
 	unless ($option) {
 print <<HEAD;
-<div class="wrapLeft shaded" style="position:relative;">
-<button class="seqListBtn Del" style="position:absolute;bottom:20px;right:10px;font-size:16px;" type="button" onclick="clearSTBDataForm()">Clear All STB Data</button>
-<form id="editSTBConfigForm" name="editSTBConfigForm">
-<h2 class="narrow">Below are the configuration options for "<font color="#009933">$titlename</font>", as well as its DUT details.<br>
-Any existing settings will be populated automatically.</h2>
-<p class="narrow" style="color:white;font-size:18px;">Enter values in the corresponding fields and hit "Submit" to update the STBs config.</p><br>
-<input type="hidden" id="stbname" name="stbname" value="$$stb">
+<div id="stbDataDivHolder">
+	<div id="stbDataDivHead">
+		<p>STB Data &#8594; Edit &#8594; <font color="green">"$titlename"</font></p>
+	</div>
+	<div id="stbDataDivBody">
+		<button class="stbDataBtn submit" onclick="editSTBData('$name')">Submit STB Data</button>
+		<button class="stbDataBtn clear" onclick="clearSTBDataForm()">Clear All STB Data</button>
+		<form id="editSTBConfigForm" name="editSTBConfigForm">
+			<input type="hidden" id="stbname" name="stbname" value="$$stb">
 HEAD
 	}
 
@@ -158,6 +176,8 @@ HEAD
 	my $irport = $stbdata{$$stb}{'IRPort'} || '';
 	my $irout = $stbdata{$$stb}{'IROutput'} || '';
 	my $networkip = $stbdata{$$stb}{'VNCIP'} || '';
+	my $btnclr = $stbdata{$$stb}{'ButtonColour'} || '';
+	my $btntextclr = $stbdata{$$stb}{'ButtonTextColour'} || '';
 	##### STB Control and Video Data
 
 	##### STB Information Data
@@ -177,34 +197,38 @@ HEAD
 	my @hdmiouts = ('01','02','Both');
 
 	#### STB Details Table stuff
-	my $serialtext = $query->textfield(-id=>'serial',-name=>'Serial',-size=>'15',-default=>"$serial",-maxlength=>11);
-	my $versiontext = $query->textfield(-id=>'version',-name=>'Version',-size=>'15',-default=>"$version",-maxlength=>6);
-	my $cardtext = $query->textfield(-id=>'card',-name=>'CardNo',-size=>'15',-default=>"$card",-maxlength=>9);
-	my $swvtext = $query->textfield(-id=>'software',-name=>'Software',-size=>'15',-default=>"$swv");
-	my $mactext = $query->textfield(-id=>'mac',-name=>'MAC',-size=>'15',-default=>"$mac",-maxlength=>17);
+	my $serialtext = $query->textfield(-id=>'serial',-name=>'Serial',-size=>'15',-default=>"$serial",-maxlength=>11,-class=>'stbDataTextField');
+	my $versiontext = $query->textfield(-id=>'version',-name=>'Version',-size=>'15',-default=>"$version",-maxlength=>6,-class=>'stbDataTextField');
+	my $cardtext = $query->textfield(-id=>'card',-name=>'CardNo',-size=>'15',-default=>"$card",-maxlength=>9,-class=>'stbDataTextField');
+	my $swvtext = $query->textfield(-id=>'software',-name=>'Software',-size=>'15',-default=>"$swv",-class=>'stbDataTextField');
+	my $mactext = $query->textfield(-id=>'mac',-name=>'MAC',-size=>'15',-default=>"$mac",-maxlength=>17,-class=>'stbDataTextField');
 	#### STB Details Table stuff	
 
-	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9);
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (Ethan)','Network (Sky+)','Network (Ethan)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)");
-	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15);
-	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5);
-	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1");
-	my $hdmioutput1text = $query->popup_menu(-id=>'hdmioutput1',-name=>'HDMIOutput1',-values=>[@hdmiouts],-default=>"$hdmioutput1");
+	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9,-class=>'stbDataTextField');
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
+	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15,-class=>'stbDataTextField');
+	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5,-class=>'stbDataTextField');
+	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1",-class=>'stbDataSelect');
+	my $hdmioutput1text = $query->popup_menu(-id=>'hdmioutput1',-name=>'HDMIOutput1',-values=>[@hdmiouts],-default=>"$hdmioutput1",-class=>'stbDataSelect');
 
-	my $hdmiip2text = $query->textfield(-id=>'hdmiip2',-name=>'HDMIIP2',-size=>'15',-default=>"$hdmiip2",-maxlength=>15);
-	my $hdmiport2text = $query->textfield(-id=>'hdmiport2',-name=>'HDMIPort2',-size=>'10',-default=>"$hdmiport2",-maxlength=>5);
-	my $hdmiinput2text = $query->popup_menu(-id=>'hdmiinput2',-name=>'HDMIInput2',-values=>[@hdmiins],-default=>"$hdmiinput2");
-	my $hdmioutput2text = $query->popup_menu(-id=>'hdmioutput2',-name=>'HDMIOutput2',-values=>[@hdmiouts],-default=>"$hdmioutput2");
+	my $hdmiip2text = $query->textfield(-id=>'hdmiip2',-name=>'HDMIIP2',-size=>'15',-default=>"$hdmiip2",-maxlength=>15,-class=>'stbDataTextField');
+	my $hdmiport2text = $query->textfield(-id=>'hdmiport2',-name=>'HDMIPort2',-size=>'10',-default=>"$hdmiport2",-maxlength=>5,-class=>'stbDataTextField');
+	my $hdmiinput2text = $query->popup_menu(-id=>'hdmiinput2',-name=>'HDMIInput2',-values=>[@hdmiins],-default=>"$hdmiinput2",-class=>'stbDataSelect');
+	my $hdmioutput2text = $query->popup_menu(-id=>'hdmioutput2',-name=>'HDMIOutput2',-values=>[@hdmiouts],-default=>"$hdmioutput2",-class=>'stbDataSelect');
 
-	my $hdmiip3text = $query->textfield(-id=>'hdmiip3',-name=>'HDMIIP3',-size=>'15',-default=>"$hdmiip3",-maxlength=>15);
-	my $hdmiport3text = $query->textfield(-id=>'hdmiport3',-name=>'HDMIPort3',-size=>'10',-default=>"$hdmiport3",-maxlength=>5);
-	my $hdmiinput3text = $query->popup_menu(-id=>'hdmiinput3',-name=>'HDMIInput3',-values=>[@hdmiins],-default=>"$hdmiinput3");
-	my $hdmioutput3text = $query->popup_menu(-id=>'hdmioutput3',-name=>'HDMIOutput3',-values=>[@hdmiouts],-default=>"$hdmioutput3");
+	my $hdmiip3text = $query->textfield(-id=>'hdmiip3',-name=>'HDMIIP3',-size=>'15',-default=>"$hdmiip3",-maxlength=>15,-class=>'stbDataTextField');
+	my $hdmiport3text = $query->textfield(-id=>'hdmiport3',-name=>'HDMIPort3',-size=>'10',-default=>"$hdmiport3",-maxlength=>5,-class=>'stbDataTextField');
+	my $hdmiinput3text = $query->popup_menu(-id=>'hdmiinput3',-name=>'HDMIInput3',-values=>[@hdmiins],-default=>"$hdmiinput3",-class=>'stbDataSelect');
+	my $hdmioutput3text = $query->popup_menu(-id=>'hdmioutput3',-name=>'HDMIOutput3',-values=>[@hdmiouts],-default=>"$hdmioutput3",-class=>'stbDataSelect');
 
-	my $sdiptext = $query->textfield(-id=>'sdip',-name=>'SDIP',-size=>'15',-default=>"$sdip",-maxlength=>15);
-	my $sdporttext = $query->textfield(-id=>'sdport',-name=>'SDPort',-size=>'10',-default=>"$sdport",-maxlength=>5);
-	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'12'],-default=>"$sdinput");
-	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput");
+	my $sdiptext = $query->textfield(-id=>'sdip',-name=>'SDIP',-size=>'15',-default=>"$sdip",-maxlength=>15,-class=>'stbDataTextField');
+	my $sdporttext = $query->textfield(-id=>'sdport',-name=>'SDPort',-size=>'10',-default=>"$sdport",-maxlength=>5,-class=>'stbDataTextField');
+	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'12'],-default=>"$sdinput",-class=>'stbDataSelect');
+	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput",-class=>'stbDataSelect');
+
+	my $btnclrtext = $query->textfield(-id=>'buttoncolour',-name=>'ButtonColour',-size=>'10',-default=>"$btnclr",-maxlength=>15,-class=>'stbDataTextField centered');
+	my $btntextclrtext = $query->textfield(-id=>'buttontextcolour',-name=>'ButtonTextColour',-size=>'10',-default=>"$btntextclr",-maxlength=>15,-class=>'stbDataTextField centered');
+
 
 	# If $option is defined, just print the control table it refers to and then exit. This
 	# supports the 'stbTypeChoice' function in stbController.js which changes the STB control
@@ -229,17 +253,25 @@ HEAD
 	}
 	# End of $option actions
 
-	print "<div class=\"wrapRight\">";
+	print "<div class=\"stbDataWrapRight\">";
 
 print <<DUTTABLE;
 <table class="stbDataFormTable DUT">
-<th colspan="2">$font STB DUT Details$fontend</th>
-<tr><td>$font Serial Number:$fontend</td><td>$serialtext</td></tr>
-<tr><td>$font Version Number:$fontend</td><td>$versiontext</td></tr>
-<tr><td>$font Card Number:$fontend</td><td>$cardtext</td></tr>
-<tr><td>$font MAC Address:$fontend</td><td>$mactext</td></tr>
-<tr><td>$font Current Software:$fontend</td><td>$swvtext</td></tr>
+<th colspan="2" style="font-size:1.8vh;">STB DUT Details</th>
+<tr><td style="font-size:1.4vh;">Serial Number:</td><td>$serialtext</td></tr>
+<tr><td style="font-size:1.4vh;">Version Number:</td><td>$versiontext</td></tr>
+<tr><td style="font-size:1.4vh;">Card Number:</td><td>$cardtext</td></tr>
+<tr><td style="font-size:1.4vh;">MAC Address:</td><td>$mactext</td></tr>
+<tr><td style="font-size:1.4vh;">Current Software:</td><td>$swvtext</td></tr>
 </table>
+<div class="stbDataBtnClrDiv">
+	<h2>Custom Grid Button Colour</h2>
+	<p>You can specify a custom background and text colour for this STB on the control grid. Enter either the colour name, hex code, or RGB code for the colour you want. Take a look <a target="_blank" href="https://www.w3schools.com/colors/colors_picker.asp">HERE</a> to find your colour codes</p>
+	<div class="bottomHalf">
+		<p>Background:</p>$btnclrtext
+		<p>Text:</p>$btntextclrtext
+	</div>
+</div>
 DUTTABLE
 
 print <<DATARIGHT;
@@ -260,95 +292,97 @@ DATARIGHT
 	print '</div>';	# End of 'wrapRight' div
 
 print <<DATA;
-<div class="wrapLeft">
+<div class="stbDataWrapLeft">
 <table class="stbDataFormTable First">
-<tr><td>STB Name:</td><td>STB Control Type:</td></tr>
-<tr><td>$nametext</td><td>$typechoice</td></tr>
-</table><br>
+<tr><td style="font-size:1.7vh;font-weight:normal;">STB Name</td><td style="font-size:1.7vh;font-weight:normal;text-align:right;">STB Control Type</td></tr>
+<tr><td>$nametext</td><td style="text-align:right;">$typechoice</td></tr>
+</table>
 <table class="stbDataFormTable">
-<th colspan="4">HDMI Switch 1:</th>
-<tr><td align="center">$font2 IP</td><td align="center">$font2 Control Port</td><td align="center">$font2 Input</td><td align="center">$font2 Output</td></tr>
+<th colspan="4"><b>HDMI Switch 1</b></th>
+<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
 <tr><td>$hdmiip1text</td><td>$hdmiport1text</td><td>$hdmiinput1text</td><td>$hdmioutput1text</td></tr>
 </table>
 <table class="stbDataFormTable">
-<th colspan="4"><b>$font HDMI Switch 2:$fontend</b></th>
-<tr><td align="center">$font2 IP</td><td align="center">$font2 Control Port</td><td align="center">$font2 Input</td><td align="center">$font2 Output</td></tr>
+<th colspan="4"><b>HDMI Switch 2</b></th>
+<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
 <tr><td>$hdmiip2text</td><td>$hdmiport2text</td><td>$hdmiinput2text</td><td>$hdmioutput2text</td></tr>
 </table>
 <table class="stbDataFormTable">
-<th colspan="4"><b>$font HDMI Switch 3:$fontend</b></th>
-<tr><td align="center">$font2 IP</td><td align="center">$font2 Control Port</td><td align="center">$font2 Input</td><td align="center">$font2 Output</td></tr>
+<th colspan="4"><b>HDMI Switch 3</b></th>
+<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
 <tr><td>$hdmiip3text</td><td>$hdmiport3text</td><td>$hdmiinput3text</td><td>$hdmioutput3text</td></tr>
 </table>
-<br>
 <table class="stbDataFormTable">
-<th colspan="4"><b>$font SD Video Switch:$fontend</b></th>
-<tr><td align="center">$font2 IP</td><td align="center">$font2 Control Port</td><td align="center">$font2 Input</td><td align="center">$font2 Output</td></tr>
+<th colspan="4"><b>SD Video Switch</b></th>
+<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
 <tr><td>$sdiptext</td><td>$sdporttext</td><td>$sdinputtext</td><td>$sdoutputtext</td></tr>
-</table><br>
+</table>
 DATA
 
 print <<LASTBIT;
-<button class="menuButton" style="margin-bottom:8px;" type="button" onclick="editSTBData('$name')">Submit STB Data</button>
-</div>
-</form>
+			</div>
+		</form>
+	</div>
 </div>
 LASTBIT
 }
 
 sub printDuskyTable {
 	my ($duskymoxaip,$duskymoxaport,$duskyport) = @_;
-	my $duskymoxaiptext = $query->textfield(-id=>'duskymoxaip',-name=>'MoxaIP',-size=>'15',-default=>$duskymoxaip,-maxlength=>15);
-	my $duskymoxaporttext = $query->textfield(-id=>'duskymoxaport',-name=>'MoxaPort',-size=>'15',-default=>$duskymoxaport,-maxlength=>5);
-	my $duskyporttext = $query->popup_menu(-id=>'duskyport',-name=>'DuskyPort',-values=>['01'..'15'],-default=>$duskyport);
+	my $duskymoxaiptext = $query->textfield(-id=>'duskymoxaip',-name=>'MoxaIP',-size=>'15',-default=>$duskymoxaip,-maxlength=>15,-class=>'stbDataTextField right');
+	my $duskymoxaporttext = $query->textfield(-id=>'duskymoxaport',-name=>'MoxaPort',-size=>'15',-default=>$duskymoxaport,-maxlength=>5,-class=>'stbDataTextField right');
+	my $duskyporttext = $query->popup_menu(-id=>'duskyport',-name=>'DuskyPort',-values=>['01'..'15'],-default=>$duskyport,-class=>'stbDataSelect');
 
 print <<DUSKY;
-<p class="narrow" style="font-size:20px;">Dusky Control:</p>
-<table class="stbDataFormTable">
+<p class="narrow" style="font-size:1.8vh;">Dusky Control</p>
+<table class="stbDataFormTable ctrltype">
 <tr><td>Dusky Moxa IP:</td><td>$duskymoxaiptext</td></tr>
 <tr><td>Dusky Moxa Port:</td><td>$duskymoxaporttext</td></tr>
 <tr><td>Dusky Port:</td><td>$duskyporttext</td></tr>
-</table><br>
+</table>
 DUSKY
 }
 
 sub printBluetoothTable {
 	my ($btcontip,$btcontport) = @_;
-	my $btcontiptext = $query->textfield(-id=>'btcontip',-name=>'BTContIP',-size=>'15',-default=>$btcontip,-maxlength=>15);
-	my $btcontporttext = $query->popup_menu(-id=>'btcontport',-name=>'BTContPort',-values=>['01'..'16'],-default=>$btcontport);
+	my $btcontiptext = $query->textfield(-id=>'btcontip',-name=>'BTContIP',-size=>'15',-default=>$btcontip,-maxlength=>15,-class=>'stbDataTextField right');
+	my $btcontporttext = $query->popup_menu(-id=>'btcontport',-name=>'BTContPort',-values=>['01'..'16'],-default=>$btcontport,-class=>'stbDataSelect');
 
 print <<BLUETOOTH;
-<p class="narrow" style="font-size:20px;">Bluetooth Control:</p>
-<table class="stbDataFormTable">
+<p class="narrow" style="font-size:1.8vh;">Bluetooth Control</p>
+<table class="stbDataFormTable ctrltype">
 <tr><td>BT Server IP:</td><td>$btcontiptext</td></tr>
 <tr><td>BT Server USB Port:</td><td>$btcontporttext</td></tr>
-</table><br>
+</table>
 BLUETOOTH
 }
 
 sub printNetworkTable {
 	my ($ip) = @_;
-	my $iptext = $query->textfield(-id=>'netip',-name=>'VNCIP',-size=>'15',-default=>$ip,-maxlength=>15);
+	my $iptext = $query->textfield(-id=>'netip',-name=>'VNCIP',-size=>'15',-default=>$ip,-maxlength=>15,-class=>'stbDataTextField');
 
 print <<NETWORK;
-<p class="narrow" style="font-size:20px;">Network Control:</p>
-<table class="stbDataFormTable">
-<tr><td>STB IP Address:</td><td>$iptext</td></tr>
-</table><br>
+<p class="narrow" style="font-size:1.8vh;">Network Control</p>
+<table class="stbDataFormTable ctrltype">
+<tr><td style="text-align:right;font-size:1.4vh;">STB IP Address:</td><td style="float:right;">$iptext</td></tr>
+</table>
+<div id="stbDataNoteDiv">
+	<p>For network control to work, the computer hosting this control system needs to have access to the STBs network</p>
+</div>
 NETWORK
 }
 
 sub printIRTable {
 	my ($irip,$irport,$irout) = @_;
-	my $iriptext = $query->textfield(-id=>'irip',-name=>'IRIP',-size=>'15',-default=>$irip,-maxlength=>15);
-	my $irporttext = $query->textfield(-id=>'irport',-name=>'IRPort',-size=>'15',-default=>$irport);
-	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IROutput',-values=>['01'..'05'],-default=>$irout);
+	my $iriptext = $query->textfield(-id=>'irip',-name=>'IRIP',-size=>'15',-default=>$irip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irporttext = $query->textfield(-id=>'irport',-name=>'IRPort',-size=>'15',-default=>$irport,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IROutput',-values=>['01'..'05'],-default=>$irout,-class=>'stbDataSelect');
 print <<IR;
-<p class="narrow" style="font-size:20px;">IR Control:</p>
-<table class="stbDataFormTable">
+<p class="narrow" style="font-size:1.8vh;">IR Control</p>
+<table class="stbDataFormTable ctrltype">
 <tr><td>IR Blaster IP:</td><td>$iriptext</td></tr>
 <tr><td>IR Blaster Port:</td><td>$irporttext</td></tr>
 <tr><td>IR Blaster Output:</td><td>$irouttext</td></tr>
-</table><br>
+</table>
 IR
 }

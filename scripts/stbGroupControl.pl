@@ -19,6 +19,7 @@ chomp(my $maindir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $filedir = ($maindir . '/files/');
+my $confdir = ($maindir . '/config/');
 my $groupfile = ($filedir . 'stbGroups.txt');
 tie my %groups, 'Tie::File::AsHash', $groupfile, split => ':' or die "Problem tying \%groups to $groupfile: $!\n"; 
 
@@ -58,9 +59,20 @@ sub showGroups {
         	$$grp =~ s/\s+$//g;     # Remove trailing whitespace
         	$$grp =~ s/\s+/ /g;     # Find all whitespace within the group name and replace it with a single space
 		if (exists $groups{$$grp}) {
-			use DBM::Deep;
-			my $stbdatafile = $maindir . '/config/stbDatabase.db';
-			tie my %stbdata, 'DBM::Deep', {file => $stbdatafile, locking => 1, autoflush => 1, num_txns => 100};
+			use JSON;
+			my $stbdatafile = $confdir . 'stbData.json';
+			my $json = JSON->new->allow_nonref;
+			$json = $json->canonical('1');
+			
+			my %stbdata;
+			if (-e $stbdatafile) {
+        			local $/ = undef;
+        			open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        			my $data = <$fh>;
+        			my $decoded = $json->decode($data);
+        			%stbdata = %{$decoded};
+			}
+
 			##### This bit of formatting allows the front end GUI to handle the data
 			my @members = split(',', $groups{$$grp});
 			my @resforgui;		# Response for GUI (res for gui) 
@@ -73,7 +85,6 @@ sub showGroups {
 			}
 			my $string = join(',',@resforgui);
 			print $string;
-			untie %stbdata;
 		} else {
 			print "\"$$grp\" not found";
 		} 

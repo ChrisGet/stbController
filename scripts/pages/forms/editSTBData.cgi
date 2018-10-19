@@ -1,10 +1,10 @@
 #!/usr/bin/perl -w
-use strict;
 
-use DBM::Deep;
+use strict;
 use CGI;
 use CGI::Carp qw ( fatalsToBrowser );
 use File::Basename;
+use JSON;
 
 my $query = new CGI;
 
@@ -14,8 +14,18 @@ my $stbname = $query->param('stbname');
 
 chomp(my $maindir = `cat homeDir.txt` || '');
 my $confdir = $maindir . 'config/';
-my $dbfile = $confdir . 'stbDatabase.db';
-tie my %stbdata, 'DBM::Deep', {file => $dbfile,   locking => 1, autoflush => 1, num_txns => 100};
+my $stbdatafile = $confdir . 'stbData.json';
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %stbdata;
+if (-e $stbdatafile) {
+	local $/ = undef;
+	open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%stbdata = %{$decoded};
+}
 
 foreach my $param (@params) {
 	next if ($param =~ /stbname/);
@@ -31,4 +41,10 @@ foreach my $param (@params) {
 	}
 }
 
-untie %stbdata;
+my $encoded = $json->pretty->encode(\%stbdata);
+if (open my $newfh, '+>', $stbdatafile) {
+	print $newfh $encoded;
+	close $newfh;
+} else {
+	die "ERROR: Unable to open $stbdatafile: $!\n";
+}

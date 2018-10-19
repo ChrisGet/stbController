@@ -14,42 +14,46 @@ window.onload = function () {	// Run these functions when the page first loads
                                 // Hover over code
                                 var title = $(this).attr('value');
                                 $('<p class="tooltip"></p>').text(title).appendTo('body').fadeIn('fast');
+                        	//setTimeout(function() {
+                        	//	$('.tooltip').remove();
+                        	//},5000);
                         },
                         mouseleave: function() {
+                                // Hover out code
+                                $('.tooltip').remove();
+                        },
+                        click: function() {
                                 // Hover out code
                                 $('.tooltip').remove();
                         },
                         mousemove: function(e) {
                                 var mousex = e.pageX + 20; //Get X coordinates
                                 var mousey = e.pageY + 10; //Get Y coordinates
-                                $('.tooltip').css({ top: mousey, left: mousex })
+                                $('.tooltip').css({ top: mousey, left: mousex, 'z-index': 10})
                         }
                 }, '.masterTooltip');
-        });
+	});
+	//Bind the function for the remote control selection
+	$(document).on('change', '#remoteSelector', function() {
+		remoteChange(this);
+	});
+	
 }
 
 window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
 	logLastBoxes();
 }
 
-//$.ajaxSetup({ cache: false });
-
 var stbHash = {};	// Create the GLOBAL stbHash object (hash) to handle selected STBs from the grid
 var lastRow;		// Create the GLOBAL lastRow variable (scalar) to record last selected row
 var lastRowHL;		// Create the GLOBAL lastRowHL variable (scalar) to record last highlighted row
 
 function dateTime() {	// This function handles the updating of the real time server clock on the main page
-	var xmlhttp;
-	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	} else {// code for IE6, IE5
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-        xmlhttp.open("GET","cgi-bin/scripts/showTime.pl", true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		        var returned = xmlhttp.responseText;
-			var bits = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/showTime.pl',
+		success : function(result) {
+			var bits = result.split(',');
 		        var date = new Date();
 			var dayname = bits[0];
 		        var dayno = bits[1];
@@ -68,7 +72,7 @@ function dateTime() {	// This function handles the updating of the real time ser
 		        date.setSeconds(secs);
 
 		        var updateTime = setInterval(function() {	// Var updateTime holds the ID for this interval function. This can be cleared later
-		                var div = document.getElementById('dateTimeDiv');
+				var div = $('#dateTimeDiv');
 		                if (div) {
 		                        secs++;
         		                if (secs == 60) {
@@ -89,33 +93,24 @@ function dateTime() {	// This function handles the updating of the real time ser
                 		        var datebit = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3];
                         		var timebit = parts[4];
 	                        	var datestring = timebit + ' - ' + datebit;
-	        	                $('#dateTimeDiv').html(datestring);	// Update the html in div 'dateTimeDiv' with the new date info
+	        	                $('#dateTimeDiv').html('<p>' + datestring + '</p>');	// Update the html in div 'dateTimeDiv' with the new date info
         	        	}
 	        	},1000);
 		}
-	}
-        xmlhttp.send(null);
-
+	});
 }
 // ############### End of dateTime function
 
 function announcements() {	// This function handles the server announcements section on the main page. It is only used for scheduled events info
-	var div = document.getElementById('messages');
+	var div = $('#messages');
 	if (div) {
-		var xmlhttp;
-		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-			xmlhttp=new XMLHttpRequest();
-		} else {// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-	        xmlhttp.open("GET","cgi-bin/scripts/messages.pl", true);
-		xmlhttp.onreadystatechange=function(){
-	                if (xmlhttp.readyState==4) {
-			        var returned = xmlhttp.responseText;
-				$('#messages').html(returned);
+		$.ajax({
+			type : 'GET',
+			url : 'cgi-bin/scripts/messages.pl',
+			success : function(result) {
+				div.html('<p>' + result + '</p>');
 			}
-		}
-	        xmlhttp.send();
+		});
 	}
 	return;
 }
@@ -123,40 +118,31 @@ function announcements() {	// This function handles the server announcements sec
 
 function dynamicTitle($option) {	// This function handles the editing of the Title of the main page
 	if ($option == 'get') {
-		var xmlhttp;
-		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-  			xmlhttp=new XMLHttpRequest();
-  		} else {// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-
         	var date = Date();
-	        xmlhttp.open("GET","web/dynamicTitle.txt?"+date, true);
-		xmlhttp.onreadystatechange=function(){
-   	        	if (xmlhttp.readyState==4) {
-				var title = xmlhttp.responseText;
-
-				if (!title) {
+		$.ajax({
+			type : 'GET',
+			url : 'web/dynamicTitle.txt?' + date,
+			success : function(result) {
+				if (!result) {
 					$('#dynamicTitle').text('Click here to change the default title!');
 				} else {
-					var blankregex = /\S+/;
-                        		var notblank = blankregex.exec(title);
-					if (!notblank) {
+					if (!result.match(/\S+/)) {
 						$('#dynamicTitle').text('Click here to change the default title!');
 					} else {
-						if (title.match(/404 not found/i)) {
+						if (result.match(/404 not found/i)) {
 							$('#dynamicTitle').text('Click here to change the default title!');
 						} else {
-							$('#dynamicTitle').text(title);
+							$('#dynamicTitle').text(result);
 						}
 					}
 				}
+			},
+			error : function() {
+				$('#dynamicTitle').text('Click here to change the default title!');
+	
 			}
-		}	
-	        xmlhttp.send(null);
-	}
-
-	if ($option == 'set') {
+		});
+	} else if ($option == 'set') {
 		var current = $('#dynamicTitle').text();
 		var newtitle = prompt("Please enter your new page title",current);
 		if (!newtitle) {
@@ -165,19 +151,29 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 			if (newtitle == current) {
 				return;
 			}
-			var blankregex = /\S+/;
-			var notblank = blankregex.exec(newtitle);
-			if (!notblank) {
+			if (!newtitle.match(/\S+/)) {
 				var conf = confirm('Your new page title is blank. If you select ok, the page title will be returned to the default. Do you want to proceed?');
 				if (conf == false) {
 					return;
 				}
 			}
-			alert('Your page title has been updated. The page will now be reloaded.');
-			perlCall('','scripts/editPageTitle.pl','title',newtitle);
-			setTimeout(function(){location.reload()},1000);
+			$.ajax({
+				type : 'POST',
+				url : 'cgi-bin/scripts/editPageTitle.pl',
+				data : {
+					'title' : newtitle,
+				},
+				success : function(result) {
+					alert('Title updated successfully!');
+					dynamicTitle('get');
+				},
+				error : function(xhr) {
+					alert('The request failed:' + xhr.statusText);
+				}
+			});
 		}
 	}
+	return;
 }
 // ############### End of dynamicTitle function
 
@@ -211,22 +207,23 @@ function stbControl($action,$commands) {	// This function handles the control of
 function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4) {	// This function allows running of any script from within this javascript
 	var regex = /\S+/;
 	var elemmatch = regex.exec($element);
-	var xmlhttp;
-	if (window.XMLHttpRequest){
-		xmlhttp=new XMLHttpRequest();
-	} else {
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
 
-	xmlhttp.open("GET","cgi-bin/" + $script +"?"+$param1 + "=" + $value1 + "&"+$param2+"="+$value2 + "&"+$param3+"="+$value3 + "&"+$param4+"="+$value4,true);
-	xmlhttp.onreadystatechange=function(){
-		if (xmlhttp.readyState==4) {
-			if (elemmatch) {	// If a html element has been defined in $element, put the script output in to that element
-				document.getElementById($element).innerHTML=xmlhttp.responseText;
+	var dataObj = {};
+	if ($param1) {dataObj[$param1] = $value1}
+	if ($param2) {dataObj[$param2] = $value2}
+	if ($param3) {dataObj[$param3] = $value3}
+	if ($param4) {dataObj[$param4] = $value4}
+
+	$.ajax({
+		type: 'GET',
+		url: 'cgi-bin/' + $script,
+		data: dataObj,
+		success : function(result) {
+			if (elemmatch) {
+				$('#' + $element).html(result);
 			}
 		}
-	}
-	xmlhttp.send(null);
+	});
 
 	// Reset the sequenceIndex to 1
 	sequenceIndex = '1';
@@ -234,20 +231,16 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 // ############### End of perlCall function
 
 function pageCall ($element, $page) {	// This function allows calling of html pages
-	var xmlhttp;
-        if (window.XMLHttpRequest){                                                
-                xmlhttp=new XMLHttpRequest();
-        } else {                    
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
-        }
-
-	xmlhttp.open("GET",$page);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById($element).innerHTML=xmlhttp.responseText;
-                }
-        }
-	xmlhttp.send();
+	$.ajax({
+		type: 'GET',
+		url: $page,
+		success : function(result) {
+			$('#' + $element).html(result);
+		},
+		error : function() {
+			alert('Oops an error occurred when accessing that page. If the problem persists, contact you system administrator for assistance');
+		}
+	});
 }
 // ############### End of pageCall function
 
@@ -307,7 +300,6 @@ function validate() {	// This function validates and submits the data given when
 	alert('Congratulations! Your new grid has been created');
 	document.getElementById('dynamicPage').innerHTML = '<p style="font-size:30px;">Loading The New Grid, Please Wait ...</p>';
 	setTimeout(function(){perlCall('dynamicPage','scripts/pages/stbGrid.pl')},3000);
-	//return false;
 }
 // ############### End of validate function
 
@@ -415,6 +407,9 @@ function deselect() {	// This function handles the deselect button on the STB gr
 // ############### End of deselect function
 
 function colorToggle($id,$override,$highlight){	// This function handles the STB grid manipulation. It handles which STBs are selected for control, which should be highlighted, and which need video switching to be done
+	if (!$id) {
+		return;
+	}
 	var item = document.getElementById($id);
 
 	// Return if item is not defined
@@ -449,31 +444,34 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 		return;
 	}
 
-	// The code below will check to see if the user has selected more than one STB in the same column. 
-	// The last clicked cell in a column will be selected while the rest will be deselected
-	var naym = item.name;
-	var myColMatch = /col(\d+)s(tb)/;
-	var match = myColMatch.exec(naym);
-	var colNo = match[0];
-	for (var key in stbHash) {
-		if (key == $id) continue;		// If the key and $id are the same, skip to the next iteration
-		var thing = document.getElementById(key);
-		var matchName = thing.name;
-		if(matchName.indexOf(colNo) == 0){
-			document.getElementById(key).className = 'stbButton deselect';
-	               	delete stbHash[key];
+	var restrict = $('#restrictSTBGridRows').val();
+	if (restrict) {
+		// The code below will check to see if the user has selected more than one STB in the same column. 
+		// The last clicked cell in a column will be selected while the rest will be deselected
+		var naym = item.name;
+		var myColMatch = /col(\d+)s(tb)/;
+		var match = myColMatch.exec(naym);
+		var colNo = match[0];
+		for (var key in stbHash) {
+			if (key == $id) continue;		// If the key and $id are the same, skip to the next iteration
+			var thing = document.getElementById(key);
+			var matchName = thing.name;
+			if(matchName.indexOf(colNo) == 0){
+				document.getElementById(key).className = 'stbButton deselect';
+	        		delete stbHash[key];
+			}
+		}
+		
+		for (var key in highlightedSTBs) {
+			var thing = document.getElementById(key);
+        		var matchName = thing.name;
+        		if(matchName.indexOf(colNo) == 0){
+                		document.getElementById(key).className = 'stbButton deselect';
+                		delete highlightedSTBs[key];
+        		}
 		}
 	}
-
-	for (var key in highlightedSTBs) {
-		var thing = document.getElementById(key);
-                var matchName = thing.name;
-                if(matchName.indexOf(colNo) == 0){
-                        document.getElementById(key).className = 'stbButton deselect';
-                        delete highlightedSTBs[key];
-                }
-	}
-
+	
 	if (item.className == 'stbButton deselect') {
 		item.className = 'stbButton selected';
 		stbHash[$id] = 1;
@@ -502,19 +500,11 @@ function rows($row) {	// This function handles the row selection buttons on the 
 		lastRow = $row;
 		lastRowHL = '';
 		override = 'selected';
-		for (var stb in stbHash) {
-                	document.getElementById(stb).className = 'stbButton deselect';
-              	}
-        	stbHash = {};
 	} else {
 		if(lastRow == $row) {
 			override = 'highlighted';
 			lastRowHL = $row;
 			lastRow = '';
-			for (var stb in stbHash) {
-                		document.getElementById(stb).className = 'stbButton deselect';
-              		}
-        		stbHash = {};
 		} else {
 			lastRow = $row;
 			lastRowHL = '';
@@ -523,15 +513,17 @@ function rows($row) {	// This function handles the row selection buttons on the 
 				document.getElementById(stb).className = 'stbButton deselect';
 			}
 			highlightedSTBs = {};
-
-			for (var stb in stbHash) {
-				document.getElementById(stb).className = 'stbButton deselect';
-			}
-			stbHash = {};
-			
 		}
 	}
 
+	var restrict = $('#restrictSTBGridRows').val();
+	if (restrict) {
+		for (var stb in stbHash) {
+		      document.getElementById(stb).className = 'stbButton deselect';
+		}
+		stbHash = {};
+	}
+	
 	for(var i=0;i<count;i++) {	// While 'i' is less than the number of cells
 		var cell = row.getElementsByTagName("button")[i];	// Locate the button in that cell and save it in 'cell'
 		if (!cell) {
@@ -549,6 +541,12 @@ function rows($row) {	// This function handles the row selection buttons on the 
 // ############### End of rows function
 
 function arrowDir($opt) {	// This function handles the Row Up and Down buttons on the STB controller
+	var restrict = $('#restrictSTBGridRows').val();
+	if (!restrict) {
+		alert('This feature is disabled while the "STB Grid Row Selection" option is disabled in the settings.');
+		return;
+	}
+
 	var lastRow2;
 	if (lastRow) {
 		lastRow2 = lastRow;
@@ -591,7 +589,16 @@ var sequenceIndex = '1';	// Create the GLOBAL sequenceIndex variable (scalar) an
 
 function seqTextUpdate($id,$text,$area) {	// This function handles the first part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
 	if (!$area) {
-		$area = '';
+		$area = 'sequenceArea';
+	}
+	
+	if ($id.match(/^STB\d+$/)) {
+		var exists = $('#' + $area).find("[name='" + $id + "']")[0];
+		if (exists) {
+			var text = $(exists).attr("value");
+			alert('This STB is already selected');
+			return;
+		}
 	}
 
 	var btn = document.createElement("input");
@@ -682,7 +689,14 @@ function removeFromSeq($this,$area) {	// This function handles removing specific
 // ############### End of removeFromSeq function
 
 function addSeqTO() {	// This function handles adding of Timeouts to the dynamic area on the Sequences creation/editing pages
-	var timeout = document.getElementById('timeoutList').value;
+	var timeout = document.getElementById('seqTimeoutText').value;
+	if (!timeout) {
+		alert('Please enter a timeout value in seconds');
+		return;
+	} else if (timeout.match(/[^0-9]/)) {
+		alert('Timeout must be a numeric value');
+		return;
+	}
 	var id = 't' + timeout;
 	var text = 'Timeout (' + timeout + 's)';
 	seqTextUpdate(id,text);
@@ -735,53 +749,58 @@ function seqValidate($origname) {	// This function handles validation and submit
 					var string = commands.join(',');
 					var text = '';
 					if ($origname != name) {
-						var xmlhttp;
-						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-							xmlhttp=new XMLHttpRequest();
-						} else {// code for IE6, IE5
-							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-						}	
-						xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
-						xmlhttp.send(null);
-						var returned = xmlhttp.responseText;
-						if (returned == 'Found') {
-							var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
-							if (c == false) {
-								$('#sequenceName').val($origname);
-								return;
+						$.ajax({
+							type : 'GET',
+							url : 'cgi-bin/scripts/sequenceControl.pl',
+							data : {
+								'action' : 'Search',
+								'sequence' : name,
+							},
+							success : function(result) {
+								if (result == 'Found') {
+									var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
+									if (c == false) {
+										$('#sequenceName').val($origname);
+										return;
+									}
+								}
+								text = 'Success! Sequence "' + $origname + '" was updated to "' + name + '"';
+								alert(text);
+								perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
+								pageCall('dynamicPage','web/sequencesPage.html');
+                						setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 							}
-						}
-
-						text = 'Success! Sequence "' + $origname + '" was update to "' + name + '"';
+						});
 					} else {
 						text = 'Success! Sequence "' + $origname + '" was updated';
+						alert(text);
+						perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
+						pageCall('dynamicPage','web/sequencesPage.html');
+                				setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 					}
-					alert(text);
-					perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
 				} else {
-					var xmlhttp;
-					if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-						xmlhttp=new XMLHttpRequest();
-					} else {// code for IE6, IE5
-						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + name, false);
-					xmlhttp.send(null);
-					var returned = xmlhttp.responseText;
-					if (returned == 'Found') {
-						var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
-						if (c == false) {
-							return;
+					$.ajax({
+						type : 'GET',
+						url : 'cgi-bin/scripts/sequenceControl.pl',
+						data : {
+							'action' : 'Search',
+							'sequence' : name,
+						},
+						success : function(result) {
+							if (result == 'Found') {
+								var c = confirm('A sequence with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new sequence?');
+								if (c == false) {
+									return;
+								}
+							}
+							var string = commands.join(',');
+							alert('Success! Event "' + name + '" has been created');
+							perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
+							pageCall('dynamicPage','web/sequencesPage.html');
+                					setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 						}
-					}
-
-					var string = commands.join(',');
-					alert('Success! Event "' + name + '" has been created');
-					perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
+					});
 				}
-
-				pageCall('dynamicPage','web/sequencesPage.html');
-                		setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 			}
 		}
 	}
@@ -796,7 +815,6 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 	
 	if (c == true) {
 		perlCall('','scripts/sequenceControl.pl','action','Delete','sequence',$seq);
-		alert($seq + ' was deleted');
 		pageCall('dynamicPage','web/sequencesPage.html');
 		perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');
 	}
@@ -815,29 +833,26 @@ function copySequence($seq) {
 
                 if (newseq.match(/\S+/)) {
                         if (!newseq.match(/[^\w\s]|\_+/)) {
-                                var xmlhttp;
-                                if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                                        xmlhttp=new XMLHttpRequest();
-                                } else {// code for IE6, IE5
-                                        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-                                }
-                                xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Search&sequence=" + newseq, true);
-                                xmlhttp.onreadystatechange=function(){
-                                        if (xmlhttp.readyState==4) {
-                                                var returned = xmlhttp.responseText;
-                                                if (returned == 'Found') {
-                                                        alert("A sequence already exists with the name \"" + newseq + "\". Please choose a different name");
-                                                        return;
-                                                } else {
+                                $.ajax({
+                                	type : 'GET',
+                                	url : 'cgi-bin/scripts/sequenceControl.pl',
+                                	data : {
+                                		'action' : 'Search',
+                                		'sequence' : newseq,
+                                	},
+                                	success : function(result) {
+                                		if (result == 'Found') {
+							alert("A sequence already exists with the name \"" + newseq + "\". Please choose a different name");
+							return;
+                                		} else {
                                                         perlCall('','scripts/sequenceControl.pl','action','Copy','sequence',newseq,'originalName',$seq);
                                                         newseq = newseq.toUpperCase();
                                                         alert("The sequence \"" + $seq + "\" was successfully copied to \"" + newseq + "\"");
                                                         pageCall('dynamicPage','web/sequencesPage.html');
                                                         setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-                                                }
-                                        }
-                                }
-                                xmlhttp.send(null);
+                                		}
+                                	}
+                                });
                         } else {
                                 alert('The new sequence name can only contain letters, numbers, and spaces');
                                 return;
@@ -851,35 +866,31 @@ function copySequence($seq) {
 // ############### End of copySequence function
 
 function editSequencePage($seq) {	// This function handles the first part of editing an existing sequence (Initial page load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/sequencesPage.pl?action=Edit&sequence=" + $seq, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-			document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/sequencesPage.pl',
+		data : {
+			'action' : 'Edit',
+			'sequence' : $seq,
+		},
+		success : function(result) {
+			$('#dynamicPage').html(result);
 			editSequencePage2($seq);
 		}
-	}
-	xmlhttp.send(null);
+	});
 }
 // ############### End of editSequencePage function
 
 function editSequencePage2($seq) {	// This function handles the second part of editing an existing sequence (Existing sequence data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/sequenceControl.pl?action=Show&sequence=" + $seq, true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
-			var commands = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceControl.pl',
+		data : {
+			'action' : 'Show',
+			'sequence' : $seq,
+		},
+		success : function(result) {
+			var commands = result.split(',');
 			for (var i = 0; i < commands.length; i++) {
 				var id = commands[i];
 				var text = id;
@@ -907,9 +918,10 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 					seqTextUpdate(id,newtext);
 				}
 			}	
+			
 		}
-	}
-    	xmlhttp.send(null);
+	
+	});
 }
 // ############### End of editSequencePage2 function
 
@@ -942,52 +954,58 @@ function groupValidate($origname) {	// This function handles validation and subm
 					var string = members.join(',');
 					var text = '';
 					if ($origname != name) {
-						var xmlhttp;
-						if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-							xmlhttp=new XMLHttpRequest();
-						} else {// code for IE6, IE5
-							xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-						}
-						xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
-						xmlhttp.send(null);
-						var returned = xmlhttp.responseText;
-						if (returned == 'Found') {
-							var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
-							if (c == false) {
-								$('#groupName').val($origname);
-								return;
+						$.ajax({
+							type : 'GET',
+							url : 'cgi-bin/scripts/stbGroupControl.pl',
+							data : {
+								'action' : 'Search',
+								'group' : name,
+							},
+							success : function(result) {
+								if (result == 'Found') {
+									var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
+									if (c == false) {
+										$('#groupName').val($origname);
+										return;
+									}
+								}
+								text = 'Success! Group "' + $origname + '" was updated to "' + name + '"';
+								alert(text);
+								perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
+								pageCall('dynamicPage','web/stbGroupsPage.html');
+								setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 							}
-						}
-
-						text = 'Success! Group "' + $origname + '" was update to "' + name + '"';
+						});
 					} else {
 						text = 'Success! Group "' + $origname + '" was updated';
+						alert(text);
+						perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
+						pageCall('dynamicPage','web/stbGroupsPage.html');
+						setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 					}
-					alert(text);
-					perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
 				} else {
-					var xmlhttp;
-					if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-						xmlhttp=new XMLHttpRequest();
-					} else {// code for IE6, IE5
-						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Search&group=" + name, false);
-					xmlhttp.send(null);
-					var returned = xmlhttp.responseText;
-					if (returned == 'Found') {
-						var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
-						if (c == false) {
-							return;
+					$.ajax({
+						type : 'GET',
+						url : 'cgi-bin/scripts/stbGroupControl.pl',
+						data : {
+							'action' : 'Search',
+							'group' : name,
+						},
+						success : function(result) {
+							if (result == 'Found') {
+								var c = confirm('A group with the name "' + name + '" already exists (spaces are formatted to no more than one in a row), would you like to replace it with this new group?');
+								if (c == false) {
+									return;
+								}
+							}
+							var string = members.join(',');
+							alert('Success! Group "' + name + '" has been created');
+							perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
+							pageCall('dynamicPage','web/stbGroupsPage.html');
+                					setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 						}
-					}
-					var string = members.join(',');
-					alert('Success! Group "' + name + '" has been created');
-					perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
+					});
 				}
-
-				pageCall('dynamicPage','web/stbGroupsPage.html');
-                		setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 			}
 		}
 	}
@@ -1010,37 +1028,32 @@ function deleteGroup($grp) {	// This function handles deletion of an existing ST
 // ############### End of deleteGroup function
 
 function editGroupPage($grp) {	// This function handles the first part of editing of an existing STB group (Initial page load)
-	//perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Edit','group',$grp);
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/stbGroupsPage.pl?action=Edit&group=" + $grp, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/stbGroupsPage.pl',
+		data : {
+			'action' : 'Edit',
+			'group' : $grp,
+		},
+		success : function(result) {
+                        $('#dynamicPage').html(result);
                         editGroupPage2($grp);
-                }
-        }
-        xmlhttp.send(null);
-	//setTimeout(function(){editGroupPage2($grp)},500);
+		}
+	});
 }
 // ############### End of editGroupPage function
 
 function editGroupPage2($grp) {	// This function handles the second part of editing of an existing STB group (Existing group data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/stbGroupControl.pl?action=Show&group=" + $grp, true);
-	xmlhttp.onreadystatechange=function(){
-        	if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
-			var members = returned.split(',');
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/stbGroupControl.pl',
+		data : {
+			'action' : 'Show',
+			'group' : $grp,
+		},
+		success : function(result) {
+			var members = result.split(',');
+			var deconfcnt = 0;
 			for (var i = 0; i < members.length; i++) {
 				var bits = members[i].split("~");
 				var id = bits[0];
@@ -1050,28 +1063,18 @@ function editGroupPage2($grp) {	// This function handles the second part of edit
 				if (!match)  {
 					seqTextUpdate(id,text);
 				} else {
-					alert('A box that was a member of this group has since been deconfigured or setup as a spacer. It will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+					deconfcnt++;
 				}
-			}	
+			}
+			if (deconfcnt) {
+				alert(deconfcnt + ' STB(s) that were a member of this group have since been deconfigured or setup as a spacer. They will not be listed in the Group Members area below and will be removed from this group when you hit Update');
+			}
 		}
-	}
-    	xmlhttp.send(null);
+	});
 }
 // ############### End of editGroupPage2 function
 
 function focusEl($element) {	// This function handles focussing on the given element on the page
-	var xmlhttp;
-        if (window.XMLHttpRequest){
-                xmlhttp=new XMLHttpRequest();
-        } else {
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById($element).innerHTML=xmlhttp.responseText;
-                }
-        }
 	var elem = '#' + $element;
 	$(elem).focus();
 }
@@ -1111,17 +1114,14 @@ function eventScheduleEndHourControl() {
 		}
 		newhtml += "<option value='" + num + "'>" + num + '</option>';
 	}
-	//newhtml += "<option value='0'>0</option>";
 	$('#everyhrend').html(newhtml);
 }
 
 function eventRadioSwitch($element) {
 	$('input[type=radio]').each(function(){
 		if ($(this).is(":checked")) {
-			var parent = $(this).parents('td').attr('class','fancyCell highlighted');
 			$(this).attr('class','trigger radioon');
 		} else {
-			var parent = $(this).parents('td').attr('class','fancyCell cellImportant');
 			$(this).attr('class','trigger radiooff');
 		}
 	});
@@ -1223,6 +1223,16 @@ function deleteSchedule($id) {	// This function handles deletion of an existing 
 }
 // ############### End of deleteSchedule function
 
+function copySchedule($id) {	// This function handles deletion of an existing Scheduled Event
+	var c = confirm('Copying this scheduled event will mean you may have 2 sets of commands being sent to the same STBs at the same time which can cause issues. Be sure to amend the copied event to avoid clashes. Continue?');
+	if (c == false) {
+       		return;
+	}
+	perlCall('','scripts/eventScheduleControl.pl','action','Copy','eventID',$id);
+	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+}
+// ############### End of deleteSchedule function
+
 function scheduleStateChange($state,$id) {	// This function handles enabling and disabling of exisiting Scheduled Events
 	var msg;
 	if ($state == 'Enable') {
@@ -1243,39 +1253,35 @@ function scheduleStateChange($state,$id) {	// This function handles enabling and
 // ############### End of scheduleStateChange function
 
 function editSchedulePage($event) {	// This function handles the first part of editing an exisiting Scheduled Event (Initial page load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-        } else {// code for IE6, IE5
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.open("GET","cgi-bin/scripts/pages/eventSchedulePage.pl?action=Edit&event=" + $event, true);
-        xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-                        document.getElementById('dynamicPage').innerHTML = xmlhttp.responseText;
-                        editSchedulePage2($event);
-                }
-        }
-        xmlhttp.send(null);
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/eventSchedulePage.pl',
+		data : {
+			'action' : 'Edit',
+			'event' : $event,
+		},
+		success : function(result) {
+			$('#dynamicPage').html(result);
+			editSchedulePage2($event);
+		}
+	});
 }
 // ############### End of editSchedulePage function
 
 function editSchedulePage2($event) {	// This function handles the second part of editing an exisiting Scheduled Event (Existing event data load)
-	var xmlhttp;
-        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        	xmlhttp=new XMLHttpRequest();
-      	} else {// code for IE6, IE5
-        	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      	}
-      	xmlhttp.open("GET","cgi-bin/scripts/eventScheduleControl.pl?action=Show&eventID=" + $event, true);
-	xmlhttp.onreadystatechange=function(){
-                if (xmlhttp.readyState==4) {
-		     	var returned = xmlhttp.responseText;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/eventScheduleControl.pl',
+		data : {
+			'action' : 'Show',
+			'eventID' : $event,
+		},
+		success : function(result) {
 			var stbregex = /Boxes\{(.+)\}Sequences/;
 			var seqregex = /Sequences\{(.+)\}/;
 
-			var stbmatch = stbregex.exec(returned);
-			var seqmatch = seqregex.exec(returned);
+			var stbmatch = stbregex.exec(result);
+			var seqmatch = seqregex.exec(result);
 
 			var members = stbmatch[1].split(',');
 			for (var i = 0; i < members.length; i++) {
@@ -1302,10 +1308,8 @@ function editSchedulePage2($event) {	// This function handles the second part of
 					seqTextUpdate(id,text,'sequenceEventArea');
 				}
 			}
-
 		}
-	}
-    	xmlhttp.send(null);
+	});
 }
 // ############### End of editSchedulePage2 function
 
@@ -1313,9 +1317,6 @@ function editSchedulePage2($event) {	// This function handles the second part of
 function stbTypeChoice($option) {	// This function handles changing of an STB type in the STB Data page. It loads the appropriate control data input fields according to its control type i.e. Dusky, Bluetooth, etc
 	var tag = 'print' + $option;
 	var stb = document.getElementById("stbname").value;
-	if ($option.match(/Network/)) {
-		alert('NOTE: For network control to work, the STB MUST be on the same network as the machine hosting this controller');
-	}
 	perlCall('typeChange','scripts/pages/stbDataPage.pl','option',tag,'stb',stb);
 }
 // ############### End of stbTypeChoice function
@@ -1397,5 +1398,113 @@ function addGroupMulti($sel) {
 	}
 }
 // ############### End of addGroupMulti function
+
+function ctrlSettings($opt) {
+	if ($opt.match(/show/i)) {
+		$('#controllerPageSettingsHolder').css('display','inline-block');
+	} else {
+		$('#controllerPageSettingsHolder').css('display','none');	
+	}
+}
+
+function saveLayoutChoice() {
+	var selected;
+	$('.layoutRadio').each(function(i, obj) {
+		if ($(this).is(':checked')) {
+			//alert($(this).val());
+			selected = $(this).val();
+			return false;
+		}
+	});
+	
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'savelayout',
+			'data' : selected,
+		},
+		success : function(result) {
+			if (result) {
+				alert(result);
+			}
+		},
+	});
+}
+
+function remoteChange($this) {
+	var opt = $this.value;
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/remoteSelect.pl',
+		data : {
+			'remote' : opt,
+		},
+		success : function(result) {
+			if (result) {
+				$('#controllerButtons').html(result);
+			}
+		},
+	});	
+}
+
+function seqRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','seqListRow');
+	} else {
+		clicked.attr('class','seqListRow focussed');
+	}
+}
+
+function evSchedRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','evSchedRow');
+	} else {
+		clicked.attr('class','evSchedRow focussed');
+	}
+}
+function groupRowHighlight($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	if (classa.match(/focussed/)) {
+		clicked.attr('class','groupListRow');
+	} else {
+		clicked.attr('class','groupListRow focussed');
+	}
+}
+
+function rowRestrictionToggle($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	var switc = 'on';
+	if (classa.match(/on/)) {
+		clicked.attr('class','rowRestrictSlider off');
+		switc = 'off';
+	} else {
+		clicked.attr('class','rowRestrictSlider on');
+	}
+	
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'rowrestrict',
+			'state' : switc,
+		},
+		success : function(result) {
+			if (result) {
+				if (result.match(/^ERROR/)) {
+					alert(result);
+					perlCall('dynamicPage','scripts/pages/settingsPage.pl');
+				}
+			}
+		},
+	});
+	
+}
 
 // end hiding script from old browsers -->
