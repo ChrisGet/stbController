@@ -290,6 +290,20 @@ function validate() {	// This function validates and submits the data given when
 		return false;   
 	} 
 
+	if (x > 24) {
+		var c = confirm('You have chosen to have more than the recommended maximum of 24 columns. This can cause layout problems. Do you want to continue?');
+		if (c == false) {
+			return;
+		}
+	}
+
+	if (y > 24) {
+		var c = confirm('You have chosen to have more than the recommended maximum of 50 rows. This can cause layout problems. Do you want to continue?');
+		if (c == false) {
+			return;
+		}
+	}
+
 	$(document).ready(function() {
 		$.ajax( { 
 			type: "POST",
@@ -492,8 +506,8 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 var highlightedSTBs = {};	// Create the GLOBAL highlightedSTBs variable (hash)
 
 function rows($row) {	// This function handles the row selection buttons on the STB grid
-	var count = document.getElementById($row).cells.length;		// Locate the row by its ID and get the number of cells in it
 	var row = document.getElementById($row);			// Save the $row data in var 'row'
+	var count = row.getElementsByTagName("button");			// Get the array of buttons within the row
 	var override;
 	var highlight;
 	if(lastRowHL == $row) {
@@ -524,12 +538,8 @@ function rows($row) {	// This function handles the row selection buttons on the 
 		stbHash = {};
 	}
 	
-	for(var i=0;i<count;i++) {	// While 'i' is less than the number of cells
-		var cell = row.getElementsByTagName("button")[i];	// Locate the button in that cell and save it in 'cell'
-		if (!cell) {
-			continue;	// Skip the cell if it has no button (STB has been given ':' as its name and is therefore blank)
-		}
-		var ayedee = cell.id;	// Get the buttons id and save it to 'ayedee'
+	for(var i=0;i<count.length;i++) {	// While 'i' is less than the number of cells
+		var ayedee = count[i].id;	// Get the buttons id and save it to 'ayedee'
 		var regex = /^Row.*/;
 		var match = regex.exec(ayedee);
 		if (match) {

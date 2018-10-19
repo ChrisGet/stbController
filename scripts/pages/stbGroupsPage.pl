@@ -150,25 +150,47 @@ MAIN
 	        my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
 	        my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
+		my $divwidth = '200';
+        	my $widcnt = '1';
+        	until ($widcnt == $columns or $divwidth >= 1350) {
+                	$divwidth = $divwidth + 110;
+                	$widcnt++;
+        	}
+        	if ($divwidth > 1350) {
+                	$divwidth = '1400';
+        	} else {
+                	$divwidth = $divwidth + 50;
+        	}
+	
+        	my $fullcoll = $columns+42;
+        	my $btnwidth = ($divwidth-$fullcoll)/$columns;
+        	my $btnstyle = 'width:' . $btnwidth . 'px;';
+        	$divwidth .= 'px';
+
 print <<HEAD;
-<table style="border-spacing:0;" align="center">
-<tr id="columns">
+	<div id="stbGridTable" style="width:$divwidth;">
+		<div class="stbGridRow">
 HEAD
 
                 my $c = '1';
                 while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="80px"><button class="gridButton grpAdd" onclick="addGroupMulti('col$c')">Column $c</button></td>
+<button class="gridButton grpAdd" onclick="addGroupMulti('col$c')" style="$btnstyle">$c</button>
 COL
                         $c++;
                 }
 
+print <<EN;
+<button class="gridButton row blank"></button>
+</div>  
+EN
+		
 		my $r = '1';            # Set the Row count to 1
 		my $stbno = '1';        # Set the STB count to 1
 
                 while ($r <= $rows) {
                         $c = '1';               # Reset the Column count to 1
-                        print "<tr id=\"Row$r\">";
+			print "<div id=\"Row$r\" class=\"stbGridRow\">";
                         while ($c <= $columns) {
                                 my $id = "STB$stbno";
                                 my $name = "col$c"."stb$stbno";
@@ -192,8 +214,10 @@ COL
                                 }
 
 				my $location = 'col' . $c . 'row' . $r;
+				my $style = 'style="' . $btnstyle . '"';
+				
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton data" $onclick data-loc="$location">$buttontext</button></td>
+<button name="$name" id="$id" class="stbButton data" $onclick data-loc="$location" $style>$buttontext</button>
 BOX
 
                                 $stbno++;
@@ -201,15 +225,14 @@ BOX
                         }
 
 print <<ROWEND;
-<th><button id="Row $r" class="gridButton row" onclick="addGroupMulti('row$r')" type="button">Row $r</button></th></tr>
+<button id="Row $r" class="gridButton row" onclick="addGroupMulti('row$r')" type="button">$r</button></div>
 ROWEND
 
                         $r++;
                 }
 
 print <<LAST;
-			</tr>
-			</table>
+			</div>
 		</div>
 	</div>
 </div>

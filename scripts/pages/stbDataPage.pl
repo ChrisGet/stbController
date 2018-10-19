@@ -50,6 +50,23 @@ sub stbSelect {
 	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
 	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
+	my $divwidth = '200';
+        my $widcnt = '1';
+        until ($widcnt == $columns or $divwidth >= 1400) {
+                $divwidth = $divwidth + 110;
+                $widcnt++;
+        }
+        if ($divwidth > 1400) {
+                $divwidth = '1450';
+        } else {
+                $divwidth = $divwidth + 50;
+        }
+
+        my $fullcoll = $columns+42;
+        my $btnwidth = ($divwidth-$fullcoll)/$columns;
+        my $btnstyle = 'width:' . $btnwidth . 'px;';
+        $divwidth .= 'px';
+
 print <<HEAD;
 <div id="stbSelect">
 	<div id="stbDataTextDiv">
@@ -57,24 +74,29 @@ print <<HEAD;
 		<h2>Click on a box to manage its control and video switching parameters</h2>
 	</div>
 	<div id="stbDataGridDiv">
-		<table align="center" style="border-collapse:collapse;float:left;">
-		<tr id="columns">
+		<div id="stbGridTable" style="width:$divwidth;">
+			<div class="stbGridRow">		
 HEAD
 
 	my $c = '1';
 	while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="85px"><button class="gridButton">Column $c</button></td>
+<button class="gridButton inactive" style="$btnstyle">$c</button>
 COL
 		$c++;
 	}
+
+print <<EN;
+<button class="gridButton row blank"></button>
+</div>
+EN
 	
 	my $r = '1';            # Set the Row count to 1
 	my $stbno = '1';        # Set the STB count to 1
 
 	while ($r <= $rows) {
 		$c = '1';               # Reset the Column count to 1
-		print "<tr id=\"Row$r\">";
+		print "<div id=\"Row$r\" class=\"stbGridRow\">";
 		while ($c <= $columns) {
 			my $id = "STB$stbno";
 			my $name = "col$c"."stb$stbno";
@@ -89,28 +111,28 @@ COL
 				$buttontext = "-";
 			}
 
+			my $style = 'style="' . $btnstyle . '"';
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton data" type="button" onClick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button></td>
+<button $style name="$name" id="$id" class="stbButton data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button>
 BOX
 	               	$stbno++;
                 	$c++;
         	}
 
 print <<ROWEND;
-<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+<button id="Row $r" class="gridButton row inactive" type="button">$r</button></div>
 ROWEND
 
 		$r++;
 	}
 
 print <<LAST;
-		</tr>
-		</table>
+		</div>
 	</div>
 </div>
 LAST
 
-	print '</div>';         # End of the "wrapLeft" div
+	print '</div>';
 }
 
 sub stbConfig {

@@ -29,6 +29,16 @@ for (@lastboxes) {
 if (!-e $conffile) {
 	createConf();
 } else {
+	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
+	chomp(my @confdata = <FH>);
+	close FH;
+	my $confdata = join("\n", @confdata);
+	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
+	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+	if (!$columns or !$rows) {
+		createConf();
+		exit;
+	}
 	loadPage();
 }
 
@@ -45,9 +55,9 @@ print <<FORM;
 	<p style="color:white;font-size:20px;margin-bottom:3px;margin-top:3px;">Set the following options to create your STB grid</p>
 	<p style="color:red;font-size:20px;margin-bottom:3px;">Once you have chosen the size of the grid it cannot be changed.</p>
 	<p style="color:#cccccc;font-size:17px;margin-bottom:10px;margin-top:1px;">Ensure the grid size will be big enough to accommodate ALL STBS you wish to control, allowing for grid spacers as well.</p>
-	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:15px;">Select the number of columns:</p>
+	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:15px;">Enter the number of columns (Recommended max is 24):</p>
 	$columns
-	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:10px;">Select the number of rows:</p>
+	<p style="color:white;font-size:18px;margin-bottom:10px;margin-top:10px;">Enter the number of rows (Recommended max is 50):</p>
 	$rows
 </form>
 <button class="newSeqSubmit createGrid" onclick="validate()">Create New Grid</button><br>
@@ -78,8 +88,6 @@ sub loadPage {
 		my $subref = \&$load;
 		&$subref();
 	}
-	
-	#loadSettings();
 }
 
 sub loadSTBSelection {
@@ -103,26 +111,43 @@ sub loadSTBSelection {
 		%stbdata = %{$decoded};
 	}
 
+	my $divwidth = '200';
+	my $widcnt = '1';
+	until ($widcnt == $columns or $divwidth >= 1200) {
+		$divwidth = $divwidth + 110;
+		$widcnt++;
+	}
+	if ($divwidth > 1200) {
+		$divwidth = '1250';
+	} else {
+		$divwidth = $divwidth + 50;
+	}
+	
+	my $fullcoll = $columns+42;
+	my $btnwidth = ($divwidth-$fullcoll)/$columns;
+	my $btnstyle = 'width:' . $btnwidth . 'px;';
+	$divwidth .= 'px';
+
 	##### Load the STB grid
 print <<TOP;
 <div id="stbGrid" class="controllerPageSection">
 	<div id="gridTitle">
 		<p>STB Selection</p>
 	</div>
-	<table id="stbGridTable">
-		<tr id="columns">
+	<div id="stbGridTable" style="width:$divwidth;">
+		<div class="stbGridRow">
 TOP
 
 	my $c = '1';
 	while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+<button class="gridButton" style="$btnstyle">$c</button>
 COL
 		$c++;
 	}
 
 print <<CLEAR;
-<td scope="col" width="60px"><button class="gridButton clear" onClick="deselect()">CLEAR</button></td></tr>
+<button class="gridButton clear" onclick="deselect()">CLEAR</button></div>
 CLEAR
 
 my $r = '1';		# Set the Row count to 1
@@ -130,7 +155,7 @@ my $stbno = '1';	# Set the STB count to 1
 
 while ($r <= $rows) {
 	$c = '1';		# Reset the Column count to 1
-	print "<tr id=\"Row$r\">";
+	print "<div id=\"Row$r\" class=\"stbGridRow\">";
 	while ($c <= $columns) {
 		my $id = "STB$stbno";
 		my $name = "col$c"."stb$stbno";
@@ -152,15 +177,16 @@ while ($r <= $rows) {
 		if (exists $stbdata{$id}{'ButtonTextColour'}) {
 			$style .= 'color:' . $stbdata{$id}{'ButtonTextColour'} . ';';
 		}
+		$style .= $btnstyle;
 		$style .= '"';
 		
 		if ($buttontext =~ /^\s*\:\s*$/) {
 print <<BOX;
-<td></td>
+<button class="spacerBtn" $style></button>
 BOX
 		} else {
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton deselect" type="button" onClick="colorToggle('$id')" $style>$buttontext</button></td>
+<button name="$name" id="$id" class="stbButton deselect" onclick="colorToggle('$id')" $style>$buttontext</button>
 BOX
 		}
 
@@ -169,7 +195,7 @@ BOX
 	}
 
 print <<ROWEND;
-<th><button id="Row $r" class="gridButton row" type="button" onClick="rows('Row$r')">Row $r</button></th></tr>
+<button id="Row $r" class="gridButton row" onclick="rows('Row$r')">$r</button></div>
 ROWEND
 
 $r++;
@@ -177,8 +203,7 @@ $r++;
 }
 
 print <<LAST;
-		</tr>
-	</table>
+	</div>
 	<input type="hidden" id="matrixLoaded" />
 	<input type="hidden" id="totalRows" value="$rows"/>
 </div>

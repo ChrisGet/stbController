@@ -490,27 +490,48 @@ GROUPS
                 my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
                 my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
+		my $divwidth = '200';
+        	my $widcnt = '1';
+        	until ($widcnt == $columns or $divwidth >= 1150) {
+                	$divwidth = $divwidth + 110;
+                	$widcnt++;
+        	}
+        	if ($divwidth > 1100) {
+                	$divwidth = '1150';
+        	} else {
+                	$divwidth = $divwidth + 50;
+        	}
+	
+        	my $fullcoll = $columns+42;
+        	my $btnwidth = ($divwidth-$fullcoll)/$columns;
+        	my $btnstyle = 'width:' . $btnwidth . 'px;';
+        	$divwidth .= 'px';
+
 print <<HEAD;
 <div id="eventScheduleGridArea">
 	<div id="stbSelect" style="margin-top:0;">
-		<table style="border-spacing:0;" align="center">
-			<tr id="columns">
+		<div id="stbGridTable" style="width:$divwidth;">
+                        <div class="stbGridRow">
 HEAD
 
                 my $c = '1';
                 while ($c <= $columns) {
 print <<COL;
-<td scope="col" width="80px"><button class="gridButton">Column $c</button></td>
+<button class="gridButton inactive" style="$btnstyle">$c</button>
 COL
                         $c++;
         	}
 
+print <<EN;
+<button class="gridButton row blank"></button>
+</div>
+EN
              	my $r = '1';            # Set the Row count to 1
            	my $stbno = '1';        # Set the STB count to 1
 
           	while ($r <= $rows) {
                 	$c = '1';               # Reset the Column count to 1
-                	print "<tr id=\"Row$r\">";
+			print "<div id=\"Row$r\" class=\"stbGridRow\">";
                 	while ($c <= $columns) {
                 		my $id = "STB$stbno";
                         	my $name = "col$c"."stb$stbno";
@@ -526,7 +547,7 @@ COL
 					if ($buttontext =~ /^\s*(:|-)\s*$/) {
 						$onclick = '';
 					} else {
-						$onclick = "onClick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";
+						$onclick = "onclick\=\"seqTextUpdate\(\'$id\'\,\'$buttontext\'\)\"";
 					}
                             	} else {
                                 	$buttontext = '-';
@@ -534,7 +555,7 @@ COL
                          	}
 
 print <<BOX;
-<td><button name="$name" id="$id" class="stbButton data" type="button" $onclick >$buttontext</button></td>
+<button name="$name" id="$id" class="stbButton data" $onclick style="$btnstyle">$buttontext</button>
 BOX
 				
 				$stbno++;
@@ -542,14 +563,14 @@ BOX
                    	}
 
 print <<ROWEND;
-<th><button id="Row $r" class="gridButton row inactive" type="button">Row $r</button></th></tr>
+<button id="Row $r" class="gridButton row inactive">$r</button></div>
 ROWEND
 
                    	$r++;
           	}
 
 print <<LAST;
-				</tr></table>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -402,8 +402,9 @@ button:hover {
 	display:inline-block;
 	margin-top:0.3%;
 	height:auto;
+	width:auto;
 	padding:2px;
-	overflow:hidden;
+	overflow:auto;
 	vertical-align:top;
 	padding-top:1.4%;
 	height:93%;
@@ -775,21 +776,33 @@ button.highlighted {
 	border-radius:5px 12px 12px 12px;
 	float:left;
 }
-
+.stbGridRow {
+	display:inline-block;
+	width:auto;
+	height:20px;
+	margin:1px 0;
+}
 .gridButton {
    	background-color:#003b46;
    	border-radius: 2px;
    	color: white;
    	font-size: 1.3vh;
    	vertical-align: middle;
-   	width:100%;
+   	width:100px;
 	height:100%;
 	border:none;
    	white-space:nowrap;
 	overflow:hidden;
+	margin:0 0.5px;
+	padding:0;
+}
+.gridButton:hover {
+	cursor:default;
 }
 .gridButton.clear {
    	background-color:red;
+   	width:40px;
+   	font-size: 1.2vh;
 }
 .gridButton.clear:hover {
    	background:#800000;
@@ -798,27 +811,33 @@ button.highlighted {
 
 .gridButton.row {
    	background-color:orange;
+   	width:40px;
 }
 .gridButton.row:hover {
    	background: #B24700;
 	cursor:pointer;
 }
 .gridButton.row.inactive:hover {
-	cursor:auto;
+	cursor:default;
 }
 .gridButton.grpAdd:hover {
 	cursor:pointer;
 }
-
+.gridButton.row.blank {
+	background:none;
+	cursor:default;
+}
 .stbButton {
  	border:none;
    	border-radius: 2px;
       	color: black;
-   	font-size: 1.4vh;
+   	font-size: 1.3vh;
    	vertical-align: middle;
-   	width:100%;
+   	width:100px;
    	height:100%;
    	white-space:nowrap;
+	margin:0 0.5px;
+	padding:0;
 }
 .stbButton.deselect {
    	background-color:white;
@@ -842,6 +861,21 @@ button.highlighted {
 	color:white !important;
 	cursor:pointer;
 }
+.spacerBtn {
+ 	border:none;
+   	border-radius: 2px;
+      	color: black;
+   	font-size:0;
+   	vertical-align: middle;
+   	width:100px;
+   	height:100%;
+   	white-space:nowrap;
+	margin:0 0.5px;
+	padding:0;
+}
+.spacerBtn:hover {
+	cursor:default !important;
+}
 
 #stbSelect {
 	display:inline-block;
@@ -861,17 +895,9 @@ button.highlighted {
 	margin:0.5%;
 }
 #stbGridTable {
-	display:block;
-	position:relative;
-	border-spacing:0;
-	background-color:#e6e6e6;
-	z-index:2;
-	border-radius:5px;
-	max-height:95%;
-	max-width:100%;
-	overflow:auto;
-	box-shadow:0 0 8px black;
-
+	display:inline-block;
+	width:auto;
+	height:100%;
 }
 #stbGridTable tr {
 	height:3%;
