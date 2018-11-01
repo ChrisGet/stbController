@@ -215,7 +215,7 @@ HEAD
 	my $font2 = '<font size="2" color="black">';
 	
 	my $fontend = '</font>';
-	my @hdmiins = ('01'..'16');
+	my @hdmiins = ('01'..'50');
 	my @hdmiouts = ('01','02','Both');
 
 	#### STB Details Table stuff
@@ -245,7 +245,7 @@ HEAD
 
 	my $sdiptext = $query->textfield(-id=>'sdip',-name=>'SDIP',-size=>'15',-default=>"$sdip",-maxlength=>15,-class=>'stbDataTextField');
 	my $sdporttext = $query->textfield(-id=>'sdport',-name=>'SDPort',-size=>'10',-default=>"$sdport",-maxlength=>5,-class=>'stbDataTextField');
-	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'12'],-default=>"$sdinput",-class=>'stbDataSelect');
+	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'50'],-default=>"$sdinput",-class=>'stbDataSelect');
 	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput",-class=>'stbDataSelect');
 
 	my $btnclrtext = $query->textfield(-id=>'buttoncolour',-name=>'ButtonColour',-size=>'10',-default=>"$btnclr",-maxlength=>15,-class=>'stbDataTextField centered');
