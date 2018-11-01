@@ -25,6 +25,7 @@ tie my %stbData, 'DBM::Deep', {file => $dbfile, locking => 1, autoflush => 1, nu
 my %newdata;
 while (my ($key,$value) = each %stbData) {
 	$newdata{$key} = $value;
+	$newdata{$key}{'Type'} =~ s/Ethan/SkyQ/;
 }
 
 my $json = JSON->new->allow_nonref->convert_blessed;
