@@ -339,6 +339,13 @@ function editSTBData($name) {	// This function handles editing details of an STB
 			return;
 		}
 	}
+	
+	// Check the STB name only contains valid characters
+        var vcharsregex = new RegExp(/([^a-zA-Z0-9\.\-\:\_ ])/g);
+        if (name.match(vcharsregex)) {
+                alert('STB Name can only contain letters, numbers, or the following special characters . - _ :');
+                return;
+        }
 
 	///////	IP Address and Port input field validation
 	var inputs = document.editSTBConfigForm.getElementsByTagName("input");	// Get all "input" elements from the STB Data form
