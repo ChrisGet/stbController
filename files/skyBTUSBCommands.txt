@@ -11,6 +11,7 @@ play:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[2
 power:Standby
 record:Record
 rewind:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[1,0,0],[0,0,0]],"area":"RW"
+search:Search
 select:TouchPad{"action":"pressTouch","duration":0.1,"points":[[255,255,0],[255,255,0]],"area":"Select"
 sky:Sky
 text:Text
