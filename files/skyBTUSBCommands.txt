@@ -1,3 +1,4 @@
+apps:Text
 backup:Back
 channel down:Ch-
 channel up:Ch+
