@@ -9,6 +9,7 @@
 8:E308
 9:E309
 A:0xEFB0
+apps:E00F
 cursor down:E101
 cursor left:E102
 cursor right:E103
