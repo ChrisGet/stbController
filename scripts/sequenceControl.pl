@@ -3,6 +3,7 @@
 use strict;
 use CGI;
 use Tie::File::AsHash;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -11,6 +12,7 @@ chomp(my $action = $query->param('action') || $ARGV[0] || '');
 chomp(my $sequence = $query->param('sequence') || $ARGV[1] || '');
 chomp(my $commands = $query->param('commands') || $ARGV[2] || '');
 chomp(my $origname = $query->param('originalName') || $ARGV[3] || '');
+chomp(my $expformat = $query->param('exportFormat') || $ARGV[4] || '');
 
 die "No Action defined for sequenceControl.pl\n" if (!$action);
 die "No Sequence name given for sequenceControl.pl \"$action\"" if (!$sequence);
@@ -20,6 +22,8 @@ chomp(my $maindir = (`cat homeDir.txt` || ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
+my $stresscomsfile = $filedir . 'controllerToStressTable.json';
+my $exportdir = $filedir . '/exports/';
 my $seqfile = ($filedir . 'commandSequences.txt');
 tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n"; 
 
@@ -29,7 +33,7 @@ addSequence(\$sequence,\$commands) and exit if ($action =~ m/^Add$/i);
 deleteSequence(\$sequence) and exit if ($action =~ m/^Delete$/i);
 addSequence(\$sequence,\$commands,\$origname) and exit if ($action =~ m/^Edit$/i);
 copySequence(\$sequence,\$origname) and exit if ($action =~ m/^Copy$/i);
-
+exportSequence() and exit if ($action =~ m/^Export$/i);
 
 untie %sequences;
 
@@ -113,3 +117,54 @@ sub deleteSequence {
 	}
 } # End of sub 'deleteSequence'
 
+sub exportSequence {
+	my $friendly = $sequence;
+	$friendly =~ s/\s+/_/g;
+	my $fname = $friendly . '-' . $expformat . '.txt';
+	my $fullpath = $exportdir . $fname;
+	if (open my $fh, '+>', $fullpath) {
+		if ($expformat =~ /stress/) {
+			my $content = convertToStress($sequence);
+			print $fh $content;
+		} else {
+			print $fh $sequence . ':' . $sequences{$sequence};
+		}
+		close $fh;
+		print "FILENAME=$fname";
+	} else {
+		print "ERROR: Could not open $fname for export: $!";
+	}
+} # End of sub 'exportSequence'
+
+sub convertToStress {
+	my ($seq) = @_;
+	my $stresscomms = `cat $stresscomsfile` // '';
+	my $json = JSON->new->allow_nonref;
+	$json = $json->canonical('1');
+	my $decoded = $json->decode($stresscomms);
+	my %stress = %{$decoded};
+	
+my $content = <<HEAD;
+'Script: CH.01
+'Name: $sequence
+'Functionality: Unspecified
+'Description: Exported sequence from Chilworth Reliability team - $sequence
+
+HEAD
+
+	my $seqcomms = $sequences{$seq};
+	my @comms = split(',',$seqcomms);
+	foreach my $com (@comms) {
+		if ($com =~ /^t(\d+)$/) {
+			$content .= "($1)\n";
+		} else {
+			if (exists $stress{$com}) {
+				$content .= "{G1} " . $stress{$com} . "\n";
+			} elsif ($com =~ /^(\d)$/) {
+				$content .= "{G1} " . $1 . "\n";
+			}
+		}
+	}
+	
+	return $content;
+}

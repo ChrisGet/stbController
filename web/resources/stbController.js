@@ -1,5 +1,6 @@
 <!-- hide script from old browsers
 var isFirefox = typeof InstallTrigger !== 'undefined';
+var seqnamereq;
 
 window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
@@ -38,7 +39,82 @@ window.onload = function () {	// Run these functions when the page first loads
 		remoteChange(this);
 	});
 	
+	$(document).on('click', '.browse-btn', function() {
+		$('#real-input').click();
+	});
+
+	$(document).on('change', '#real-input', function() {
+		var uploadButton = document.querySelector('.browse-btn');
+		var fileInfo = document.querySelector('.file-info');
+		var realInput = document.getElementById('real-input');
+		var name = realInput.value.split(/\\|\//).pop();
+		if (!name.match(/\.txt$/)) {
+			alert('ERROR: The file you have selected does not appear to be a .txt file. Please try again');
+			fileInfo.innerHTML = 'Select script for upload';
+			realInput.value = '';
+			$('#importStressBtn').attr("disabled","true");			
+		} else if (name.length > 28) {
+			alert('The length of your import file name exceeds 25 characters which is the limit for new sequence names. You will have to provide a new name for the imported sequences.');
+			seqnamereq = 'true';
+			var short = shorten(name,28)
+			fileInfo.innerHTML = short;
+			if (!$('#importStressName').val().match(/\S+/)) {
+				$('#importStressBtn').attr("disabled","true");
+			}
+		} else {
+			var short = shorten(name,28)
+			fileInfo.innerHTML = short;
+			$('#importStressBtn').removeAttr("disabled");
+			seqnamereq = '';
+		}
+	});
+
+	$(document).on('input', '#importStressName', function() {
+		if (!$('#importStressName').val().match(/\S+/) && (seqnamereq)) {
+			$('#importStressBtn').attr("disabled","true");
+		} else if (!$('#real-input').val().match(/\S+/)) {
+			$('#importStressBtn').attr("disabled","true");
+		} else {
+			$('#importStressBtn').removeAttr("disabled");
+		}
+	});
+
+	$(document).on('click', '.browse-btn2', function() {
+		$('#real-input2').click();
+	});
+
+	$(document).on('change', '#real-input2', function() {
+		var uploadButton = document.querySelector('.browse-btn2');
+		var fileInfo = document.querySelector('.file-info2');
+		var realInput = document.getElementById('real-input2');
+		var name = realInput.value.split(/\\|\//).pop();
+		if (!name.match(/\.txt$/)) {
+			alert('ERROR: The file you have selected does not appear to be a .txt file. Please try again');
+			fileInfo.innerHTML = 'Select script for upload';
+			realInput.value = '';
+			$('#importNativeBtn').attr("disabled","true");			
+		} else {
+			var short = shorten(name,28)
+			fileInfo.innerHTML = short;
+			$('#importNativeBtn').removeAttr("disabled");
+		}
+	});
 }
+
+function shorten (fullStr, strLen, separator) {
+	if (fullStr.length <= strLen) return fullStr;
+
+	separator = separator || '...';
+	
+	var sepLen = separator.length,
+	charsToShow = strLen - sepLen,
+	frontChars = Math.ceil(charsToShow/2),
+	backChars = Math.floor(charsToShow/2);
+
+	return fullStr.substr(0, frontChars) + 
+	separator + 
+	fullStr.substr(fullStr.length - backChars);
+};
 
 window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
 	logLastBoxes();
@@ -824,6 +900,50 @@ function seqValidate($origname) {	// This function handles validation and submit
 }
 // ############### End of seqValidate function
 
+function exportSequence($option,$seq) {	// This function handles deletion of an existing sequence
+	if ($option.match(/show/)) {
+		$('#seqExportOverlay-' + $seq).css('display','inline-block');
+		return;
+	}
+	
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceControl.pl',
+		data : {
+			'action' : 'Export',
+			'sequence' : $seq,
+			'exportFormat' : $option
+		},
+		success : function(result) {
+			if (!result) {
+				alert('ERROR: It looks like nothing came back from the export request. Please try again or contact your system administrator if the problem persists');
+				return;
+			} else if (result.match(/ERROR/)) {
+				alert(result);
+				return;
+			} else if (result.match(/FILENAME=/)){
+				var filename = result.replace('FILENAME=','');
+				var d = new Date();
+				var n = d.getTime();
+				var path = '/exports/' + filename + '?' + n;
+				var url = window.location + path;
+				var elem = document.createElement('a');
+				elem.href = url;
+				elem.download = filename;
+				document.body.appendChild(elem);
+				elem.click();
+				document.body.removeChild(elem);				
+			}
+		}
+	});
+
+}
+// ############### End of exportSequence function
+
+function closeSeqExportDiv ($id) {
+	$('#' + $id).css('display','none');
+}
+
 function deleteSequence($seq) {	// This function handles deletion of an existing sequence
 	var c = confirm('Are you sure you want to delete the sequence "' + $seq + '" ?');
 	if (c == false) {
@@ -832,8 +952,9 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 	
 	if (c == true) {
 		perlCall('','scripts/sequenceControl.pl','action','Delete','sequence',$seq);
-		pageCall('dynamicPage','web/sequencesPage.html');
-		perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');
+		setTimeout(function() {
+			$('#menuSequences').click();
+		},500);
 	}
 }
 // ############### End of deleteSequence function
@@ -1466,7 +1587,7 @@ function remoteChange($this) {
 }
 
 function seqRowHighlight($this) {
-	var clicked = $($this);
+	var clicked = $($this).parent('.seqListRow');
 	var classa = clicked.attr('class');
 	if (classa.match(/focussed/)) {
 		clicked.attr('class','seqListRow');
@@ -1524,4 +1645,73 @@ function rowRestrictionToggle($this) {
 	
 }
 
+function importStressScript() {
+	var file = $('#real-input').val();
+	var name = $('#importStressName').val();
+
+	if (!file || !file.match(/\.txt$/)) {
+		alert('You have not selected a valid .txt file. Please try again.');
+		return;
+	}
+	
+	if (!name || !name.match(/\S+/)) {
+		var c = confirm('You have not provided a name or prefix, so the filename of the imported script will be used to name the sequence(s). Continue?');
+		if (c == false) {
+			return;
+		}
+	}
+	
+	var formData = new FormData();
+	formData.append('file', $('#real-input')[0].files[0]);
+	if (name) {
+		formData.append('name', name);
+	}
+	formData.append('type','sequence');
+	formData.append('format','stress');
+
+	$.ajax({
+		url: "cgi-bin/scripts/importData.pl",
+		type: "POST",
+		data: formData,
+		enctype: 'multipart/form-data',
+		processData: false,  // tell jQuery not to process the data
+		contentType: false,   // tell jQuery not to set contentType
+		success:function(result) {
+			alert(result);
+			if (result.match(/Success/i)) {
+				$('#menuSequences').click();
+			}
+		}
+	});
+}
+
+function importNativeScript() {
+	var file = $('#real-input2').val();
+	//var name = $('#importStressName2').val();
+
+	if (!file || !file.match(/\.txt$/)) {
+		alert('You have not selected a valid .txt file for native sequence import. Please try again.');
+		return;
+	}
+
+	var formData = new FormData();
+	formData.append('file', $('#real-input2')[0].files[0]);
+	formData.append('type','sequence');
+	formData.append('format','native');
+
+	$.ajax({
+		url: "cgi-bin/scripts/importData.pl",
+		type: "POST",
+		data: formData,
+		enctype: 'multipart/form-data',
+		processData: false,  // tell jQuery not to process the data
+		contentType: false,   // tell jQuery not to set contentType
+		success:function(result) {
+			alert(result);
+			if (result.match(/Success/i)) {
+				$('#menuSequences').click();
+			}
+		}
+	});
+}
 // end hiding script from old browsers -->

@@ -57,14 +57,27 @@ HEAD
 			$comstring .= '<div class="seqListIconOuter"><div class="seqListIcon"><p>' . $com . '</p></div><div class="seqListArrowDiv"></div></div>';
 		}
 
+#<div class="seqListRow" onclick="seqRowHighlight(this)" title="Click to toggle highlight">
 print <<SEQ;
-<div class="seqListRow" onclick="seqRowHighlight(this)" title="Click to toggle highlight">
-	<div class="seqListRowSec"><p>$key</p></div>
-	<div class="seqListRowSec comlist"><div class="comStringHolder">$comstring</div></div>
+<div class="seqListRow">
+	<div class="seqListRowSec" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><p>$key</p></div>
+	<div class="seqListRowSec comlist" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><div class="comStringHolder">$comstring</div></div>
 	<div class="seqListRowSec manage header">
+		<div id="seqExportOverlay-$key" class="exportOptionsDiv">
+			<button class="closeSeqExpBtn" onclick="closeSeqExportDiv('seqExportOverlay-$key')"></button>
+			<div class="exportDivHalf">
+				<p title="Export in the standard STB controller format">Native<br>Format</p>
+				<button title="Export in the standard STB controller format"  class="seqListBtn Export Single" onclick="exportSequence('native','$key')"></button>	
+			</div>
+			<div class="exportDivHalf">
+				<p title="Export in the stress script format (Brentwood)">Stress<br>Format</p>
+				<button title="Export in the stress script format (Brentwood)" class="seqListBtn Export Single" onclick="exportSequence('stress','$key')"></button>	
+			</div>
+		</div>
 		<button class="seqListBtn Edit" title="Edit" onclick="editSequencePage('$key')"></button>
 		<button class="seqListBtn Copy" title="Copy" onclick="copySequence('$key')"></button>	
 		<button class="seqListBtn Del" title="Delete" onclick="deleteSequence('$key')"></button>	
+		<button class="seqListBtn Export" title="Export" onclick="exportSequence('show','$key')"></button>	
 	</div>
 </div>
 SEQ

@@ -51,6 +51,7 @@ install DBM::Deep IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::A
 	- Create a directory called "cgi-bin". In this directory you now need to create a symbolic link called "scripts"
 	  which links to the "stbController/scripts/" directory.
 	- Create a symbolic link called "web" which links to the "stbController/web" directory.
+	- Create a symbolic link called "exports" which links to the "stbController/files/exports" directory.
 	- Create a symbolic link called "index.html" which links to the "stbController/web/index.html" file.
 	- NOTE: File and folder permissions may have to be tweaked according to your Apache setup. Keep an eye on the error log file for your web page to see where these need to be changed if needed.
 

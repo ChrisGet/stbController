@@ -1225,7 +1225,7 @@ table.stbConfigGrid {
 	word-wrap:break-word;	
 	position:absolute;
 	left:4%;
-	top:20%;
+	top:18%;
 }
 .newSeqSubmit:hover {
    	background: #235e11;
@@ -2277,6 +2277,187 @@ p.narrow {
 	font-size:1.4vh;
 	color:#737373;
 }
+#sequencesImportHolder {
+	position:absolute;
+	left:1%;
+	top:23%;
+	width:20%;
+	height:70%;
+	text-align:left;
+	background-color:#e6e6e6;
+	border-radius:5px;
+}
+#sequencesImportHolder h1 {
+	display:inline-block;
+	width:100%;
+	margin:1% 0;
+	font-size:1.6vh;
+	color:#333333;
+	font-weight:normal;
+}
+#sequencesImportHolder h2 {
+	display:inline-block;
+	width:100%;
+	margin:0.7% 0;
+	font-size:1.5vh;
+	color:#333333;
+	font-weight:normal;
+}
+#sequencesImportHolder p {
+	display:inline-block;
+	width:100%;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#737373;
+}
+.input-container {
+	margin:2% 0;
+	width: 99%;
+	height:5%;
+	background-color: white;
+	border: 1px solid #DFDFDF;
+	border-radius: 5px;
+	overflow-x:scroll;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+
+input[type='file'] {
+	display: none;
+}
+
+.file-info {
+	font-size: 1.5vh;
+	width:70%;
+	height:100%;
+	margin-left:5%;
+	overflow-x:scroll;
+}
+
+.browse-btn {
+	background: #03A595;
+	color: white;
+	height: 100%;
+	width:25%;
+	padding:none;
+	border: none;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	font-size:1.4vh;
+}
+
+.browse-btn:hover {
+	background: #4ec0b4;
+}
+
+#importStressBtn {
+	display:inline-block;
+	width:20%;
+	height:5%;
+	border-radius:5px;
+	font-size:1.5vh;
+	margin-top:2%;
+	background-color:green;
+	color:white;
+	border:1px solid green;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+#importStressBtn:disabled {
+	background:none;
+	border:1px solid grey;
+	color:#333333;
+}
+#importStressName {
+	display:inline-block;
+	width:97%;
+	height:5%;
+	border-radius:5px;
+	font-size:1.4vh;
+	border:1px solid #dfdfdf;
+	padding:0 1%;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+.seqSepDiv {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	margin:5% 0 1% 0;
+	background-color:#f3f3f3;
+}
+.input-container2 {
+	margin:2% 0;
+	width: 99%;
+	height:5%;
+	background-color: white;
+	border: 1px solid #DFDFDF;
+	border-radius: 5px;
+	overflowX:scroll;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+.file-info2 {
+	font-size: 1.5vh;
+	width:70%;
+	height:100%;
+	margin-left:5%;
+	overflow-x:scroll;
+}
+
+.browse-btn2 {
+	background: #03A595;
+	color: white;
+	height: 100%;
+	width:25%;
+	padding:none;
+	border: none;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	font-size:1.4vh;
+}
+
+.browse-btn2:hover {
+	background: #4ec0b4;
+}
+#importNativeBtn {
+	display:inline-block;
+	width:20%;
+	height:5%;
+	border-radius:5px;
+	font-size:1.5vh;
+	margin-top:2%;
+	background-color:green;
+	color:white;
+	border:1px solid green;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+#importNativeBtn:disabled {
+	background:none;
+	border:1px solid grey;
+	color:#333333;
+}
+#importNativeName {
+	display:inline-block;
+	width:97%;
+	height:4%;
+	border-radius:5px;
+	font-size:1.4vh;
+	border:1px solid #dfdfdf;
+	padding:0 1%;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+
+
+
 #sequencesAvailable {
 	display:inline-block;
 	width:65%;
@@ -2323,6 +2504,7 @@ p.narrow {
 	vertical-align:top;
 	float:left;
 	overflow:auto;
+	position:relative;
 }
 .seqListRowSec.comlist {
 	width:60%;
@@ -2425,6 +2607,56 @@ p.narrow {
 }
 .seqListBtn.Copy {
 	background-image:url("../images/copySeq.png");
+}
+.seqListBtn.Export {
+	background-image:url("../images/exportSeq.png");
+}
+.seqListBtn.Export.Single {
+	width:45%;
+	height:40%;
+	top:10%;
+}
+.exportOptionsDiv {
+	display:none;
+	position:absolute;
+	left:0;
+	top:1px;
+	width:97%;
+	height:98%;
+	background-color:white;
+	border-radius:5px;
+	z-index:5;
+}
+.exportDivHalf {
+	display:inline-block;
+	width:40%;
+	height:100%;
+	float:left;
+	position:relative;
+}
+.exportDivHalf p {
+	display:inline-block;
+	margin:5% 0;
+	position:relative;
+	top:20%;
+	font-size:1.5vh;
+	width:100%;
+}
+.closeSeqExpBtn {
+	position:absolute;
+	right:4%;
+	top:10%;
+	width:10%;
+	height:28%;
+	border:none;
+	border-radius:50%;
+	color:white;
+	font-size:2vh;
+	padding:none;
+	background-image:url("../images/closeIcon.png");
+	background-size:100% auto;
+	background-position:center center;
+	background-repeat:no-repeat;
 }
 /** Sequences Page **/
 

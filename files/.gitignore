@@ -8,3 +8,5 @@ scheduler.pid
 stbData.json
 pidsPaused/*
 pidsRunning/*
+imports/*
+exports/*
