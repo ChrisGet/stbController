@@ -2317,7 +2317,6 @@ p.narrow {
 	background-color: white;
 	border: 1px solid #DFDFDF;
 	border-radius: 5px;
-	overflow-x:scroll;
 	position:relative;
 	left:50%;
 	transform:translateX(-50%);
