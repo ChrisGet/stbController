@@ -903,7 +903,7 @@ function seqValidate($origname) {	// This function handles validation and submit
 function exportSequence($option,$seq) {	// This function handles exporting of single or multiple sequences
 	var $list = '';		// This will be populated with the list of sequences to be exported when the Multi Export process is run
 	if ($option.match(/show/)) {
-		var $seqn = $seq.replace(' ','_');
+		var $seqn = $seq.replace(/\s+/g,'_');
 		$('#seqExportOverlay-' + $seqn).css('display','inline-block');
 		return;
 	}
