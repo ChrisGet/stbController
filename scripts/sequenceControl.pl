@@ -13,6 +13,7 @@ chomp(my $sequence = $query->param('sequence') || $ARGV[1] || '');
 chomp(my $commands = $query->param('commands') || $ARGV[2] || '');
 chomp(my $origname = $query->param('originalName') || $ARGV[3] || '');
 chomp(my $expformat = $query->param('exportFormat') || $ARGV[4] || '');
+chomp(my $explist = $query->param('list') || $ARGV[5] || '');
 
 die "No Action defined for sequenceControl.pl\n" if (!$action);
 die "No Sequence name given for sequenceControl.pl \"$action\"" if (!$sequence);
@@ -118,16 +119,29 @@ sub deleteSequence {
 } # End of sub 'deleteSequence'
 
 sub exportSequence {
-	my $friendly = $sequence;
-	$friendly =~ s/\s+/_/g;
-	my $fname = $friendly . '-' . $expformat . '.txt';
+	my $fname = '';
+	if ($sequence) {
+		my $friendly = $sequence;
+		$friendly =~ s/\s+/_/g;
+		$fname = $friendly . '-' . $expformat . '.txt';
+	}
+	if ($explist) {
+		$fname = 'Multi_Export_Sequence_List-Native.txt';
+	}
 	my $fullpath = $exportdir . $fname;
 	if (open my $fh, '+>', $fullpath) {
 		if ($expformat =~ /stress/) {
 			my $content = convertToStress($sequence);
 			print $fh $content;
 		} else {
-			print $fh $sequence . ':' . $sequences{$sequence};
+			if ($explist) {
+				my @seqs = split(',',$explist);
+				foreach my $s (@seqs) {
+					print $fh $s . ':' . $sequences{$s} . "\n";
+				}
+			} else {
+				print $fh $sequence . ':' . $sequences{$sequence};
+			}
 		}
 		close $fh;
 		print "FILENAME=$fname";

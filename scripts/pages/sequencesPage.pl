@@ -36,15 +36,25 @@ sub mainMenu {
 		exit;
 	}
 print <<HEAD;
+<div id="expMultiSeqDiv">
+	<h2>Multi Export</h2>
+	<p>Use the checkboxes to select multiple sequences for exporting (Native format only)</p>
+	<button class="multiExportBtn" onclick="exportSequence('native','multi-export')">Export</button>
+</div>
 <div id="sequenceListHeader">
 	<div class="seqListRowSec header"><h2>Sequence Name</h2></div>
 	<div class="seqListRowSec comlist header"><h2>Commands</h2></div>
-	<div class="seqListRowSec manage header"><h2>Manage</h2></div>
+	<div class="seqListRowSec manage header">
+		<h2>Manage</h2>
+		<input type="checkbox" class="seqExpCheck all" id="seqCheck-all-seqs" onclick="expSeqSelect('seqCheck-all-seqs')">
+	</div>
 </div>
 <div id="sequenceListDiv">
 HEAD
 	my $colcount = '1';
 	foreach my $key (sort keys %sequences) {
+		my $id = $key;
+		$id =~ s/\s+/_/g;
 		if ($colcount == '8') {
 			print '</tr><tr>';
 			$colcount = '1';
@@ -57,14 +67,13 @@ HEAD
 			$comstring .= '<div class="seqListIconOuter"><div class="seqListIcon"><p>' . $com . '</p></div><div class="seqListArrowDiv"></div></div>';
 		}
 
-#<div class="seqListRow" onclick="seqRowHighlight(this)" title="Click to toggle highlight">
 print <<SEQ;
 <div class="seqListRow">
 	<div class="seqListRowSec" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><p>$key</p></div>
 	<div class="seqListRowSec comlist" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><div class="comStringHolder">$comstring</div></div>
 	<div class="seqListRowSec manage header">
-		<div id="seqExportOverlay-$key" class="exportOptionsDiv">
-			<button class="closeSeqExpBtn" onclick="closeSeqExportDiv('seqExportOverlay-$key')"></button>
+		<div id="seqExportOverlay-$id" class="exportOptionsDiv">
+			<button class="closeSeqExpBtn" onclick="closeSeqExportDiv('seqExportOverlay-$id')"></button>
 			<div class="exportDivHalf">
 				<p title="Export in the standard STB controller format">Native<br>Format</p>
 				<button title="Export in the standard STB controller format"  class="seqListBtn Export Single" onclick="exportSequence('native','$key')"></button>	
@@ -78,6 +87,7 @@ print <<SEQ;
 		<button class="seqListBtn Copy" title="Copy" onclick="copySequence('$key')"></button>	
 		<button class="seqListBtn Del" title="Delete" onclick="deleteSequence('$key')"></button>	
 		<button class="seqListBtn Export" title="Export" onclick="exportSequence('show','$key')"></button>	
+		<input type="checkbox" class="seqExpCheck" id="seqCheck-$id" onclick="expSeqSelect('seqCheck-$id')" name="$key">
 	</div>
 </div>
 SEQ

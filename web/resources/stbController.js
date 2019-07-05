@@ -900,10 +900,30 @@ function seqValidate($origname) {	// This function handles validation and submit
 }
 // ############### End of seqValidate function
 
-function exportSequence($option,$seq) {	// This function handles deletion of an existing sequence
+function exportSequence($option,$seq) {	// This function handles exporting of single or multiple sequences
+	var $list = '';		// This will be populated with the list of sequences to be exported when the Multi Export process is run
 	if ($option.match(/show/)) {
-		$('#seqExportOverlay-' + $seq).css('display','inline-block');
+		var $seqn = $seq.replace(' ','_');
+		$('#seqExportOverlay-' + $seqn).css('display','inline-block');
 		return;
+	}
+	
+	if ($seq.match(/multi-export/)) {
+		$('.seqExpCheck').each(function() {
+			if ($(this).is(':checked')) {
+				var seqnm = $(this).attr('name');
+				if (seqnm) {
+					$list += seqnm + ',';
+				}
+			}
+		});
+		
+		if (!$list) {
+			alert('Please select at least one sequence to export');
+			return;
+		}
+		//alert($list);
+		//return;
 	}
 	
 	$.ajax({
@@ -912,7 +932,8 @@ function exportSequence($option,$seq) {	// This function handles deletion of an 
 		data : {
 			'action' : 'Export',
 			'sequence' : $seq,
-			'exportFormat' : $option
+			'exportFormat' : $option,
+			'list' : $list
 		},
 		success : function(result) {
 			if (!result) {
@@ -1714,4 +1735,20 @@ function importNativeScript() {
 		}
 	});
 }
+
+function expSeqSelect($id) {
+	var checkstate = false;
+	if ($id.match(/seqCheck-all-seqs/)) {
+		if ($('#' + $id).is(":checked")) {
+			checkstate = true;
+		}
+		
+		$('.seqExpCheck').each(function() {
+			if (!$(this).attr('id').match($id)) {
+				$(this).prop('checked',checkstate);
+			}
+		});
+	}
+}
+
 // end hiding script from old browsers -->
