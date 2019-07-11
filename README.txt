@@ -10,7 +10,6 @@
 - Below is a list of perl modules that the controller requires. These can be installed using CPAN.
 	(To install CPAN in Debian, run "apt-get install libcpan-meta-perl").
 	Packages to install:-
-	- DBM::Deep
 	- IO::Socket::INET
 	- CGI
 	- LWP::UserAgent
@@ -22,7 +21,7 @@
 	- JSON
 
 - Handy cpan command for installing these modules (While in the cpan shell)
-install DBM::Deep IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Time::HiRes FindBin JSON
+install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Time::HiRes FindBin JSON
 
 ############## STEP 3:
 - Set up the web server:-
