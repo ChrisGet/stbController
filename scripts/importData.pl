@@ -91,14 +91,14 @@ sub importStressSequence {
 		my $line = shift @lines;
 		$line =~ s/\n|\r//g;
 		$processed++;
-		if ($line =~ /^\{(\w+)\}\s*(\w+)/) {
+		if ($line =~ /^\{(\w+)\}\s*([A-Za-z0-9\+\-]+)/) {
 			$box = $1;
 			if (!exists $data{$box}{'PREV'}) {
 				$data{$box}{'PREV'} = '';
 			}
 			my $cmd = $2;
 			if ($cmd =~ /Hold/i) {
-				my ($c,$num) = $line =~ /Hold\s+(\w+)\:(\d+)/i;
+				my ($c,$num) = $line =~ /Hold\s+([A-Za-z0-9\+\-]+)\:(\d+)/i;
 				if ($c and $num) {
 					if (!exists $stress{$c} and $c !~ /\d/) {
 						next;
@@ -155,7 +155,7 @@ sub importStressSequence {
 					$data{$box}{'PREV'} = 'TO';
 				} elsif ($loopline =~ /\[endloop\]/i) {
 					$endloop = '1';
-				} elsif ($loopline =~ /^\{(\w+)\}\s*(\w+)/) {
+				} elsif ($loopline =~ /^\{(\w+)\}\s*([A-Za-z0-9\+\-]+)/) {
 					my $cmd = $2;
 					if (!exists $stress{$cmd} and $cmd !~ /\d/) {
 						next;
@@ -192,6 +192,17 @@ sub importStressSequence {
 				$loopcnt++;
 			}
 		}
+	} elsif ($line =~ /^\s*([A-Za-z0-9\+\-]{2,3})/) {
+        	my $com = $1;
+                if (%data) {    # If STBs have been identified
+                	if (exists $stress{$com}) {
+                        	my $newcom = $stress{$com};
+                                foreach my $stb (keys %data) {
+                                	$data{$stb}{'COM'} .= "$newcom,";
+                                	$data{$stb}{'PREV'} = 'COM';
+                        	}
+                	}
+        	}
 	}
 	
 	if (!%data) {
