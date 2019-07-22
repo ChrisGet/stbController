@@ -191,18 +191,18 @@ sub importStressSequence {
 				$data{$box}{'COM'} .= $comstring;
 				$loopcnt++;
 			}
+		} elsif ($line =~ /^\s*([A-Za-z0-9\+\-]{2,3})/) {
+        		my $com = $1;
+	                if (%data) {    # If STBs have been identified
+        	        	if (exists $stress{$com}) {
+                	        	my $newcom = $stress{$com};
+                        	        foreach my $stb (keys %data) {
+                                		$data{$stb}{'COM'} .= "$newcom,";
+                                		$data{$stb}{'PREV'} = 'COM';
+	                        	}
+        	        	}
+        		}
 		}
-	} elsif ($line =~ /^\s*([A-Za-z0-9\+\-]{2,3})/) {
-        	my $com = $1;
-                if (%data) {    # If STBs have been identified
-                	if (exists $stress{$com}) {
-                        	my $newcom = $stress{$com};
-                                foreach my $stb (keys %data) {
-                                	$data{$stb}{'COM'} .= "$newcom,";
-                                	$data{$stb}{'PREV'} = 'COM';
-                        	}
-                	}
-        	}
 	}
 	
 	if (!%data) {
