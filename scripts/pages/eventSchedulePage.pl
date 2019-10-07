@@ -84,7 +84,7 @@ HEAD
 		push (@times,"$key-$hour:$mins");
 	}
 
-	my @sorted = sort {($a =~ /-(\d+):/)[0] <=> ($b =~ /-(\d+):/)[0] or ($a =~ /-(\d+)$/)[0] <=> ($b =~ /-(\d+)$/)[0]} @times;	# Sorted the list by hour and then minute
+	my @sorted = sort {($a =~ /-(\d+):/)[0] <=> ($b =~ /-(\d+):/)[0] or ($a =~ /:(\d+)$/)[0] <=> ($b =~ /:(\d+)$/)[0]} @times;	# Sorted the list by hour and then minute
 
 	foreach my $thing (@sorted) {
 		my ($id) = $thing =~ /^(\d+)-/;
