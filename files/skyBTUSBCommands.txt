@@ -3,21 +3,21 @@ backup:Back
 blue button:Blue
 channel down:Ch-
 channel up:Ch+
-cursor right:TouchPad{"action":"draw","move":[[192,256,0],[224,256,1],[256,256,2],[288,256,3],[320,256,4]]
-cursor left:TouchPad{"action":"draw","move":[[320,256,0],[288,256,1],[256,256,2],[224,256,3],[192,256,4]]
-cursor up:TouchPad{"action":"draw","move":[[256,320,0],[256,288,1],[256,256,2],[256,224,3],[256,192,4]]
-cursor down:TouchPad{"action":"draw","move":[[256,192,0],[256,224,1],[256,256,2],[256,288,3],[256,320,4]]
-fast forward:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[510,0,0],[511,0,0]],"area":"FW"
+cursor right:Hid{"data":[[2,0,0,79,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
+cursor left:Hid{"data":[[2,0,0,80,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
+cursor up:Hid{"data":[[2,0,0,82,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
+cursor down:Hid{"data":[[2,0,0,81,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
+fast forward:Hid{"data":[[2,0,0,69,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
 green button:Green
 information:Info
-pause:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
-play:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[230,0,0],[233,0,0],[239,0,0],[239,0,0]],"area":"Play/Pause"
+pause:Hid{"data":[[2,0,0,68,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
+play:Hid{"data":[[2,0,0,68,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
 power:Standby
 record:Record
 red button:Red
-rewind:TrickPlaySlider{"action":"pressTouch","duration":0.1,"points":[[1,0,0],[0,0,0]],"area":"RW"
+rewind:Hid{"data":[[2,0,0,67,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
 search:Search
-select:TouchPad{"action":"pressTouch","duration":0.1,"points":[[255,255,0],[255,255,0]],"area":"Select"
+select:Hid{"data":[[2,0,0,40,0,0,0,0,0],[2,0,0,0,0,0,0,0,0]]
 sky:Sky
 text:Text
 tv guide:Home
