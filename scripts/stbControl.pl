@@ -308,7 +308,7 @@ sub sendBTComms {
 		}
                 my $json = "\{\"action\"\:\"press\"";
 		my $comtosend;
-                if ($basecom =~ /^(TouchPad|TrickPlaySlider)\s*(.+)$/i) {
+                if ($basecom =~ /^(TouchPad|TrickPlaySlider|Hid)\s*(.+)$/i) {
                         $comtosend = $1;
                         $json = $2;
                 } else {
