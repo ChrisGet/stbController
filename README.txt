@@ -21,7 +21,7 @@
 	- JSON
 
 - Handy cpan command for installing these modules (While in the cpan shell)
-install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Time::HiRes FindBin JSON
+install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Schedule::Cron Time::HiRes FindBin JSON
 
 ############## STEP 3:
 - Set up the web server:-
