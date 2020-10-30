@@ -16,6 +16,7 @@ my $conffile = $confdir . 'stbGrid.conf';
 my $filedir = $maindir . '/files/';
 my $lastboxfile = $filedir . 'lastBoxes.txt';
 my $seqfile = $filedir . 'commandSequences.txt';
+my $seqjsonfile = $filedir . 'commandSequences.json';
 my $orderfile = $confdir . 'controllerPageOrder.conf';
 my $remfile = $confdir . 'controllerRemote.txt';
 my $confs = `ls -1 $confdir`;
@@ -25,6 +26,22 @@ my @lastboxes = split(',',$lastboxstring);
 for (@lastboxes) {
 	$laststbs{$_}++;
 }
+
+checkLegacy();  # Initial check to see if any old sequence files have been converted to the new JSON format
+
+##### Create new JSON object for later use
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %sequences;
+if (-e $seqjsonfile) {
+	local $/ = undef;
+	open my $fh, "<", $seqjsonfile or die "ERROR: Unable to open $seqjsonfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%sequences = %{$decoded};
+}
+
 
 if (!-e $conffile) {
 	createConf();
@@ -252,13 +269,19 @@ CONTROL
 }
 
 sub loadSequences {
-	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	my $seqlist = '';
 	foreach my $seq (sort keys %sequences) {
-		$seqlist .= "<button id=\"$seq\" class=\"sequenceButton\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
+		if ($sequences{$seq}{'active'} eq 'yes') {
+			my $seqdesc = $sequences{$seq}{'description'};
+			my $val = 'No description';
+			if ($seqdesc =~ /\S+/) {
+				$val = $seqdesc;
+			}
+			$seqlist .= "<button id=\"$seq\" class=\"sequenceButton masterTooltip\" value=\"$val\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
+		}
 	}
 	if (!$seqlist) {
-		$seqlist = '<p style="font-size:1.5vh;">No sequences found</p>';
+		$seqlist = '<p style="font-size:1.5vh;">No active sequences</p>';
 	}
 
 print <<SEQSEC;
@@ -328,4 +351,41 @@ print <<DATA;
 	</div>
 </div>
 DATA
+}
+
+sub checkLegacy {
+        if (!-e $seqjsonfile and !-e $seqfile) {
+                ##### If no command sequence files exist, we can start off with JSON straight away
+                $seqfile = $seqjsonfile;
+                return;
+        } elsif (-e $seqjsonfile) {
+                ##### If the new file format already exists, update the $seqfile variable to use
+                $seqfile = $seqjsonfile;
+                return;
+        }
+
+        ##### If the checks get this far, we need to convert old sequence files to the new JSON format
+        if (-e $seqfile) {
+                my %newjson;
+                tie my %temp, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile for conversion in " . __FILE__ . ": $!\n";
+                if (%temp) {
+                        foreach my $old (sort keys %temp) {
+                                $newjson{$old}{'commands'} = $temp{$old};
+                                $newjson{$old}{'description'} = '';
+                                $newjson{$old}{'active'} = 'yes';
+                        }
+
+                        if (%newjson) {
+                                my $json = JSON->new->allow_nonref;
+                                $json = $json->canonical('1');
+                                my $encoded = $json->pretty->encode(\%newjson);
+                                if (open my $newfh, '+>', $seqjsonfile) {
+                                        print $newfh $encoded;
+                                        close $newfh;
+                                } else {
+                                        die "Failed to open file $seqjsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+                                }
+                        }
+		}
+	}
 }

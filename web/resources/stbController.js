@@ -280,7 +280,7 @@ function stbControl($action,$commands) {	// This function handles the control of
 }
 // ############### End of stbControl function
 
-function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4) {	// This function allows running of any script from within this javascript
+function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param3, $value3, $param4, $value4, $param5, $value5) {	// This function allows running of any script from within this javascript
 	var regex = /\S+/;
 	var elemmatch = regex.exec($element);
 
@@ -289,6 +289,7 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 	if ($param2) {dataObj[$param2] = $value2}
 	if ($param3) {dataObj[$param3] = $value3}
 	if ($param4) {dataObj[$param4] = $value4}
+	if ($param5) {dataObj[$param5] = $value5}
 
 	$.ajax({
 		type: 'GET',
@@ -305,6 +306,23 @@ function perlCall ($element, $script, $param1, $value1, $param2, $value2, $param
 	sequenceIndex = '1';
 }
 // ############### End of perlCall function
+
+function scriptCall($element,$script,$data) {
+
+	$.ajax({
+		type: 'GET',
+		url: 'cgi-bin/' + $script,
+		data: $data,
+		success : function(result) {
+			if ($element) {
+				$('#' + $element).html(result);
+			}
+		}
+	});
+
+	// Reset the sequenceIndex to 1
+	sequenceIndex = '1';
+}
 
 function pageCall ($element, $page) {	// This function allows calling of html pages
 	$.ajax({
@@ -820,6 +838,7 @@ function seqValidate($origname) {	// This function handles validation and submit
 	var match = regex.exec(name);
 	var invalidnameregex = /[^\w\s]|\_+/;	// Check the sequence name does not contain any non alphanumeric characters along with "_"
 	var invalidnamematch = invalidnameregex.exec(name);
+	var $seqdesc = $('#sequenceDesc').val();
 	if (!name) {
 		alert('Please give the new sequence a name!');
 	} else {
@@ -857,20 +876,30 @@ function seqValidate($origname) {	// This function handles validation and submit
 										return;
 									}
 								}
-								text = 'Success! Sequence "' + $origname + '" was updated to "' + name + '"';
-								alert(text);
-								perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
-								pageCall('dynamicPage','web/sequencesPage.html');
-                						setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
 							}
 						});
-					} else {
-						text = 'Success! Sequence "' + $origname + '" was updated';
-						alert(text);
-						perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname);
-						pageCall('dynamicPage','web/sequencesPage.html');
-                				setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-					}
+					}			//console.log('New description passed');
+
+					data = {};
+					data['action'] = 'Edit';
+					data['sequence'] = name;
+					data['commands'] = string;
+					data['originalName'] = $origname;
+					data['description'] = $seqdesc;
+
+					//perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname,'description',$seqdesc);
+					scriptCall('','scripts/sequenceControl.pl',data);
+					alert('Success! Sequence "' + $origname + '" was updated');
+					pageCall('dynamicPage','web/sequencesPage.html');
+					setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
+					//		}
+					//	});
+					//} else {
+						//perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname,'description',$seqdesc);
+					//	alert('Success! Sequence "' + $origname + '" was updated');
+					//	pageCall('dynamicPage','web/sequencesPage.html');
+                			//	setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
+					//}
 				} else {
 					$.ajax({
 						type : 'GET',
@@ -1749,6 +1778,32 @@ function expSeqSelect($id) {
 			}
 		});
 	}
+}
+
+function seqStateChange($obj,$sequence) {
+	var $class = $($obj).attr('class');
+	var $state = 'active';
+	if ($class.match(/active/)) {
+		$($obj).attr('class','stateBox');
+		$state = 'inactive';
+	} else {
+		$($obj).attr('class','stateBox active');
+	}
+
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceControl.pl',
+		data : {
+			'action' : 'StateChange',
+			'sequence' : $sequence,
+			'state' : $state
+		},
+		success : function(result) {
+			if (!result.match(/Success/i)) {
+				alert(result);
+			}
+		}
+	});
 }
 
 // end hiding script from old browsers -->

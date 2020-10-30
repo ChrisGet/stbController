@@ -3,6 +3,7 @@
 use strict;
 use CGI;
 use Tie::File::AsHash;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -20,17 +21,70 @@ $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
 my $seqfile = ($filedir . 'commandSequences.txt');
+my $jsonfile = $filedir . 'commandSequences.json';
 my $image = $maindir . '/images/RT_Logo.png';
 my $htmldir = $maindir . '/scripts/pages/';
 my $conthtml = $htmldir . 'sequenceController.html';
 my $remfile = $confdir . 'sequencesRemote.txt';
 
+checkLegacy();	# Initial check to see if any old sequence files have been converted to the new JSON format
+
+##### Create new JSON object for later use
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %sequences;
+if (-e $jsonfile) {
+	local $/ = undef;
+	open my $fh, "<", $jsonfile or die "ERROR: Unable to open $jsonfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%sequences = %{$decoded};
+}
+
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Create$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Edit$/i);
 
+sub checkLegacy {
+	if (!-e $jsonfile and !-e $seqfile) {
+		##### If no command sequence files exist, we can start off with JSON straight away
+		$seqfile = $jsonfile;
+		return;
+	} elsif (-e $jsonfile) {
+		##### If the new file format already exists, update the $seqfile variable to use
+		$seqfile = $jsonfile;
+		return;
+	}
+
+	##### If the checks get this far, we need to convert old sequence files to the new JSON format
+	if (-e $seqfile) {
+		my %newjson;
+		tie my %temp, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile for conversion in " . __FILE__ . ": $!\n";
+		if (%temp) {
+			foreach my $old (sort keys %temp) {
+				$newjson{$old}{'commands'} = $temp{$old};
+				$newjson{$old}{'description'} = '';
+				$newjson{$old}{'active'} = 'yes';
+			}
+
+			if (%newjson) {
+				my $json = JSON->new->allow_nonref;
+				$json = $json->canonical('1');
+				my $encoded = $json->pretty->encode(\%newjson);
+				if (open my $newfh, '+>', $jsonfile) {
+					print $newfh $encoded;
+					close $newfh;
+				} else {
+					die "Failed to open file $jsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+				}
+			}
+		}
+	}
+}
+
 sub mainMenu {
-	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
+	#tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	if (!%sequences) {
 		print '<font size="4" color="red">You currently have no Command Sequences</font>';
 		exit;
@@ -42,6 +96,7 @@ print <<HEAD;
 	<button class="multiExportBtn" onclick="exportSequence('native','multi-export')">Export</button>
 </div>
 <div id="sequenceListHeader">
+	<div class="seqListRowSec state"><h2>Active</h2></div>
 	<div class="seqListRowSec header"><h2>Sequence Name</h2></div>
 	<div class="seqListRowSec comlist header"><h2>Commands</h2></div>
 	<div class="seqListRowSec manage header">
@@ -60,16 +115,36 @@ HEAD
 			$colcount = '1';
 		}
 		
-		my $titlestring = $sequences{$key} || '';
+		my $titlestring = $sequences{$key}{'commands'} || '';
 		my @coms = split(',',$titlestring);
 		my $comstring = '';
 		foreach my $com (@coms) {
 			$comstring .= '<div class="seqListIconOuter"><div class="seqListIcon"><p>' . $com . '</p></div><div class="seqListArrowDiv"></div></div>';
 		}
 
+		my $description = $sequences{$key}{'description'} // '';
+		$description = 'No description' if ($description !~ /\S+/);
+
+		my $active = $sequences{$key}{'active'} // '';
+		my $stateclass = 'stateBox';
+		if ($active and $active eq 'yes') {
+			$stateclass .= ' active';
+		}
+
 print <<SEQ;
 <div class="seqListRow">
-	<div class="seqListRowSec" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><p>$key</p></div>
+	<div class="seqListRowSec state">
+		<div class="$stateclass" id="stateBox-$id" onclick="seqStateChange(this,'$key')">
+		</div>
+	</div>
+	<div class="seqListRowSec" onclick="seqRowHighlight(this)" title="Click to toggle highlight">
+		<div class="seqListTitleSec">
+			<p>$key</p>
+		</div>
+		<div class="seqListDescSec">
+			<p>$description</p>
+		</div>
+	</div>
 	<div class="seqListRowSec comlist" onclick="seqRowHighlight(this)" title="Click to toggle highlight"><div class="comStringHolder">$comstring</div></div>
 	<div class="seqListRowSec manage header">
 		<div id="seqExportOverlay-$id" class="exportOptionsDiv">
@@ -118,14 +193,16 @@ sub createSeq {
 	my $headertext = 'Sequences &#8594; Create';
 	my $defname;
 	my $commands;
+	my $description = '';
 	my $buttontext = 'Create!';
 	my $onclick = 'seqValidate()';
 
 	if ($$seq) {
 		$headertext = "Sequences \&\#8594; Edit \&\#8594; <font color\=\"green\">\"$$seq\"<\/font>";
 		$defname = $$seq;
-		tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
-		$commands = $sequences{$defname};		
+		#tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
+		$commands = $sequences{$defname}{'commands'};		
+		$description = $sequences{$defname}{'description'} // '';
 		$buttontext = 'Update!';
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "seqValidate(\'$defname\')";
@@ -134,6 +211,7 @@ sub createSeq {
 	my $timeouts = $query->popup_menu(-id=>'timeoutList',-name=>'timeoutList',-values=>['1','2','5','10'],-class=>'styledSelect');
 	my $tobtn = '<button class="seqTimeoutBtn" onclick="addSeqTO()">Add Timeout</button>';
 	my $namefield = $query->textfield(-id=>'sequenceName',-name=>'sequenceName',-size=>30,,-maxlength=>25,-default=>$defname);
+	my $descfield = $query->textarea(-id=>'sequenceDesc',-name=>'sequenceDescription',-default=>$description);
 
 print <<MAIN;
 <div id="sequencesPageHolder">
@@ -148,13 +226,19 @@ print <<MAIN;
 		<div id="seqContentHolder">
 			<div id="seqAreaTop">
 				<div class="seqTopSec">
-					<p>Sequence Name</p>
-					$namefield
+					<div class="seqTopSec short">
+						<p>Sequence Name</p>
+						$namefield
+					</div>
+					<div class="seqTopSec short">
+						<p>Add Timeout (Seconds)</p>
+						<input type="text" id="seqTimeoutText" maxlength="3" placeholder="Secs">
+						$tobtn
+					</div>
 				</div>
 				<div class="seqTopSec">
-					<p>Add Timeout (Seconds)</p>
-					<input type="text" id="seqTimeoutText" maxlength="3" placeholder="Secs">
-					$tobtn
+					<p>Sequence Description</p>
+					$descfield
 				</div>
 			</div>
 			<div id="seqAreaMiddle">
