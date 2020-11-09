@@ -988,19 +988,9 @@ function seqValidate($origname) {	// This function handles validation and submit
 					data['originalName'] = $origname;
 					data['description'] = $seqdesc;
 
-					//perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname,'description',$seqdesc);
 					scriptCall('','scripts/sequenceControl.pl',data);
 					alert('Success! Sequence "' + $origname + '" was updated');
-					pageCall('dynamicPage','web/sequencesPage.html');
-					setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-					//		}
-					//	});
-					//} else {
-						//perlCall('','scripts/sequenceControl.pl','action','Edit','sequence',name,'commands',string,'originalName',$origname,'description',$seqdesc);
-					//	alert('Success! Sequence "' + $origname + '" was updated');
-					//	pageCall('dynamicPage','web/sequencesPage.html');
-                			//	setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
-					//}
+					$('#menuSequences').click();
 				} else {
 					$.ajax({
 						type : 'GET',
@@ -1017,10 +1007,14 @@ function seqValidate($origname) {	// This function handles validation and submit
 								}
 							}
 							var string = commands.join(',');
+							data = {};
+							data['action'] = 'Add';
+							data['sequence'] = name;
+							data['commands'] = string;
+							data['description'] = $seqdesc;
+							scriptCall('','scripts/sequenceControl.pl',data);
 							alert('Success! Event "' + name + '" has been created');
-							perlCall('','scripts/sequenceControl.pl','action','Add','sequence',name,'commands',string);
-							pageCall('dynamicPage','web/sequencesPage.html');
-                					setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
+							$('#menuSequences').click();
 						}
 					});
 				}
@@ -1083,7 +1077,7 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 				elem.download = filename;
 				document.body.appendChild(elem);
 				elem.click();
-				document.body.removeChild(elem);				
+				document.body.removeChild(elem);
 			}
 		}
 	});
@@ -1100,7 +1094,7 @@ function deleteSequence($seq) {	// This function handles deletion of an existing
 	if (c == false) {
 		return;
 	}
-	
+
 	if (c == true) {
 		perlCall('','scripts/sequenceControl.pl','action','Delete','sequence',$seq);
 		setTimeout(function() {
@@ -1137,8 +1131,7 @@ function copySequence($seq) {
                                                         perlCall('','scripts/sequenceControl.pl','action','Copy','sequence',newseq,'originalName',$seq);
                                                         newseq = newseq.toUpperCase();
                                                         alert("The sequence \"" + $seq + "\" was successfully copied to \"" + newseq + "\"");
-                                                        pageCall('dynamicPage','web/sequencesPage.html');
-                                                        setTimeout(function(){perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')},200);
+							$('#menuSequences').click();
                                 		}
                                 	}
                                 });
@@ -1189,7 +1182,7 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 				if (timeoutmatch) {
 					var newtext = 'Timeout (' + timeoutmatch[1] + 's)';
 					seqTextUpdate(id,newtext);
-				} else {				
+				} else {
 					if (id == 'tv guide') {
 						text = 'TV Guide';
 					}
@@ -1500,8 +1493,6 @@ function newSchedValidate($event) {	// This function handles validation and subm
 		alert('Success! Your new scheduled event has been created');
 	}
 	$('#menuSchedule').click();
-	//pageCall('dynamicPage','web/eventsSchedulePage.html');
-	//setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
 // ############### End of newSchedValidate function
 
@@ -1511,7 +1502,9 @@ function deleteSchedule($id) {	// This function handles deletion of an existing 
        		return;
 	}
 	perlCall('','scripts/eventScheduleControl.pl','action','Delete','eventID',$id);
-	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+	setTimeout(function() {
+		$('#menuSchedule').click();
+	},200);
 }
 // ############### End of deleteSchedule function
 
@@ -1521,7 +1514,9 @@ function copySchedule($id) {	// This function handles deletion of an existing Sc
        		return;
 	}
 	perlCall('','scripts/eventScheduleControl.pl','action','Copy','eventID',$id);
-	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+	setTimeout(function() {
+		$('#menuSchedule').click();
+	},200);
 }
 // ############### End of deleteSchedule function
 
@@ -1540,7 +1535,9 @@ function scheduleStateChange($state,$id) {	// This function handles enabling and
 	}
 
 	perlCall('','scripts/eventScheduleControl.pl','action',$state,'eventID',$id);
-	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+	setTimeout(function() {
+		$('#menuSchedule').click();
+	},200);
 }
 // ############### End of scheduleStateChange function
 
