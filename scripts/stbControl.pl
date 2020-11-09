@@ -97,7 +97,7 @@ my $targetstring = '';
 foreach my $target (@targetsraw) {
 	$target = uc($target);
 	if (exists $groups{$target}) {
-		my @members = split(',',$groups{$target});
+		my @members = split(',',$groups{$target}{'stbs'});
 		foreach my $member (@members) {
 			$targetstring .= "$member,";
 		}
