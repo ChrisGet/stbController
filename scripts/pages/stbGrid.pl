@@ -14,9 +14,11 @@ $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $conffile = $confdir . 'stbGrid.conf';
 my $filedir = $maindir . '/files/';
+my $stbdatafile = $confdir . 'stbData.json';
 my $lastboxfile = $filedir . 'lastBoxes.txt';
 my $seqfile = $filedir . 'commandSequences.txt';
 my $seqjsonfile = $filedir . 'commandSequences.json';
+my $groupsfile = $filedir . 'stbGroups.json';
 my $orderfile = $confdir . 'controllerPageOrder.conf';
 my $remfile = $confdir . 'controllerRemote.txt';
 my $confs = `ls -1 $confdir`;
@@ -27,12 +29,26 @@ for (@lastboxes) {
 	$laststbs{$_}++;
 }
 
+chomp(my $wholepage = $query->param('wholepage') // $ARGV[0] // ''); # A param passed from the web ui to indicate we want the whole page loaded
+chomp(my $mode = $query->param('mode') // $ARGV[1] // '');
+
 checkLegacy();  # Initial check to see if any old sequence files have been converted to the new JSON format
 
 ##### Create new JSON object for later use
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
 
+##### Load the STB data
+my %stbdata;
+if (-e $stbdatafile) {
+	local $/ = undef;
+	open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%stbdata = %{$decoded};
+}
+
+##### Load the sequences data
 my %sequences;
 if (-e $seqjsonfile) {
 	local $/ = undef;
@@ -42,20 +58,36 @@ if (-e $seqjsonfile) {
 	%sequences = %{$decoded};
 }
 
+##### Load the STB Groups data
+my %groups;
+if (-e $groupsfile) {
+	local $/ = undef;
+	open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%groups = %{$decoded};
+}
 
 if (!-e $conffile) {
 	createConf();
+	exit;
+}
+
+open my $cfh,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
+chomp(my @confdata = <$cfh>);
+close $cfh;
+my $confdata = join("\n", @confdata);
+my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
+my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+if (!$columns or !$rows) {
+	createConf();
+	exit;
+}
+
+if ($mode and !$wholepage) {
+	loadSTBSelection() and exit if ($mode =~ /stbgrid/i);
+	loadGroupSelection() and exit if ($mode =~ /stbgroups/i);
 } else {
-	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
-	chomp(my @confdata = <FH>);
-	close FH;
-	my $confdata = join("\n", @confdata);
-	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
-	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
-	if (!$columns or !$rows) {
-		createConf();
-		exit;
-	}
 	loadPage();
 }
 
@@ -86,7 +118,12 @@ FORM
 #################################################### End of sub createConf ####################################################
 
 sub loadPage {
-	my @order = ('loadSTBSelection','loadControl','loadSequences');	# This is the default order if there are issues with the config file
+	my @order;
+	if ($mode eq 'stbgroups') {
+		@order = ('loadGroupSelection','loadControl','loadSequences');	# This is the default order if there are issues with the config file
+	} else {
+		@order = ('loadSTBSelection','loadControl','loadSequences');	# This is the default order if there are issues with the config file
+	}
 	
 	chomp(my $orderconf = `cat $orderfile` // '');
 	if ($orderconf) {
@@ -102,6 +139,9 @@ sub loadPage {
 	}
 
 	foreach my $load (@order) {
+		if ($load =~ /STBSelection/ and $mode eq 'stbgroups') {
+			$load = 'loadGroupSelection';
+		}
 		my $subref = \&$load;
 		&$subref();
 	}
@@ -115,19 +155,7 @@ sub loadSTBSelection {
 	my $confdata = join("\n", @confdata);
 	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
 	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
-	my $stbdatafile = $confdir . 'stbData.json';
-	my $json = JSON->new->allow_nonref;
-	$json = $json->canonical('1');
 	
-	my %stbdata;
-	if (-e $stbdatafile) {
-		local $/ = undef;
-		open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
-		my $data = <$fh>;
-		my $decoded = $json->decode($data);
-		%stbdata = %{$decoded};
-	}
-
 	my $divwidth = '200';
 	my $widcnt = '1';
 	until ($widcnt == $columns or $divwidth >= 1200) {
@@ -150,6 +178,10 @@ print <<TOP;
 <div id="stbGrid" class="controllerPageSection">
 	<div id="gridTitle">
 		<p>STB Selection</p>
+	</div>
+	<div id="gridModeSwitch">
+		<div class="gridModeDiv selected" id="gridModeSTBs"><p>STB GRID</p></div>
+		<div class="gridModeDiv" id="gridModeGroups"><p>STB GROUPS</p></div>
 	</div>
 	<div id="stbGridTable" style="width:$divwidth;">
 		<div class="stbGridRow">
@@ -351,6 +383,69 @@ print <<DATA;
 	</div>
 </div>
 DATA
+}
+
+sub loadGroupSelection {
+	my $groupcontent = '';
+	foreach my $grp (sort keys %groups) {
+		my $stbs = $groups{$grp}{'stbs'};
+		my @members = split(',',$stbs);
+		my $memberstring = '';
+		foreach my $item (@members) {
+			my $name = $stbdata{$item}{'Name'} || '';
+			my $errclass = '';
+			if (!$name) {
+				$name = 'Unconfigured STB';
+				$errclass = 'problem';
+			} else {
+				if ($name !~ /\S+/ or $name =~ /^\s*\-\s*$/) {
+					$name = 'Unconfigured STB';
+					$errclass = 'problem';
+				}
+				if ($name =~ /^\s*\-\s*$/) {
+					$name = 'Spacer';
+					$errclass = 'problem';
+				}
+			}
+			$memberstring .= "<div class=\"stbGroupIcon $errclass\"><p>$name</p></div>";
+		}
+		$memberstring =~ s/\,$//;
+		my $idname = $grp;
+		$idname =~ s/\s+/_/g;
+
+$groupcontent .= <<GRP;
+	<div class="groupSTBControlRow" id="groupControlRow_$idname">
+		<div class="groupControlRowSection"><p>$grp</p></div>
+		<div class="groupControlRowSection members">
+			<div class="memStringHolder">
+				$memberstring
+			</div>
+		</div>
+	</div>
+GRP
+	}
+
+print <<TOP;
+<div id="stbGrid" class="controllerPageSection">
+	<div id="gridTitle">
+		<p>STB Selection</p>
+	</div>
+	<div id="gridModeSwitch">
+		<div class="gridModeDiv" id="gridModeSTBs"><p>STB GRID</p></div>
+		<div class="gridModeDiv selected" id="gridModeGroups"><p>STB GROUPS</p></div>
+	</div>
+	<div id="groupControlHolder">
+		<div id="groupControlHeader">
+			<div class="groupControlRowSection"><p>Group Name</p></div>
+			<div class="groupControlRowSection members"><p>STB Members</p></div>
+		</div>
+		<div id="groupControlListHolder">
+			$groupcontent
+		</div>
+
+	</div>
+</div>
+TOP
 }
 
 sub checkLegacy {

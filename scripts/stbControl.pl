@@ -29,9 +29,9 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 my $filedir = $maindir . '/files/';
 my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
-my $groupsfile = ($filedir . 'stbGroups.txt');
-my $seqfile = ($filedir . 'commandSequences.txt');
-my $pidfile = ($filedir . 'scheduler.pid');
+my $groupsfile = $filedir . 'stbGroups.json';
+my $seqfile = $filedir . 'commandSequences.json';
+my $pidfile = $filedir . 'scheduler.pid';
 my $stbdatafile = $confdir . 'stbData.json';
 
 my $json = JSON->new->allow_nonref;
@@ -44,6 +44,26 @@ if (-e $stbdatafile) {
         my $data = <$fh>;
         my $decoded = $json->decode($data);
         %stbdata = %{$decoded};
+}
+
+##### Load the groups data
+my %groups;
+if (-e $groupsfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
+
+##### Load the sequences data
+my %seqs;
+if (-e $seqfile) {
+        local $/ = undef;
+        open my $fh, "<", $seqfile or die "ERROR: Unable to open $seqfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %seqs = %{$decoded};
 }
 
 chomp(my $action = $ARGV[0] // $query->param('action') // '');
@@ -73,7 +93,6 @@ my @targetsraw = split(',',$info);
 my $targetstring = '';
 
 #### Below we separate the target STB input ($info) and process each item to see whether it is a group or a single STB
-tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
 
 foreach my $target (@targetsraw) {
 	$target = uc($target);
@@ -87,7 +106,6 @@ foreach my $target (@targetsraw) {
 	}
 }
 
-untie %groups;
 #### End of processing the target STB input ($info)
 
 if (!$targetstring or $targetstring !~ /\S+/) {
@@ -99,18 +117,16 @@ if (!$targetstring or $targetstring !~ /\S+/) {
 }
 
 if ($action =~ m/^Event$/i) {
-	tie my %seqs, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%seqs to $seqfile: $!\n";
 	my @sequences = split(',',$command);
 	my $seqcoms = '';
 	foreach my $seq (@sequences) {
 		$seq = uc($seq);
 		warn "Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
-		$seqcoms .= $seqs{$seq};
+		$seqcoms .= $seqs{$seq}{'commands'};
 		$seqcoms .= ',';
 	}
 
 	control(\$seqcoms,\$targetstring);
-	untie %seqs;
 }
 
 if ($action =~ m/^Control$/i) {

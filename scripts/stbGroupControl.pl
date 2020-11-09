@@ -3,6 +3,7 @@
 use strict;
 use CGI;
 use Tie::File::AsHash;
+use JSON;
 
 my $query = CGI->new;
 print $query->header();
@@ -21,7 +22,22 @@ $maindir =~ s/\/$//;
 my $filedir = ($maindir . '/files/');
 my $confdir = ($maindir . '/config/');
 my $groupfile = ($filedir . 'stbGroups.txt');
-tie my %groups, 'Tie::File::AsHash', $groupfile, split => ':' or die "Problem tying \%groups to $groupfile: $!\n"; 
+my $groupsjsonfile = $filedir . 'stbGroups.json';
+#tie my %groups, 'Tie::File::AsHash', $groupfile, split => ':' or die "Problem tying \%groups to $groupfile: $!\n"; 
+
+checkLegacy(); # Initial check to see if any old STB group files have been converted to the new JSON format
+
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+##### Load the groups data
+my %groups;
+if (-e $groupsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsjsonfile or die "ERROR: Unable to open $groupsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
 
 searchGroups(\$group) and exit if ($action =~ m/^Search$/i);
 showGroups(\$group) and exit if ($action =~ m/^Show$/i);
@@ -50,8 +66,10 @@ sub searchGroups {
 sub showGroups {
 	my ($grp) = @_;
 	if ($$grp =~ /^All$/i) {
-		while (my ($key,$value) = each %groups) {
-			print "$key -- $value\n";
+		#while (my ($key,$value) = each %groups) {
+		foreach my $key (sort keys %groups) {
+			#print "$key -- $value\n";
+			print "$key -- " . $groups{$key}{'stbs'};
 		}	
 	} else {
 		$$grp = uc($$grp);
@@ -74,7 +92,7 @@ sub showGroups {
 			}
 
 			##### This bit of formatting allows the front end GUI to handle the data
-			my @members = split(',', $groups{$$grp});
+			my @members = split(',', $groups{$$grp}{'stbs'});
 			my @resforgui;		# Response for GUI (res for gui) 
 			foreach my $box (@members) {
 				my $name = $stbdata{$box}{'Name'} || '';
@@ -107,7 +125,8 @@ sub addGroup {
         $$grp =~ s/\s+$//g;     # Remove trailing whitespace
         $$grp =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
 
-	$groups{$$grp} = $$stbs;
+	$groups{$$grp}{'stbs'} = $$stbs;
+	saveGroups();
 } # End of sub 'addGroup'
 
 sub deleteGroup {
@@ -122,5 +141,51 @@ sub deleteGroup {
 	} else {
 		die "Group \"$$grp\" cannot be deleted because it does not exist\n";
 	}
+	saveGroups();
 } # End of sub 'deleteGroup'
 
+sub checkLegacy {
+        if (!-e $groupsjsonfile and !-e $groupfile) {
+                ##### If no command sequence files exist, we can start off with JSON straight away
+                $groupfile = $groupsjsonfile;
+                return;
+        } elsif (-e $groupsjsonfile) {
+                ##### If the new file format already exists, update the $seqfile variable to use
+                $groupfile = $groupsjsonfile;
+                return;
+        }
+
+        ##### If the checks get this far, we need to convert old sequence files to the new JSON format
+        if (-e $groupfile) {
+                my %newjson;
+                tie my %temp, 'Tie::File::AsHash', $groupfile, split => ':' or die "Problem tying \%temp to $groupfile for conversion in " . __FILE__ . ": $!\n";
+                if (%temp) {
+                        foreach my $old (sort keys %temp) {
+                                $newjson{$old}{'stbs'} = $temp{$old};
+                        }
+
+                        if (%newjson) {
+                                my $json = JSON->new->allow_nonref;
+                                $json = $json->canonical('1');
+                                my $encoded = $json->pretty->encode(\%newjson);
+                                if (open my $newfh, '+>', $groupsjsonfile) {
+                                        print $newfh $encoded;
+                                        close $newfh;
+                                } else {
+                                        die "Failed to open file $groupsjsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+                                }
+                        }
+                }
+        	untie %temp;
+	}
+}
+
+sub saveGroups {
+	my $encoded = $json->pretty->encode(\%groups);
+        if (open my $newfh, '+>', $groupsjsonfile) {
+                print $newfh $encoded;
+                close $newfh;
+        } else {
+                die "ERROR: Unable to open $groupsjsonfile: $!\n";
+        }
+}

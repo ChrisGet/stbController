@@ -25,10 +25,15 @@ my $runningdir = $filedir . 'pidsRunning/';
 my $pauseddir = $filedir . 'pidsPaused/';
 my $statefile = $filedir . 'schedulerState.txt';
 my $schedfile = ($filedir . 'eventSchedule.txt');
+my $eventsjsonfile = $filedir . 'eventSchedule.json';
 my $sequencefile = ($filedir . 'commandSequences.txt');
+my $seqsjsonfile = $filedir . 'commandSequences.json';
 my $pidfile = $filedir . 'scheduler.pid';
 my $processdebugfile = $filedir . 'scheduledEventDebug.txt';
 my $stbdatafile = $confdir . 'stbData.json';
+my $groupsfile = $filedir . 'stbGroups.json';
+
+checkLegacy(); # Initial check to see if any old STB event schedule file has been converted to the new JSON format
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
@@ -42,8 +47,38 @@ if (-e $stbdatafile) {
         %stbdata = %{$decoded};
 }
 
-tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
-tie my %sequencedata, 'Tie::File::AsHash', $sequencefile, split => ':' or die "Problem tying \%sequences to $sequencefile: $!\n"; 
+##### Load the events schedule data
+my %events;
+if (-e $eventsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $eventsjsonfile or die "ERROR: Unable to open $eventsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %events = %{$decoded};
+}
+
+##### Load the sequences data
+my %sequences;
+if (-e $seqsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $seqsjsonfile or die "ERROR: Unable to open $seqsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %sequences = %{$decoded};
+}
+
+##### Load the STB groups data
+my %groups;
+if (-e $groupsfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
+
+#tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
+#tie my %sequencedata, 'Tie::File::AsHash', $sequencefile, split => ':' or die "Problem tying \%sequences to $sequencefile: $!\n"; 
 
 showData(\$eventID) and exit if ($action =~ m/^Show$/i);
 startScheduler() and exit if ($action =~ m/^Start$/i);
@@ -88,7 +123,14 @@ sub addEvent {
 	##### Do this for 'Edit' Action
 	if ($eventID) {		##### Check that the actual reference is defined (It wont be for 'Add' Actions)
 		if ($$eventID) {
-			$events{$$eventID} = $newdetails;
+			#$events{$$eventID} = $newdetails;
+			%{$events{$$eventID}} = ('active' => $state,
+						'commands' => $event,
+						'schedule' => "$min $hour $dom $month $days",
+						'stbs' => $targets
+						);
+						
+			saveSchedule();			
 			reloadScheduler();
 			return;
 		}
@@ -104,8 +146,14 @@ sub addEvent {
 		}
 	}
 
-	$events{$newid} = $newdetails;
+	#$events{$newid} = $newdetails;
+	%{$events{$newid}} = (	'active' => $state,
+				'commands' => $event,
+				'schedule' => "$min $hour $dom $month $days",
+				'stbs' => $targets
+				);
 
+	saveSchedule();
 	chomp(my $schedstate = `cat $statefile` || '');
         if (!$schedstate) {
                 enableScheduler();
@@ -118,7 +166,7 @@ sub addEvent {
 
 sub copyEvent {
 	if (exists $events{$eventID}) {
-		my $tocopy = $events{$eventID};
+		my %tocopy = %{$events{$eventID}};
 		my $newid = '';
 		my @range = (1000 .. 9999);
 		until ($newid) {
@@ -127,8 +175,9 @@ sub copyEvent {
 				$newid = $no;
 			}
 		}
-		$events{$newid} = $tocopy;
-	}	
+		%{$events{$newid}} = %tocopy;
+	}
+	saveSchedule();
 	return;	
 }
 
@@ -137,6 +186,7 @@ sub deleteEvent {
 
 	if (exists $events{$$eventID}) {
 		delete $events{$$eventID};
+		saveSchedule();
 		reloadScheduler();
 	} else {
 		die "Event \"$$eventID\" cannot be deleted because it does not exist\n";
@@ -164,14 +214,17 @@ sub startScheduler {
 	my $cron = new Schedule::Cron(\&dispatcher);
 
 	my $added = '0';
-	while (my ($key,$value) = each %events) {
-		if ($value =~ /^y/i) {		# If the $value starts with a 'y', the event is active, so we load it in to the scheduler
-			my @parts = split('\|',$value);
-			my $crontime = "$parts[1] $parts[2] $parts[3] $parts[4] $parts[5]";
-			my $event = $parts[6];
-			my $stbs = $parts[7];
+	#while (my ($key,$value) = each %events) {
+	foreach my $event (sort keys %events) {
+		my %data = %{$events{$event}};
+		if ($data{'active'} eq 'y') {		
+			#my @parts = split('\|',$value);
+			my @parts = split(/\s+/,$data{'schedule'});
+			my $crontime = "$parts[0] $parts[1] $parts[2] $parts[3] $parts[4]";
+			my $commands = $data{'commands'};
+			my $stbs = $data{'stbs'};
 			my $do = 'testRunner';
-			$cron->add_entry($crontime,\&$do,\$event,\$stbs);
+			$cron->add_entry($crontime,\&$do,\$commands,\$stbs);
 			$added++;
 		}
 	}	
@@ -244,7 +297,9 @@ sub stringToNumbers {
 sub enableEvent {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
-		$events{$$eventID} =~ s/^n/y/i;
+		#$events{$$eventID} =~ s/^n/y/i;
+		$events{$$eventID}{'active'} = 'y';
+		saveSchedule();
 		reloadScheduler();
 	} else {
 		die "Cannot enable event $$eventID as it was not found in the list\n";
@@ -254,7 +309,8 @@ sub enableEvent {
 sub disableEvent {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
-		$events{$$eventID} =~ s/^y/n/i;
+		$events{$$eventID}{'active'} = 'n';
+		saveSchedule();
 		reloadScheduler();
 	} else {
 		die "Cannot disable event $$eventID as it was not found in the list\n";
@@ -264,8 +320,8 @@ sub disableEvent {
 sub showData {
 	my ($eventID) = @_;
 	if (exists $events{$$eventID}) {
-		my @splits = split /\Q|/, $events{$$eventID};	# We use \Q to quote the | symbol otherwise it is treated as a metachar and the split fails
-		my $targets = $splits[7];
+		#my @splits = split /\Q|/, $events{$$eventID};	# We use \Q to quote the | symbol otherwise it is treated as a metachar and the split fails
+		my $targets = $events{$$eventID}{'stbs'};
 		my @stbs = split(',',$targets);
 		my $resforgui = 'Boxes{';
 		foreach my $stb (@stbs) {
@@ -277,16 +333,20 @@ sub showData {
 					$resforgui .= "$stb~-,";
 				}
 			} else {
-				$resforgui .= "$stb~$stb,";
+				if (exists $groups{$stb}) {
+					$resforgui .= "$stb~$stb,";
+				} else {
+					$resforgui .= "$stb~groupmissing,";
+				}
 			}
 		}
 		$resforgui =~ s/,$//;
 		$resforgui .= '}Sequences{';
 
-		my $sequences = $splits[6];
-		my @seqs = split(',',$sequences);
+		my $coms = $events{$$eventID}{'commands'};
+		my @seqs = split(',',$coms);
 		foreach my $seq (@seqs) {
-			if (exists $sequencedata{$seq}) {
+			if (exists $sequences{$seq}) {
 				$resforgui .= "$seq~$seq,";
 			} else {
 				$resforgui .= "$seq~-,";
@@ -296,7 +356,6 @@ sub showData {
 		$resforgui .= '}';
 
 		print $resforgui;
-
 	} else {
 		die "Cannot show the boxes for event $$eventID as it was not found in the list\n";
 	}
@@ -368,3 +427,55 @@ sub resumeAll {
 		system("mv $pauseddir$pausepid $runningdir$pausepid");
 	}
 } ### End of sub 'resumeAll'
+
+sub checkLegacy {
+        if (!-e $eventsjsonfile and !-e $schedfile) {
+                ##### If no event schedule files exist, we can start off with JSON straight away
+                $schedfile = $eventsjsonfile;
+                return;
+        } elsif (-e $eventsjsonfile) {
+                ##### If the new file format already exists, update the $eventsfile variable to use
+                $schedfile = $eventsjsonfile;
+                return;
+        }
+
+        ##### If the checks get this far, we need to convert the old event schedule to the new JSON format
+        if (-e $schedfile) {
+                my %newjson;
+                tie my %temp, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%temp to $schedfile for conversion in " . __FILE__ . ": $!\n";
+                if (%temp) {
+                        foreach my $old (sort keys %temp) {
+                                my @bits = split('\|',$temp{$old});
+                                my ($active,$mins,$hours,$dom,$month,$dow,$commands,$stbs) = @bits;
+                                %{$newjson{$old}} = (   'active' => $active,
+                                                        'schedule' => "$mins $hours $dom $month $dow",
+                                                        'commands' => $commands,
+                                                        'stbs' => $stbs
+                                                        );
+                        }
+
+                        if (%newjson) {
+                                my $json = JSON->new->allow_nonref;
+                                $json = $json->canonical('1');
+                                my $encoded = $json->pretty->encode(\%newjson);
+                                if (open my $newfh, '+>', $eventsjsonfile) {
+                                        print $newfh $encoded;
+                                        close $newfh;
+                                } else {
+                                        die "Failed to open file $eventsjsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+                                }
+                        }
+                }
+                untie %temp;
+        }
+}
+
+sub saveSchedule {
+	my $encoded = $json->pretty->encode(\%events);
+	if (open my $newfh, '+>', $eventsjsonfile) {
+		print $newfh $encoded;
+		close $newfh;
+	} else {
+		die "ERROR: Unable to open $eventsjsonfile: $!\n";
+	}
+}

@@ -20,7 +20,6 @@ chomp(my $state = $query->param('state') // $ARGV[7] // '');
 die "No Action defined for sequenceControl.pl\n" if (!$action);
 die "No Sequence name given for sequenceControl.pl \"$action\"" if (!$sequence);
 
-
 chomp(my $maindir = (`cat homeDir.txt` // ''));
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
 $maindir =~ s/\/$//;
@@ -187,30 +186,48 @@ sub exportSequence {
 	if ($sequence) {
 		my $friendly = $sequence;
 		$friendly =~ s/\s+/_/g;
-		$fname = $friendly . '-' . $expformat . '.txt';
+		#$fname = $friendly . '-' . $expformat . '.txt';
+		$fname = $friendly . '-' . $expformat . '.json';
 	}
 	if ($explist) {
-		$fname = 'Multi_Export_Sequence_List-Native.txt';
+		#$fname = 'Multi_Export_Sequence_List-Native.txt';
+		$fname = 'Multi_Export_Sequence_List-Native.json';
 	}
-	my $fullpath = $exportdir . $fname;
-	if (open my $fh, '+>', $fullpath) {
-		if ($expformat =~ /stress/) {
-			my $content = convertToStress($sequence);
-			print $fh $content;
-		} else {
-			if ($explist) {
-				my @seqs = split(',',$explist);
-				foreach my $s (@seqs) {
-					print $fh $s . ':' . $sequences{$s} . "\n";
-				}
+
+	if ($expformat =~ /stress/) {
+		my $content = convertToStress($sequence);
+		if ($content) {
+			$fname =~ s/\.json$/\.txt/;
+			my $fullpath = $exportdir . $fname;
+			if (open my $fh, '+>', $fullpath) {
+				print $fh $content;
+				close $fh;
+				print "FILENAME=$fname";
 			} else {
-				print $fh $sequence . ':' . $sequences{$sequence};
+				print "ERROR: Could not open $fname for export: $!";
 			}
 		}
-		close $fh;
-		print "FILENAME=$fname";
 	} else {
-		print "ERROR: Could not open $fname for export: $!";
+		my %exports;
+		my $fullpath = $exportdir . $fname;
+		if ($explist) {
+			my @seqs = split(',',$explist);
+			foreach my $s (@seqs) {
+				%{$exports{$s}} = %{$sequences{$s}};
+			}
+		} else {
+			%{$exports{$sequence}} = %{$sequences{$sequence}};
+		}
+		
+		my $encoded = $json->pretty->encode(\%exports);
+		if (open my $newfh, '+>', $fullpath) {
+			print $newfh $encoded;
+			close $newfh;
+			print "FILENAME=$fname";
+		} else {
+			die "ERROR: Unable to open $jsonfile: $!\n";
+		}
+
 	}
 } # End of sub 'exportSequence'
 
@@ -221,16 +238,20 @@ sub convertToStress {
 	$json = $json->canonical('1');
 	my $decoded = $json->decode($stresscomms);
 	my %stress = %{$decoded};
+	my $description = "Exported sequence from Chilworth Reliability team - $sequence";
+	if ($sequences{$seq}{'description'}) {
+		$description = $sequences{$seq}{'description'};
+	}
 	
 my $content = <<HEAD;
 'Script: CH.01
 'Name: $sequence
 'Functionality: Unspecified
-'Description: Exported sequence from Chilworth Reliability team - $sequence
+'Description: $description
 
 HEAD
 
-	my $seqcomms = $sequences{$seq};
+	my $seqcomms = $sequences{$seq}{'commands'};
 	my @comms = split(',',$seqcomms);
 	foreach my $com (@comms) {
 		if ($com =~ /^t(\d+)$/) {

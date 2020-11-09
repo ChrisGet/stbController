@@ -7,8 +7,8 @@ use JSON;
 
 my $query = CGI->new;
 print $query->header();
-chomp(my $action = $query->param('action') || $ARGV[0] || '');
-chomp(my $event = $query->param('event') || $ARGV[1] || '');
+chomp(my $action = $query->param('action') // $ARGV[0] // '');
+chomp(my $event = $query->param('event') // $ARGV[1] // '');
 die "No Action given for eventSchedulePage.pl\n" if (!$action);
 die "Invalid Action \"$action\" given for eventSchedulePage.pl\n" if ($action !~ /^Menu$|^Create$|^Edit$/i);
 die "No Event given to be edited for eventSchedulePage.pl\n" if (($action =~ /^Edit$/i) and (!$event));
@@ -20,8 +20,13 @@ my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
 my $statefile = $filedir . 'schedulerState.txt';
 my $eventsfile = ($filedir . 'eventSchedule.txt');
+my $eventsjsonfile = $filedir . 'eventSchedule.json';
+my $groupsjsonfile = $filedir . 'stbGroups.json';
+my $seqsjsonfile = $filedir . 'commandSequences.json';
 my $htmldir = $maindir . '/scripts/pages/';
 my $stbdatafile = $confdir . 'stbData.json';
+
+checkLegacy(); # Initial check to see if any old STB group files have been converted to the new JSON format
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
@@ -35,11 +40,40 @@ if (-e $stbdatafile) {
 	%stbdata = %{$decoded};
 }
 
+##### Load the events schedule data
+my %events;
+if (-e $eventsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $eventsjsonfile or die "ERROR: Unable to open $eventsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %events = %{$decoded};
+}
+
+##### Load the groups data
+my %groups;
+if (-e $groupsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsjsonfile or die "ERROR: Unable to open $groupsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
+
+##### Load the sequences data
+my %sequences;
+if (-e $seqsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $seqsjsonfile or die "ERROR: Unable to open $seqsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %sequences = %{$decoded};
+}
+
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createEvSched(\$event) and exit if ($action =~ /^Create$|^Edit$/i);
 
 sub mainMenu {
-	tie my %events, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%events to $eventsfile: $!\n";
 	if (!%events) {
 		print '<font size="4" color="red">You currently have no Scheduled Events</font>';
 		exit;
@@ -77,8 +111,8 @@ print <<HEAD;
 HEAD
 
 	my @times;
-	foreach my $key (keys %events) {
-		my @sections = split('\|',$events{$key});
+	foreach my $key (sort keys %events) {
+		my @sections = split(/\s+/,$events{$key}{'schedule'});
 		my $mins = $sections[1];
 		my $hour = $sections[2];
 		push (@times,"$key-$hour:$mins");
@@ -88,43 +122,41 @@ HEAD
 
 	foreach my $thing (@sorted) {
 		my ($id) = $thing =~ /^(\d+)-/;
-		my @info = split('\|',$events{$id});
-		my %data = (	'Active' => $info[0],
-				'Minute' => $info[1],
-				'Hour' => $info[2],
-				'DOM' => $info[3],
-				'Month' => $info[4],
-				'DOW' => $info[5],
-				'Event' => $info[6],
-				'Boxes' => $info[7],
+		my @info = split(/\s+/,$events{$id}{'schedule'});
+		my %timedata = (
+				'Minute' => $info[0],
+				'Hour' => $info[1],
+				'DOM' => $info[2],
+				'Month' => $info[3],
+				'DOW' => $info[4],
 			);
 		my $time;
-		if ($data{'Minute'} =~ /\*\/(\d+)/) {
+		if ($timedata{'Minute'} =~ /\*\/(\d+)/) {
 			my $mins = $1;
-			if ($data{'Hour'} =~ /(\d+)-(\d+)/) {
+			if ($timedata{'Hour'} =~ /(\d+)-(\d+)/) {
 				$time = "Every $mins minutes at $1:00 to $2:00"; 
 			} else {
-				$time = "Every $mins minutes at " . $data{'Hour'} . ':00';
+				$time = "Every $mins minutes at " . $timedata{'Hour'} . ':00';
 			}
 		} else {
-			$time = $data{'Hour'} . ':' . $data{'Minute'};
+			$time = $timedata{'Hour'} . ':' . $timedata{'Minute'};
 		}
-		my $months = numbersToDays(\$data{'Month'},\'month');
+		my $months = numbersToDays(\$timedata{'Month'},\'month');
 		$$months =~ s/_/ /g;
-		my $days = numbersToDays(\$data{'DOW'},\'dow');
+		my $days = numbersToDays(\$timedata{'DOW'},\'dow');
 		$$days =~ s/,/, /g;
-		my $dom = $data{'DOM'};
+		my $dom = $timedata{'DOM'};
 		$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
 		my $togglebtn = "<button class=\"schedToggleBtn active\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Enabled<\/button>";
 		my $editbtn = "<button class=\"schedListBtn edit\" title=\"Edit\" onclick=\"editSchedulePage(\'$id\')\"><\/button>";
 		my $delbtn = "<button class=\"schedListBtn del\" title=\"Delete\" onclick=\"deleteSchedule(\'$id\')\"><\/button>";
 		my $copybtn = "<button class=\"schedListBtn copy\" title=\"Copy\" onclick=\"copySchedule(\'$id\')\"><\/button>";
-		if ($data{'Active'} eq 'n') {
+		if ($events{$id}{'active'} eq 'n') {
 			$togglebtn = "<button class=\"schedToggleBtn inactive\" onclick=\"scheduleStateChange(\'Enable\',\'$id\')\">Disabled<\/button>";
 		}
 
 		my $stbnames = '';
-		my @stbs = split(',',$data{'Boxes'});
+		my @stbs = split(',',$events{$id}{'stbs'});
 		foreach my $box (@stbs) {
 			if (exists $stbdata{$box}) {
 				my $name = $stbdata{$box}{'Name'} || '';
@@ -145,7 +177,7 @@ HEAD
 		$stbnames =~ s/\,$//;
 		$stbnames =~ s/^ //;
 
-		my $eventdata = $data{'Event'};
+		my $eventdata = $events{$id}{'commands'};
 		$eventdata =~ s/,/, /g;
 print <<SCHED;
 	<div class="evSchedRow" onclick="evSchedRowHighlight(this)" title="Click to toggle highlight">
@@ -194,15 +226,10 @@ sub numbersToDays {
 
 sub createEvSched {
 	my ($event) = @_;
-	my $groupsfile = $filedir . 'stbGroups.txt';
-	my $seqfile = $filedir . 'commandSequences.txt';
 	my $headertext = 'Scheduled Event &#8594; Create';
 	my $headertext2 = 'Use the sections below to build your new scheduled event';
 	my $buttontext = 'Create!';
 	my $onclick = 'newSchedValidate()';
-	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
-	tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
-	tie my %events, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%events to $eventsfile: $!\n";
 	my ($active,$min,$hour,$dom,$month,$dow,$eventname,$boxes,$everymin);
 	my $mintype = 'normal';		# 'normal' means event runs once at a certain time. This is default until changed.
 	my $everyhrstart = '00';	# Used if the event runs every x minutes at a certain time
@@ -211,8 +238,11 @@ sub createEvSched {
 	$active = 'y';
 	if ($event) {
 		if ($$event) {
-			my @info = split('\|',$events{$$event});
-			($active,$min,$hour,$dom,$month,$dow,$eventname,$boxes) = @info;
+			my @info = split(/\s+/,$events{$$event}{'schedule'});
+			($min,$hour,$dom,$month,$dow) = @info;
+			$active = $events{$$event}{'active'};
+			$eventname = $events{$$event}{'commands'};
+			$boxes = $events{$$event}{'stbs'};
 
 			if ($min =~ /\*\/(\d+)/) {
 				$everymin = $1;
@@ -433,7 +463,7 @@ print <<SEQS;
 			</div>
 		</div>
 		<div class="evSchedSection third">
-			<button id="clearEvSeqAreaBtn" onclick="clearSeqArea('sequenceEventArea')">Clear All</button>
+			<button id="clearEvSeqAreaBtn" onclick="clearSchedSeqArea('sequenceEventArea')">Clear All</button>
 			<div class="evSchedSection seqHead" style="text-align:center;">
 				<p>Sequences</p>
 			</div>
@@ -580,8 +610,46 @@ LAST
         } else {
                 print "<font size=\"5\" color=\"red\">No STB Database found. Have you setup your STB Controller Grid yet?<\/font>";
         }
-
-	untie %groups;
-	untie %sequences;
-	untie %events;
 } # End of sub 'createEvSched'
+
+sub checkLegacy {
+        if (!-e $eventsjsonfile and !-e $eventsfile) {
+                ##### If no event schedule files exist, we can start off with JSON straight away
+                $eventsfile = $eventsjsonfile;
+                return;
+        } elsif (-e $eventsjsonfile) {
+                ##### If the new file format already exists, update the $eventsfile variable to use
+                $eventsfile = $eventsjsonfile;
+                return;
+        }
+
+        ##### If the checks get this far, we need to convert the old event schedule to the new JSON format
+        if (-e $eventsfile) {
+                my %newjson;
+                tie my %temp, 'Tie::File::AsHash', $eventsfile, split => ':' or die "Problem tying \%temp to $eventsfile for conversion in " . __FILE__ . ": $!\n";
+                if (%temp) {
+                        foreach my $old (sort keys %temp) {
+				my @bits = split('\|',$temp{$old});
+				my ($active,$mins,$hours,$dom,$month,$dow,$commands,$stbs) = @bits;
+                                %{$newjson{$old}} = (	'active' => $active,
+                                			'schedule' => "$mins $hours $dom $month $dow",
+                                			'commands' => $commands,
+                                			'stbs' => $stbs
+                                			);
+                        }
+
+                        if (%newjson) {
+                                my $json = JSON->new->allow_nonref;
+                                $json = $json->canonical('1');
+                                my $encoded = $json->pretty->encode(\%newjson);
+                                if (open my $newfh, '+>', $eventsjsonfile) {
+                                        print $newfh $encoded;
+                                        close $newfh;
+                                } else {
+                                        die "Failed to open file $eventsjsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+                                }
+                        }
+                }
+                untie %temp;
+        }
+}

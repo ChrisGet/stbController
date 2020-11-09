@@ -200,8 +200,9 @@ button:hover {
 	left:1%;
 	top:0;
 	width:20%;
-	height:20%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #settingsPageHeader h1 {
 	display:inline-block;
@@ -403,6 +404,7 @@ button:hover {
 	margin-top:0.3%;
 	height:auto;
 	width:auto;
+	min-width:25%;
 	padding:2px;
 	overflow:auto;
 	vertical-align:top;
@@ -425,6 +427,40 @@ button:hover {
 	margin:0;
 	color:#333333;
 	position:relative;
+}
+#gridModeSwitch {
+	position:absolute;
+	left:50%;
+	transform:translateX(-50%);
+	top:0;
+	height:2.5%;
+	width:30%;
+	border-radius:5px;
+	border:1px solid #333333;
+}
+.gridModeDiv {
+	display:inline-block;
+	width:50%;
+	height:100%;
+	position:relative;	
+}
+.gridModeDiv:hover {
+	cursor:pointer;
+}
+.gridModeDiv p {
+	display:inline-block;
+	font-size:1.2vh;
+	margin:0;
+	color:#333333;
+	position:relative;	
+	top:50%;
+	transform:translateY(-50%);	
+}
+.gridModeDiv.selected {
+	background-color:green;
+}
+.gridModeDiv.selected p {
+	color:white;
 }
 #gridTableHolder {
 	display:inline-block;
@@ -803,7 +839,7 @@ button.highlighted {
 .gridButton.clear {
    	background-color:red;
    	width:40px;
-   	font-size: 1.2vh;
+   	font-size: 1vh;
 }
 .gridButton.clear:hover {
    	background:#800000;
@@ -915,8 +951,9 @@ table.stbConfigGrid {
 	left:1%;
 	top:0;
 	width:20%;
-	height:20%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #stbDataTextDiv h1 {
 	display:inline-block;
@@ -1526,6 +1563,7 @@ p.narrow {
 	padding:0;
 	height:90%;
 	background-color:#CCCCCC;
+	background-color:#07575b;
 	color:white;
 	font-size:1.2vh;
 	border:none;
@@ -2821,13 +2859,24 @@ input[type='file'] {
 	height:98%;
 	margin-top:1%;
 }
-#stbGroupsHeader {
-	position:absolute;
-	left:1%;
-	top:0;
+.groupsPageSection {
+	display:inline-block;
 	width:20%;
-	height:20%;
+	height:99%;
+	vertical-align:top;
+	float:left;
+	margin:0 1%;
+}
+.groupsPageSection.grouplist {
+	width:75%;
+}
+#stbGroupsHeader {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:16%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #stbGroupsHeader h1 {
 	display:inline-block;
@@ -2854,10 +2903,8 @@ input[type='file'] {
 }
 #stbGroupsAvailable {
 	display:inline-block;
-	width:75%;
+	width:99%;
 	height:100%;
-	float:right;
-	margin-right:2%;
 	overflow:auto;
 	text-align:left;
 }
@@ -2936,6 +2983,9 @@ input[type='file'] {
 	border-radius:3px;
 	background-color:#008000;
 }
+.stbGroupIcon.problem {
+	background-color:red;
+}
 .stbGroupIcon p {
 	display:inline-block;
 	margin:0;
@@ -2943,7 +2993,7 @@ input[type='file'] {
 	top:50%;
 	transform:translateY(-50%);
 	font-size:1.3vh;
-	color:white;
+	color:white !important;
 }
 .memStringHolder {
 	display:inline-block;
@@ -2984,18 +3034,26 @@ input[type='file'] {
 .stbGroupBtn.Copy {
 	background-image:url("../images/copySeq.png");
 }
+#createNewGroupBtnHolder {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:center;
+}
 .newSTBGroup {
+	display:inline-block;
 	border:none;
 	background-color:#29a329;
-   	padding: 5px 10px;
    	border-radius: 5px;	
    	color: #ffffff;
    	font-size: 16px;
 	display:inline-block;
 	word-wrap:break-word;	
-	position:absolute;
-	left:4%;
-	top:20%;
+	padding:0 10px;
+	height:50%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);	
 }
 .newSTBGroup:hover {
    	background: #235e11;
@@ -3100,7 +3158,7 @@ input[type='file'] {
 #createSTBGroupBtn {
 	display:inline-block;
 	width:15%;
-	height:55px;
+	height:10%;
 	border:none;
 	border-radius:3px;
 	font-size:1.2vh;
@@ -3123,7 +3181,7 @@ input[type='file'] {
 #clearSTBGroupAreaBtn {
 	display:inline-block;
 	width:15%;
-	height:55px;
+	height:10%;
 	border:none;
 	border-radius:3px;
 	font-size:1.3vh;
@@ -3147,13 +3205,24 @@ input[type='file'] {
 	height:98%;
 	margin-top:1%;
 }
-#schedulePageHeader {
-	position:absolute;
-	left:1%;
-	top:0;
+.schedPageSection {
+	display:inline-block;
 	width:20%;
-	height:20%;
+	height:99%;
+	vertical-align:top;
+	float:left;
+	margin:0 1%;
+}
+.schedPageSection.schedlist {
+	width:75%;
+}
+#schedulePageHeader {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #schedulePageHeader h1 {
 	display:inline-block;
@@ -3178,11 +3247,16 @@ input[type='file'] {
 	font-size:1.4vh;
 	color:#737373;
 }
+#createNewSchedBtnHolder {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:center;
+}
 #evSchedsAvailable {
 	display:inline-block;
-	width:75%;
+	width:99%;
 	height:99%;
-	float:right;
 	overflow:auto;
 	text-align:left;
 }
@@ -3458,7 +3532,7 @@ input[type='file'] {
 }
 #scheduledEventSubmitBtn {
 	position:relative;
-	top:0;
+	top:1%;
 	left:0;
 	transform:none;
 	padding:0;
@@ -3651,3 +3725,81 @@ input[type='file'] {
 	background-color:#a62626;
 }
 /** Events Schedule Page **/
+
+/** STB Control - STB Groups **/
+#groupControlHolder {
+	display:inline-block;
+	position:relative;
+	width:900px;
+	height:100%;
+	border-radius:5px;
+	overflow:hidden;
+	/*box-shadow: 0 0 8px black;
+	margin:0 8px 8px 8px;*/
+}
+#groupControlHeader {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	background-color:#07575b;
+	position:relative;
+}
+#groupControlHeader p {
+	display:inline-block;
+	width:100%;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:white;
+	font-size:1.5vh;
+}
+#groupControlListHolder {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:95%;
+	overflow:auto;
+	text-align:center;
+}
+.groupSTBControlRow {
+	display:inline-block;
+	width:100%;
+	height:10%;
+}
+.groupSTBControlRow:hover {
+	cursor:pointer;
+}
+.groupSTBControlRow:nth-of-type(even) {
+	background-color:#cccccc;
+}
+.groupSTBControlRow.selected {
+	background-color:orange;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	border:2px solid #cc8500;
+}
+.groupControlRowSection {
+	display:inline-block;
+	width:30%;
+	height:100%;	
+	text-align:center;
+	vertical-align:top;
+}
+.groupControlRowSection p {
+	display:inline-block;
+	width:100%;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:#333333;
+	font-size:1.3vh;
+}
+.groupControlRowSection.members {
+	width:70%;
+	overflow:auto;
+}
+/** STB Control - STB Groups **/
+

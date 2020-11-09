@@ -1,6 +1,18 @@
 <!-- hide script from old browsers
 var isFirefox = typeof InstallTrigger !== 'undefined';
 var seqnamereq;
+var seqpos;
+var seqpos2;
+var range;	// ##### This variable holds data on the range that controls adding nodes to the sequence areas
+var schedseqpos;
+var schedseqcarpos;
+var schedseqrange;
+var lastgroupselected = '';	// GLOBAL variable to store last selected group for STB control
+var stbHash = {};		// Create the GLOBAL stbHash object (hash) to handle selected STBs from the grid
+var lastRow;			// Create the GLOBAL lastRow variable (scalar) to record last selected row
+var lastRowHL;			// Create the GLOBAL lastRowHL variable (scalar) to record last highlighted row
+var gridcontmode = 'stbgrid';	// GLOBAL variable to store the stb control mode. "stbs" or "groups"
+var highlightedSTBs = {};	// Create the GLOBAL highlightedSTBs variable (hash)
 
 window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
@@ -38,11 +50,19 @@ window.onload = function () {	// Run these functions when the page first loads
 	$(document).on('change', '#remoteSelector', function() {
 		remoteChange(this);
 	});
-	
+
 	$(document).on('click', '.browse-btn', function() {
 		$('#real-input').click();
 	});
 
+	$(document).on('click', '.menuBtn', function() {
+		seqpos2 = '';
+		range = '';
+		schedseqpos = '';
+		schedseqrange = '';
+	});
+
+	// This controls the on change function of the input field for selecting a STRESS sequence file for input
 	$(document).on('change', '#real-input', function() {
 		var uploadButton = document.querySelector('.browse-btn');
 		var fileInfo = document.querySelector('.file-info');
@@ -52,7 +72,7 @@ window.onload = function () {	// Run these functions when the page first loads
 			alert('ERROR: The file you have selected does not appear to be a .txt file. Please try again');
 			fileInfo.innerHTML = 'Select script for upload';
 			realInput.value = '';
-			$('#importStressBtn').attr("disabled","true");			
+			$('#importStressBtn').attr("disabled","true");
 		} else if (name.length > 28) {
 			alert('The length of your import file name exceeds 25 characters which is the limit for new sequence names. You will have to provide a new name for the imported sequences.');
 			seqnamereq = 'true';
@@ -83,21 +103,36 @@ window.onload = function () {	// Run these functions when the page first loads
 		$('#real-input2').click();
 	});
 
+	// This controls the on change function of the input field for selecting a NATIVE sequence file for input
 	$(document).on('change', '#real-input2', function() {
 		var uploadButton = document.querySelector('.browse-btn2');
 		var fileInfo = document.querySelector('.file-info2');
 		var realInput = document.getElementById('real-input2');
 		var name = realInput.value.split(/\\|\//).pop();
-		if (!name.match(/\.txt$/)) {
+		if (!name.match(/\.txt$|\.json$/i)) {
 			alert('ERROR: The file you have selected does not appear to be a .txt file. Please try again');
 			fileInfo.innerHTML = 'Select script for upload';
 			realInput.value = '';
-			$('#importNativeBtn').attr("disabled","true");			
+			$('#importNativeBtn').attr("disabled","true");
 		} else {
 			var short = shorten(name,28)
 			fileInfo.innerHTML = short;
 			$('#importNativeBtn').removeAttr("disabled");
 		}
+	});
+
+	$(document).on('keyup click', '#sequenceArea', function() {
+		logSeqCaratPos();
+	});
+	$(document).on('keyup click', '#sequenceEventArea', function() {
+		logSchedSeqCaratPos();
+	});
+	$(document).on('click', '.gridModeDiv', function() {
+		gridModeSwitch(this);
+	});
+
+	$(document).on('click', '.groupSTBControlRow', function() {
+		groupSTBControl(this);
 	});
 }
 
@@ -105,7 +140,7 @@ function shorten (fullStr, strLen, separator) {
 	if (fullStr.length <= strLen) return fullStr;
 
 	separator = separator || '...';
-	
+
 	var sepLen = separator.length,
 	charsToShow = strLen - sepLen,
 	frontChars = Math.ceil(charsToShow/2),
@@ -119,10 +154,6 @@ function shorten (fullStr, strLen, separator) {
 window.onunload = window.onbeforeunload = function ()  {	// Run the logLastBoxes function when the page is unloaded (Refreshed or tab is navigated to elsewhere
 	logLastBoxes();
 }
-
-var stbHash = {};	// Create the GLOBAL stbHash object (hash) to handle selected STBs from the grid
-var lastRow;		// Create the GLOBAL lastRow variable (scalar) to record last selected row
-var lastRowHL;		// Create the GLOBAL lastRowHL variable (scalar) to record last highlighted row
 
 function dateTime() {	// This function handles the updating of the real time server clock on the main page
 	$.ajax({
@@ -215,7 +246,6 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 			},
 			error : function() {
 				$('#dynamicTitle').text('Click here to change the default title!');
-	
 			}
 		});
 	} else if ($option == 'set') {
@@ -255,8 +285,21 @@ function dynamicTitle($option) {	// This function handles the editing of the Tit
 
 function stbControl($action,$commands) {	// This function handles the control of STBs from the STB Grid
 	var comstring = '';
-	for (var key in stbHash) {
-		comstring += key + ',';
+	if (gridcontmode.match(/stbgroups/)) {
+		if (lastgroupselected) {
+			//console.log('Sending group control to group ' + lastgroupselected);
+			var groupname = $('#'+lastgroupselected).find('.groupControlRowSection:first').text();
+			//alert(groupname);
+			//return;
+			comstring = groupname;
+		} else {
+			alert('You have not selected any groups to be controlled!');
+			return;
+		}
+	} else {
+		for (var key in stbHash) {
+			comstring += key + ',';
+		}
 	}
 
 	var comstring2 = comstring.replace(/,$/,''); // Remove any trailing commas from comstring
@@ -338,6 +381,36 @@ function pageCall ($element, $page) {	// This function allows calling of html pa
 }
 // ############### End of pageCall function
 
+function controllerPage() {
+	if (!gridcontmode) {
+		gridcontmode = 'stbgrid';
+	}
+	$.ajax({
+		type: 'GET',
+		url: 'cgi-bin/scripts/pages/stbGrid.pl',
+		data: {
+			'mode' : gridcontmode,
+			'wholepage' : 'true'
+		},
+		success : function(result) {
+			$('#dynamicPage').html(result);
+			if (gridcontmode.match(/stbgrid/)) {
+				getLastBoxes();
+			} else if (gridcontmode.match(/stbgroups/)) {
+				if (lastgroupselected) {
+					$('#' + lastgroupselected).click();
+					$('#groupControlListHolder').animate({
+					        scrollTop: $('#groupControlListHolder #' + lastgroupselected).position().top
+					}, 'slow');
+				}
+			}
+		},
+		error : function() {
+			alert('Oops an error occurred when accessing that page. If the problem persists, contact you system administrator for assistance');
+		}
+	});
+}
+
 function getLastBoxes() {	// This function gets the list of last STBs selected in the grid and sets them to selected in the STB grid. It uses the client browsers localStorage ability
 	var loaded = document.getElementById('matrixLoaded');
 	if (!loaded) {
@@ -351,7 +424,9 @@ function getLastBoxes() {	// This function gets the list of last STBs selected i
 			for (var i=0;i<arrayLength;i++) {
 				var stb = boxes[i];
 				colorToggle(stb,'selected');
-			}		
+			}
+		} else {
+			console.log('No last boxes found');
 		}
 	}
 }
@@ -377,12 +452,12 @@ function validate() {	// This function validates and submits the data given when
         	alert("Invalid Columns selection, please enter the number of columns you require (Numbers only)");
 		document.forms["createGridConfig"]["columns"].value = "";
 		return false;
-	} 
+	}
 	if (y == null || y == "" || (matchy)) {
 	        alert("Invalid Rows selection, please enter the number of rows you require (Numbers only)");
 		document.forms["createGridConfig"]["rows"].value = "";
-		return false;   
-	} 
+		return false;
+	}
 
 	if (x > 24) {
 		var c = confirm('You have chosen to have more than the recommended maximum of 24 columns. This can cause layout problems. Do you want to continue?');
@@ -399,9 +474,9 @@ function validate() {	// This function validates and submits the data given when
 	}
 
 	$(document).ready(function() {
-		$.ajax( { 
+		$.ajax( {
 			type: "POST",
-			url: 'cgi-bin/scripts/pages/forms/createGridConfig.cgi', 
+			url: 'cgi-bin/scripts/pages/forms/createGridConfig.cgi',
 			data: $('#createGridConfig').serialize(),
 		});
 	});
@@ -433,7 +508,7 @@ function editSTBData($name) {	// This function handles editing details of an STB
 			return;
 		}
 	}
-	
+
 	// Check the STB name only contains valid characters
         var vcharsregex = new RegExp(/([^a-zA-Z0-9\.\-\:\_ ])/g);
         if (name.match(vcharsregex)) {
@@ -500,10 +575,18 @@ function editSTBData($name) {	// This function handles editing details of an STB
                         type: "POST",
                         url: 'cgi-bin/scripts/pages/forms/editSTBData.cgi',
                         data: $('#editSTBConfigForm').serialize(),
+			success : function(result) {
+				if (result.match(/Success/)) {
+					var conf = confirm("STB data updated successfully\n\nClick OK to return to the STB Data grid or Cancel to remain on this page");
+					if (conf == true) {
+						$('#menuSTBData').click();
+					}
+				} else {
+					alert('ERROR: STB data settings failed to update, please try again or contact your system administrator if the problem persists.');
+				}
+			}
                 });
         });
-	alert('Data for STB "' + $name + '" was updated');
-	perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');
 	return false;
 }
 // ############### End of editSTBData function
@@ -554,14 +637,14 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 		if ($override == 'highlighted') {
         	        item.className = 'stbButton highlighted';
 			delete stbHash[$id];
-			highlightedSTBs[$id] = '1';		
+			highlightedSTBs[$id] = '1';
 	        }
 		return;
 	}
 
 	var restrict = $('#restrictSTBGridRows').val();
 	if (restrict) {
-		// The code below will check to see if the user has selected more than one STB in the same column. 
+		// The code below will check to see if the user has selected more than one STB in the same column.
 		// The last clicked cell in a column will be selected while the rest will be deselected
 		var naym = item.name;
 		var myColMatch = /col(\d+)s(tb)/;
@@ -576,7 +659,7 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 	        		delete stbHash[key];
 			}
 		}
-		
+
 		for (var key in highlightedSTBs) {
 			var thing = document.getElementById(key);
         		var matchName = thing.name;
@@ -586,7 +669,7 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
         		}
 		}
 	}
-	
+
 	if (item.className == 'stbButton deselect') {
 		item.className = 'stbButton selected';
 		stbHash[$id] = 1;
@@ -603,8 +686,6 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 	}
 }
 // ############### End of colorToggle function
-
-var highlightedSTBs = {};	// Create the GLOBAL highlightedSTBs variable (hash)
 
 function rows($row) {	// This function handles the row selection buttons on the STB grid
 	var row = document.getElementById($row);			// Save the $row data in var 'row'
@@ -638,7 +719,7 @@ function rows($row) {	// This function handles the row selection buttons on the 
 		}
 		stbHash = {};
 	}
-	
+
 	for(var i=0;i<count.length;i++) {	// While 'i' is less than the number of cells
 		var ayedee = count[i].id;	// Get the buttons id and save it to 'ayedee'
 		var regex = /^Row.*/;
@@ -652,6 +733,10 @@ function rows($row) {	// This function handles the row selection buttons on the 
 // ############### End of rows function
 
 function arrowDir($opt) {	// This function handles the Row Up and Down buttons on the STB controller
+	if (gridcontmode.match(/groups/)) {
+		alert('Feature not available with STB Groups control mode');
+		return;
+	}
 	var restrict = $('#restrictSTBGridRows').val();
 	if (!restrict) {
 		alert('This feature is disabled while the "STB Grid Row Selection" option is disabled in the settings.');
@@ -670,12 +755,12 @@ function arrowDir($opt) {	// This function handles the Row Up and Down buttons o
 	if (!lastRow2) {
 		rows('Row1');
 	} else {
-		var bits = lastRow2.split("w"); 		// lastRow will be like 'RowX' so we split by 'w' to get the number 
+		var bits = lastRow2.split("w"); 		// lastRow will be like 'RowX' so we split by 'w' to get the number
 		var num = bits[1];
 		var totalrows = document.getElementById('totalRows').value;
 		if ($opt == 'INC') {
 			if (num == totalrows) {
-				rows('Row1');				
+				rows('Row1');
 			} else {
 				num++;
 				var newrow = 'Row' + num;
@@ -685,7 +770,7 @@ function arrowDir($opt) {	// This function handles the Row Up and Down buttons o
 		if ($opt == 'DEC') {
 			if (num == '1') {
 				var newrow = 'Row' + totalrows;
-				rows(newrow);				
+				rows(newrow);
 			} else {
 				num--;
 				var newrow = 'Row' + num;
@@ -702,7 +787,7 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 	if (!$area) {
 		$area = 'sequenceArea';
 	}
-	
+
 	if ($id.match(/^STB\d+$/)) {
 		var exists = $('#' + $area).find("[name='" + $id + "']")[0];
 		if (exists) {
@@ -717,7 +802,7 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 	btn.value = $text;
 	var newid = $id + '-' + sequenceIndex;
 	btn.id = newid
-	btn.name = $id; 
+	btn.name = $id;
 	sequenceIndex++;
 	var newonclick = "removeFromSeq('" + newid + "','" + $area + "')";
 	btn.setAttribute("class", "seqAreaBtn");
@@ -726,50 +811,57 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 }
 // ############### End of seqTextUpdate function
 
+var lastset;
 function insertButtonAtCaret($btn,$area) {	// This function handles the second part of adding STBs and Commands in to the dynamic areas on the STB Groups, Sequences, and Events Schedule creation and editing pages
 	if (!$area) {
 		$area = 'sequenceArea';
 	}
 
     	$('#' + $area).focus();
-    	var sel, range;
+    	var sel;
     	if (window.getSelection) {
 		// IE9 and non-IE
-        	sel = window.getSelection();
-        	if (sel.getRangeAt && sel.rangeCount) {
-            		range = sel.getRangeAt(0);
-            		range.deleteContents();
+		sel = window.getSelection();
+		if (!range){
+        		if (sel.getRangeAt && sel.rangeCount) {
+            			range = sel.getRangeAt(0);
+            			range.deleteContents();
+			}
+		} else {
+			if (seqpos2){
+				range.setStartAfter(seqpos2);
+			}
+		}
+            	// Range.createContextualFragment() would be useful here but is
+            	// only relatively recently standardized and is not supported in
+            	// some browsers (IE9, for one)
+            	var el = document.createElement("div");
+		var starttext = document.createTextNode('\u00A0');
+		var endtext = document.createTextNode('\u00A0');
 
-            		// Range.createContextualFragment() would be useful here but is
-            		// only relatively recently standardized and is not supported in
-            		// some browsers (IE9, for one)
-            		var el = document.createElement("div");
-			var starttext = document.createTextNode('\u00A0');
-			var endtext = document.createTextNode('\u00A0');
+		if (isFirefox) {	// For Firefox browser we add whitespace to the start and end of the inserted button
+                        el.appendChild(starttext);
+                        el.appendChild($btn);
+                        el.appendChild(endtext);
+                } else {
+                        el.appendChild($btn);
+                }
+    		var frag = document.createDocumentFragment(), node, lastNode;
+    		while ( (node = el.firstChild) ) {
+        		lastNode = frag.appendChild(node);
+    		}
 
-			if (isFirefox) {	// For Firefox browser we add whitespace to the start and end of the inserted button
-                                el.appendChild(starttext);
-                                el.appendChild($btn);
-                                el.appendChild(endtext);
-                        } else {
-                                el.appendChild($btn);
-                        }
-			
-            		var frag = document.createDocumentFragment(), node, lastNode;
-            		while ( (node = el.firstChild) ) {
-                		lastNode = frag.appendChild(node);
-            		}
-            		range.insertNode(frag);
+		range.insertNode(frag);
 
-            		// Preserve the selection
-            		if (lastNode) {
-                		range = range.cloneRange();
-                		range.setStartAfter(lastNode);
-                		range.collapse(true);
-                		sel.removeAllRanges();
-                		sel.addRange(range);
-            		}
-        	}
+    		// Preserve the selection
+    		if (lastNode) {
+        		range = range.cloneRange();
+        		range.setStartAfter(lastNode);
+        		seqpos2 = lastNode;
+			range.collapse(true);
+        		sel.removeAllRanges();
+        		sel.addRange(range);
+    		}
     	} else if (document.selection && document.selection.type != "Control") {
         	// IE < 9
         	document.selection.createRange().appendChild($btn);
@@ -779,7 +871,7 @@ function insertButtonAtCaret($btn,$area) {	// This function handles the second p
 
 function clearSeqArea($area) {	// This function handles clearing of the dynamic areas on the creation and editing pages for STB Groups, Sequences, and Events Schedule
 	document.getElementById($area).innerHTML = '';
-	//sequenceIndex = '1';
+	seqpos2 = '';
 }
 // ############### End of clearSeqArea function
 
@@ -796,6 +888,15 @@ function removeFromSeq($this,$area) {	// This function handles removing specific
                 var newdata = data.replace(/(?:\&nbsp;){3,}/g, "\&nbsp\;\&nbsp\;");
                 document.getElementById($area).innerHTML = newdata;
         }
+
+	// ##### Once you remove a child node from the sequence area, we need to locate the last child node in that div
+	// ##### If there aren't any (sequence area is empty), reset the last node variable "seqpos2" to null
+	var ln = document.getElementById('sequenceArea').lastChild;
+	if (ln) {
+		seqpos2 = ln;
+	} else {
+		seqpos2 = '';
+	}
 }
 // ############### End of removeFromSeq function
 
@@ -828,7 +929,7 @@ function addSeqSequence() {	// This function handles adding of Sequences to the 
 	if(!seq) {
 		return;
 	}
-	seqTextUpdate(seq,seq,'sequenceEventArea');
+	schedSeqTextUpdate(seq,seq,'sequenceEventArea');
 }
 // ############### End of addSeqGroup function
 
@@ -936,7 +1037,7 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 		$('#seqExportOverlay-' + $seqn).css('display','inline-block');
 		return;
 	}
-	
+
 	if ($seq.match(/multi-export/)) {
 		$('.seqExpCheck').each(function() {
 			if ($(this).is(':checked')) {
@@ -946,7 +1047,7 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 				}
 			}
 		});
-		
+
 		if (!$list) {
 			alert('Please select at least one sequence to export');
 			return;
@@ -954,7 +1055,7 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 		//alert($list);
 		//return;
 	}
-	
+
 	$.ajax({
 		type : 'GET',
 		url : 'cgi-bin/scripts/sequenceControl.pl',
@@ -1105,10 +1206,8 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 					}
 					seqTextUpdate(id,newtext);
 				}
-			}	
-			
+			}
 		}
-	
 	});
 }
 // ############### End of editSequencePage2 function
@@ -1119,7 +1218,7 @@ function groupValidate($origname) {	// This function handles validation and subm
 	var match = regex.exec(name);
 	var invalidnameregex = /[^\w\s]|\_+/;	// Check the group name does not contain any non alphanumeric characters along with "_ + -"
 	var invalidnamematch = invalidnameregex.exec(name);
-	
+
 	if (!name) {
 		alert('Please give the new group a name!');
 	} else {
@@ -1157,19 +1256,21 @@ function groupValidate($origname) {	// This function handles validation and subm
 										return;
 									}
 								}
+								perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
 								text = 'Success! Group "' + $origname + '" was updated to "' + name + '"';
 								alert(text);
-								perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
-								pageCall('dynamicPage','web/stbGroupsPage.html');
-								setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+								$('#menuGroups').click();
+								//pageCall('dynamicPage','web/stbGroupsPage.html');
+								//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 							}
 						});
 					} else {
 						text = 'Success! Group "' + $origname + '" was updated';
 						alert(text);
 						perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
-						pageCall('dynamicPage','web/stbGroupsPage.html');
-						setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+						$('#menuGroups').click();
+						//pageCall('dynamicPage','web/stbGroupsPage.html');
+						//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 					}
 				} else {
 					$.ajax({
@@ -1187,10 +1288,11 @@ function groupValidate($origname) {	// This function handles validation and subm
 								}
 							}
 							var string = members.join(',');
-							alert('Success! Group "' + name + '" has been created');
 							perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
-							pageCall('dynamicPage','web/stbGroupsPage.html');
-                					setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+							alert('Success! Group "' + name + '" has been created');
+							$('#menuGroups').click();
+							//pageCall('dynamicPage','web/stbGroupsPage.html');
+                					//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
 						}
 					});
 				}
@@ -1205,12 +1307,13 @@ function deleteGroup($grp) {	// This function handles deletion of an existing ST
 	if (c == false) {
 		return;
 	}
-	
+
 	if (c == true) {
 		perlCall('','scripts/stbGroupControl.pl','action','Delete','group',$grp);
 		alert($grp + ' was deleted');
-		pageCall('dynamicPage','web/stbGroupsPage.html');
-		perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu');
+		$('#menuGroups').click();
+		//pageCall('dynamicPage','web/stbGroupsPage.html');
+		//perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu');
 	}
 }
 // ############### End of deleteGroup function
@@ -1388,16 +1491,17 @@ function newSchedValidate($event) {	// This function handles validation and subm
 	var activestate = document.getElementById('eventActive').value;
 
 	var wholething = activestate + '|' + mins + '|' + hours + '|' + dom + '|' + month + '|' + days + '|' + sequences + '|' + boxes;
-		
+
 	if ($event) {
-		alert('Success! Your scheduled event was updated');
 		perlCall('','scripts/eventScheduleControl.pl','action','Edit','eventID',$event,'details',wholething);
+		alert('Success! Your scheduled event was updated');
 	} else {
-		alert('Success! Your new scheduled event has been created');
 		perlCall('','scripts/eventScheduleControl.pl','action','Add','eventID','','details',wholething);
+		alert('Success! Your new scheduled event has been created');
 	}
-	pageCall('dynamicPage','web/eventsSchedulePage.html');
-	setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
+	$('#menuSchedule').click();
+	//pageCall('dynamicPage','web/eventsSchedulePage.html');
+	//setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);
 }
 // ############### End of newSchedValidate function
 
@@ -1472,29 +1576,61 @@ function editSchedulePage2($event) {	// This function handles the second part of
 			var seqmatch = seqregex.exec(result);
 
 			var members = stbmatch[1].split(',');
+			var mstbcnt = '0';
+			var mgrpcnt = '0';
+			var missingstbs = '';
+			var missinggroups = '';
 			for (var i = 0; i < members.length; i++) {
 				var bits = members[i].split("~");
 				var id = bits[0];
 				var text = bits[1];
-				var regex = /^\s*\:\s*$|^\s*\-\s*$/;    // If var text is like ':' or '-' it will be skipped from being added.
+				var regex = /^\s*\:\s*$|^\s*\-\s*$|^groupmissing/;    // If var text is like ':' or '-' it will be skipped from being added.
 		                var match = regex.exec(text);
 		                if (!match)  {
 					seqTextUpdate(id,text);
 				} else {
-					alert('WARNING: A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+					if (id.match(/STB/i)) {
+						missingstbs += id + ', ';
+						mstbcnt++;
+					} else if (text.match(/groupmissing/)) {
+						missinggroups += id + ', ';
+						mgrpcnt++;
+					}
 				}
 			}
 
+			missingstbs = missingstbs.replace(/,\s*$/,'');
+			missinggroups = missinggroups.replace(/,\s*$/,'');
+
+			if (missingstbs && missinggroups) {
+				//alert('WARNING: A box that was included in this scheduled event has since been deconfigured or setup as a spacer. It will not be listed in the Target STB area below and will be removed from this Scheduled Event when you hit Update');
+				alert("WARNING: " + mstbcnt + " STB(s) and " + mgrpcnt + " STB group(s) included in this scheduled event were not found in the data files. Please review the target STBs for this event\n\nMissing STBs:\n\n" + missingstbs + "\n\n\nMissing STB Groups:\n\n" + missinggroups);
+			} else if (missingstbs) {
+				alert("WARNING: " + mstbcnt + " STB(s) included in this scheduled event were not found in the data files. Please review the target STBs for this event\n\nMissing STBs:\n\n" + missingstbs);
+			} else if (missinggroups) {
+				alert("WARNING: " + mgrpcnt + " STB group(s) included in this scheduled event were not found in the data files. Please review the target STBs for this event\n\nMissing STB Groups:\n\n" + missinggroups);
+			}
+
 			var sequences = seqmatch[1].split(',');
+			var missingseqs = '';
+			var mseqscnt = '0';
 			for (var i = 0; i < sequences.length; i++) {
 				var bits = sequences[i].split("~");
                                 var id = bits[0];
                                 var text = bits[1];
 				if (text.match(/^-$/)) {
-					alert('WARNING: A sequence that was included in this scheduled event could not be found. It may have been renamed or deleted. Please verify the sequences and update this scheduled event.');
+					//alert('WARNING: A sequence that was included in this scheduled event could not be found. It may have been renamed or deleted. Please verify the sequences and update this scheduled event.');
+					mseqscnt++;
+					missingseqs += id + ', ';
 				} else {
-					seqTextUpdate(id,text,'sequenceEventArea');
+					//seqTextUpdate(id,text,'sequenceEventArea');
+					schedSeqTextUpdate(id,text,'sequenceEventArea');
 				}
+			}
+
+			missingseqs = missingseqs.replace(/,\s*$/,'');
+			if (missingseqs) {
+				alert("WARNING: " + mseqscnt + " sequence(s) included in this scheduled event were not found in the data files. Please review the sequence selection for this event\n\nMissing Sequences:\n\n" + missingseqs);
 			}
 		}
 	});
@@ -1675,7 +1811,7 @@ function rowRestrictionToggle($this) {
 	} else {
 		clicked.attr('class','rowRestrictSlider on');
 	}
-	
+
 	$.ajax({
 		type : 'POST',
 		url : 'cgi-bin/scripts/settings.pl',
@@ -1692,7 +1828,6 @@ function rowRestrictionToggle($this) {
 			}
 		},
 	});
-	
 }
 
 function importStressScript() {
@@ -1703,14 +1838,14 @@ function importStressScript() {
 		alert('You have not selected a valid .txt file. Please try again.');
 		return;
 	}
-	
+
 	if (!name || !name.match(/\S+/)) {
 		var c = confirm('You have not provided a name or prefix, so the filename of the imported script will be used to name the sequence(s). Continue?');
 		if (c == false) {
 			return;
 		}
 	}
-	
+
 	var formData = new FormData();
 	formData.append('file', $('#real-input')[0].files[0]);
 	if (name) {
@@ -1739,7 +1874,7 @@ function importNativeScript() {
 	var file = $('#real-input2').val();
 	//var name = $('#importStressName2').val();
 
-	if (!file || !file.match(/\.txt$/)) {
+	if (!file || !file.match(/\.txt$|\.json$/i)) {
 		alert('You have not selected a valid .txt file for native sequence import. Please try again.');
 		return;
 	}
@@ -1806,4 +1941,183 @@ function seqStateChange($obj,$sequence) {
 	});
 }
 
+function logSeqCaratPos() {
+	seqpos = $('#sequenceArea').caret('position');
+	console.log('New caret position at ' + seqpos.left + ' - ' + seqpos.top);
+	seqpos2 = document.getSelection().anchorNode;
+}
+
+//var schedseqpos; <----- Global var set at top of page
+//var schedseqrange; <----- Global var set at top of page
+// This function handles the first part of adding sequences in to the dynamic sequenceEventArea areas on the Events Schedule creation and editing pages
+function schedSeqTextUpdate($id,$text,$area) {
+	if (!$area) {
+		$area = 'sequenceEventArea';
+	}
+
+	var btn = document.createElement("input");
+	btn.type = 'button';
+	btn.value = $text;
+	var newid = $id + '-' + sequenceIndex;
+	btn.id = newid
+	btn.name = $id;
+	sequenceIndex++;
+	var newonclick = "removeFromSchedSeq('" + newid + "','" + $area + "')";
+	btn.setAttribute("class", "seqAreaBtn");
+	btn.setAttribute("onclick", newonclick);
+	insertButtonAtCaretSchedSeq(btn,$area);
+}
+// ############### End of schedSeqTextUpdate function
+
+// This function handles the second part of adding STBs and Commands in to the dynamic areas on the Events Schedule creation and editing pages
+function insertButtonAtCaretSchedSeq($btn,$area) {
+	if (!$area) {
+		$area = 'sequenceEventArea';
+	}
+
+    	$('#' + $area).focus();
+    	var sel;
+    	if (window.getSelection) {
+		// IE9 and non-IE
+		sel = window.getSelection();
+		if (!schedseqrange){
+        		if (sel.getRangeAt && sel.rangeCount) {
+            			schedseqrange = sel.getRangeAt(0);
+            			schedseqrange.deleteContents();
+			}
+		} else {
+			if (schedseqpos){
+				schedseqrange.setStartAfter(schedseqpos);
+			}
+		}
+            	// Range.createContextualFragment() would be useful here but is
+            	// only relatively recently standardized and is not supported in
+            	// some browsers (IE9, for one)
+            	var el = document.createElement("div");
+		var starttext = document.createTextNode('\u00A0');
+		var endtext = document.createTextNode('\u00A0');
+
+		if (isFirefox) {	// For Firefox browser we add whitespace to the start and end of the inserted button
+                        el.appendChild(starttext);
+                        el.appendChild($btn);
+                        el.appendChild(endtext);
+                } else {
+                        el.appendChild($btn);
+                }
+    		var frag = document.createDocumentFragment(), node, lastNode;
+    		while ( (node = el.firstChild) ) {
+        		lastNode = frag.appendChild(node);
+    		}
+
+		schedseqrange.insertNode(frag);
+
+    		// Preserve the selection
+    		if (lastNode) {
+        		schedseqrange = schedseqrange.cloneRange();
+        		schedseqrange.setStartAfter(lastNode);
+        		schedseqpos = lastNode;
+			schedseqrange.collapse(true);
+        		sel.removeAllRanges();
+        		sel.addRange(schedseqrange);
+    		}
+    	} else if (document.selection && document.selection.type != "Control") {
+        	// IE < 9
+        	document.selection.createRange().appendChild($btn);
+    	}
+}
+// ############### End of insertButtonAtCaretSchedSeq function
+
+function logSchedSeqCaratPos() {
+	schedseqcarpos = $('#sequenceEventArea').caret('position');
+	console.log('New caret position at ' + schedseqcarpos.left + ' - ' + schedseqcarpos.top);
+	schedseqpos = document.getSelection().anchorNode;
+}
+
+// This function handles removing specific elements from the dynamic sequence area on the creation and editing pages of the Events Schedule
+function removeFromSchedSeq($this,$area) {
+	var rem = document.getElementById($this);
+	if (!$area) {
+		$area = 'sequenceEventArea';
+	}
+
+	document.getElementById($area).removeChild(rem);
+
+	if (isFirefox) {
+                var data = document.getElementById($area).innerHTML;
+                var newdata = data.replace(/(?:\&nbsp;){3,}/g, "\&nbsp\;\&nbsp\;");
+                document.getElementById($area).innerHTML = newdata;
+        }
+
+	// ##### Once you remove a child node from the sequenceEventArea, we need to locate the last child node in that div
+	// ##### If there aren't any (sequenceEventArea is empty), reset the last node variable "schedseqpos" to null
+	var ln = document.getElementById('sequenceEventArea').lastChild;
+	if (ln) {
+		schedseqpos = ln;
+	} else {
+		schedseqpos = '';
+	}
+}
+// ############### End of removeFromSchedSeq function
+
+// This function handles clearing of the dynamic areas on the creation and editing pages for the Events Schedule
+function clearSchedSeqArea($area) {
+	document.getElementById($area).innerHTML = '';
+	schedseqpos = '';
+}
+// ############### End of clearSchedSeqArea function
+
+function gridModeSwitch($this) {
+	var $selectid = $($this).attr('id');
+	//var $mode = 'stbgrid';
+	if ($selectid.match(/group/i)) {
+		$('#gridModeSTBs').attr('class','gridModeDiv');
+		gridcontmode = 'stbgroups';
+		logLastBoxes();
+	} else {
+		$('#gridModeGroups').attr('class','gridModeDiv');
+		gridcontmode = 'stbgrid';
+	}
+	$($this).attr('class','gridModeDiv selected');
+
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/pages/stbGrid.pl',
+		data : {
+			'mode' : gridcontmode
+		},
+		success : function(result) {
+			if (result) {
+				result = result.replace(/<div id=\"stbGrid\" class=\"controllerPageSection\">/,'');
+				result = result.replace(/\<\/div\>$/,'');
+				$('#stbGrid').html(result);
+				if (gridcontmode.match(/stbgroups/)) {
+					if (lastgroupselected) {
+						$('#' + lastgroupselected).click();
+						$('#groupControlListHolder').animate({
+						        scrollTop: $('#groupControlListHolder #' + lastgroupselected).position().top
+						}, 'slow');
+					}
+				} else if (gridcontmode.match(/stbgrid/)) {
+					getLastBoxes();
+				}
+			}
+		}
+	});
+
+}
+
+function groupSTBControl($this) {
+	var selectedid = $($this).attr('id');
+	var groupname = $($this).find('.groupControlRowSection:first').text();
+	$($this).attr('class','groupSTBControlRow selected');
+	var regexp = new RegExp(selectedid);
+	$('.groupSTBControlRow').each(function(index) {
+		if ( !$(this).attr('id').match(regexp) ) {
+			$(this).attr('class','groupSTBControlRow');
+		}
+	});
+	lastgroupselected = selectedid;		// Log this group as the last selected group for navigation purposes
+
+
+}
 // end hiding script from old browsers -->
