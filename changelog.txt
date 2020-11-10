@@ -1,0 +1,41 @@
+Multi format STB/Device Controlller
+Author: Christopher Get
+GitHub: https://github.com/ChrisGet/stbController
+
+#v2.3
+Added:
+- Disabling/Enabling of sequences. Disabled sequences are not shown on the main controller page list.
+- Sequences descriptions. Users can now add descriptions to the sequences so that other users know what they do.
+- Sequence description pops up when users hover over the sequence on the main controller page.
+- Ability to now control STB groups via the live control interface. Users can toggle between the STB grid or a list of STB groups for live control.
+- Helpful alerts when exporting sequences. Alerts will inform users of incorrect web server setup if export file locations (URL) cannot be reached.
+
+Changed:
+- Moved to JSON format for storing of STB Groups, Sequences, and Event Schedule data. Conversion is managed by legacyCheck.pl in the scripts directory.
+	Other page scripts also run legacy checking sub routines to ensure unconverted data gets converted accordingly.
+- Many javascript improvements around UI navigation, ajax requests, error messages, data validation, etc.
+
+Fixed:
+- Erratic behaviour in divs where content is added dynamically through button presses. Examples of this would be when adding STBs to a group or adding commands to a sequence.
+- Many UI improvements and tweaks to fix poor layout, incorrect font sizing, scroll bars where they aren't required, etc.
+
+#v2.1
+Added:
+- CPAN module "JSON" required
+- Ability to export sequences in both native and stress format.
+	REQUIRED: "exports" directory needs a symbolic link within the web server directory for export functionality to work properly.
+- Ability to export multiple sequences (Native format only) for importing to other STB controller instances.
+- Added support for "Search" and "Apps" Sky Q buttons.
+
+Changed:
+- STB data now stored in JSON format rather than resource hungry and clunky .db file.
+- Sky Q Bluetooth control commands are now USB HID instead of "trickplayslider" or "touchpad" as they are no longer supported.
+
+Fixed:
+- Problematic scroll in controller.css
+
+Removed:
+- DBM::Deep CPAN module reference in README.txt. Module is still used for conversion when upgrading but nowhere else.
+
+#v1.0 
+- First version of STB controller.
