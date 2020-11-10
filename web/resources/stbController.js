@@ -1072,6 +1072,12 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 				var n = d.getTime();
 				var path = '/exports/' + filename + '?' + n;
 				var url = window.location + path;
+				url = url.replace(/[^\:]\/{2,}/g,'/');	// Remove any instances of more than one '/' character, apart from http://. Replace them with a single '/'
+				// Validate the URL is reachable
+				$.get(url).fail(function () {
+				     	alert("ERROR: Unable to reach the address " + url + " for download. Please ensure you have linked the \"exports\" folder in your web server directory and it is accessible.\n\nView the README.txt file for instructions on how to do this.");
+				     	return;
+				});
 				var elem = document.createElement('a');
 				elem.href = url;
 				elem.download = filename;

@@ -183,6 +183,7 @@ sub deleteSequence {
 
 sub exportSequence {
 	my $fname = '';
+	system("rm $exportdir\/*");
 	if ($sequence) {
 		my $friendly = $sequence;
 		$friendly =~ s/\s+/_/g;
