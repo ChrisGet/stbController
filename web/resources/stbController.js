@@ -18,6 +18,7 @@ window.onload = function () {	// Run these functions when the page first loads
 	dateTime();
 	announcements();
 	dynamicTitle('get');
+	legacyCheck();
 
 	// Bind the tooltip function
         $(document).ready(function() {
@@ -1256,20 +1257,18 @@ function groupValidate($origname) {	// This function handles validation and subm
 									}
 								}
 								perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
-								text = 'Success! Group "' + $origname + '" was updated to "' + name + '"';
-								alert(text);
-								$('#menuGroups').click();
-								//pageCall('dynamicPage','web/stbGroupsPage.html');
-								//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+								alert('Success! Group "' + $origname + '" was updated to "' + name + '"');
+								setTimeout(function(){
+									$('#menuGroups').click();
+								},200);
 							}
 						});
 					} else {
-						text = 'Success! Group "' + $origname + '" was updated';
-						alert(text);
 						perlCall('','scripts/stbGroupControl.pl','action','Edit','group',name,'stbs',string,'originalName',$origname);
-						$('#menuGroups').click();
-						//pageCall('dynamicPage','web/stbGroupsPage.html');
-						//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+						alert('Success! Group "' + $origname + '" was updated');
+						setTimeout(function(){
+							$('#menuGroups').click();
+						},200);
 					}
 				} else {
 					$.ajax({
@@ -1289,9 +1288,9 @@ function groupValidate($origname) {	// This function handles validation and subm
 							var string = members.join(',');
 							perlCall('','scripts/stbGroupControl.pl','action','Add','group',name,'stbs',string);
 							alert('Success! Group "' + name + '" has been created');
-							$('#menuGroups').click();
-							//pageCall('dynamicPage','web/stbGroupsPage.html');
-                					//setTimeout(function(){perlCall('stbGroupsAvailable','scripts/pages/stbGroupsPage.pl','action','Menu')},200);
+							setTimeout(function(){
+								$('#menuGroups').click();
+							},200);
 						}
 					});
 				}
@@ -2122,5 +2121,12 @@ function groupSTBControl($this) {
 	lastgroupselected = selectedid;		// Log this group as the last selected group for navigation purposes
 
 
+}
+
+function legacyCheck() {
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/legacyCheck.pl',
+	});
 }
 // end hiding script from old browsers -->
