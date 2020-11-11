@@ -14,10 +14,13 @@ Changed:
 - Moved to JSON format for storing of STB Groups, Sequences, and Event Schedule data. Conversion is managed by legacyCheck.pl in the scripts directory.
 	Other page scripts also run legacy checking sub routines to ensure unconverted data gets converted accordingly.
 - Many javascript improvements around UI navigation, ajax requests, error messages, data validation, etc.
+- Sequence timeouts are now displayed in a different colour to help distinguish them from actual commands.
 
 Fixed:
 - Erratic behaviour in divs where content is added dynamically through button presses. Examples of this would be when adding STBs to a group or adding commands to a sequence.
 - Many UI improvements and tweaks to fix poor layout, incorrect font sizing, scroll bars where they aren't required, etc.
+- Grid creation issue (NEW). On initial grid setup, the grid would not get created. A form serialization technique within stbController.js had stopped working. This method was overkill and clunky anyway, so the method was changed to pass direct values in to the POST request instead.
+- Strange placement of "Create New Grid" button which could potentially block user input in to one of the required fields.
 
 #v2.1
 Added:
