@@ -119,7 +119,11 @@ HEAD
 		my @coms = split(',',$titlestring);
 		my $comstring = '';
 		foreach my $com (@coms) {
-			$comstring .= '<div class="seqListIconOuter"><div class="seqListIcon"><p>' . $com . '</p></div><div class="seqListArrowDiv"></div></div>';
+			my $classextra = '';
+			if ($com =~ /^t\d+$/) {
+				$classextra = 'timeout';
+			}
+			$comstring .= "<div class=\"seqListIconOuter\"><div class=\"seqListIcon $classextra\"><p>$com</p></div><div class=\"seqListArrowDiv $classextra\"></div></div>";
 		}
 
 		my $description = $sequences{$key}{'description'} // '';

@@ -809,7 +809,11 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 	btn.name = $id;
 	sequenceIndex++;
 	var newonclick = "removeFromSeq('" + newid + "','" + $area + "')";
-	btn.setAttribute("class", "seqAreaBtn");
+	if ($text.match(/Timeout/i)) {
+		btn.setAttribute("class", "seqAreaBtn timeout");
+	} else {
+		btn.setAttribute("class", "seqAreaBtn");
+	}
 	btn.setAttribute("onclick", newonclick);
 	insertButtonAtCaret(btn,$area);
 }

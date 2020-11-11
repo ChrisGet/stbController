@@ -1258,6 +1258,10 @@ table.stbConfigGrid {
 	height:auto;
         font-size:1.3vh;
 }
+.seqAreaBtn.timeout {
+	background-color:#999966;
+	border:1px solid #999966;
+}
 .seqAreaBtn:hover {
 	background-color:#ff6600;
 	cursor:pointer;
@@ -2735,6 +2739,11 @@ input[type='file'] {
 	border-radius:3px 2px 2px 3px;
 	background-color:#008000;
 }
+.seqListIcon.timeout {
+	background-color:#999966;
+	margin-right:5px;
+	border-radius:50%;
+}
 .seqListArrowDiv {
 	display:inline-block;
 	width:10px;
@@ -2744,6 +2753,9 @@ input[type='file'] {
 	background-size:100% 100%;
 	background-position:-2px center;
 	background-repeat:no-repeat;
+}
+.seqListArrowDiv.timeout {
+	display:none;
 }
 .seqListIcon p {
 	display:inline-block;
