@@ -1504,7 +1504,12 @@ function newSchedValidate($event) {	// This function handles validation and subm
 		perlCall('','scripts/eventScheduleControl.pl','action','Add','eventID','','details',wholething);
 		alert('Success! Your new scheduled event has been created');
 	}
-	$('#menuSchedule').click();
+	setTimeout(function() {
+		announcements();
+		setTimeout(function() {
+			$('#menuSchedule').click();
+		},500);
+	},500);
 }
 // ############### End of newSchedValidate function
 
@@ -1515,8 +1520,11 @@ function deleteSchedule($id) {	// This function handles deletion of an existing 
 	}
 	perlCall('','scripts/eventScheduleControl.pl','action','Delete','eventID',$id);
 	setTimeout(function() {
-		$('#menuSchedule').click();
-	},200);
+		announcements();
+		setTimeout(function() {
+			$('#menuSchedule').click();
+		},500);
+	},500);
 }
 // ############### End of deleteSchedule function
 
@@ -1527,8 +1535,11 @@ function copySchedule($id) {	// This function handles deletion of an existing Sc
 	}
 	perlCall('','scripts/eventScheduleControl.pl','action','Copy','eventID',$id);
 	setTimeout(function() {
-		$('#menuSchedule').click();
-	},200);
+		announcements();
+		setTimeout(function() {
+			$('#menuSchedule').click();
+		},500);
+	},500);
 }
 // ############### End of deleteSchedule function
 
@@ -1548,8 +1559,11 @@ function scheduleStateChange($state,$id) {	// This function handles enabling and
 
 	perlCall('','scripts/eventScheduleControl.pl','action',$state,'eventID',$id);
 	setTimeout(function() {
-		$('#menuSchedule').click();
-	},200);
+		announcements();
+		setTimeout(function() {
+			$('#menuSchedule').click();
+		},500);
+	},500);
 }
 // ############### End of scheduleStateChange function
 
@@ -1677,7 +1691,7 @@ function clearSTBDataForm() {	// This function handles clearing of the current d
 
 	$('input[type=text]').each(function(){
         	$(this).val('');
-	});	
+	});
 
 	$('select').each(function(){
 		var id = $(this).attr('id');
@@ -1685,7 +1699,7 @@ function clearSTBDataForm() {	// This function handles clearing of the current d
 			var first = $('#' + id + " option:first").val();
 	        	$(this).val(first);
 		}
-	});	
+	});
 }
 // ############### End of clearSTBDataForm function
 
@@ -1703,8 +1717,12 @@ function scheduleAdmin($option) {	// This function handles the Events Scheduler 
 	}
 
 	perlCall('','scripts/eventScheduleControl.pl','action',$option);
-        setTimeout(function(){perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')},200);	
-	setTimeout(function(){announcements()},200);
+        setTimeout(function(){
+		announcements()
+		setTimeout(function(){
+			perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')
+		},500);
+        },500);
 }
 // ############### End of scheduleAdmin function
 
