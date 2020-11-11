@@ -478,7 +478,10 @@ function validate() {	// This function validates and submits the data given when
 		$.ajax( {
 			type: "POST",
 			url: 'cgi-bin/scripts/pages/forms/createGridConfig.cgi',
-			data: $('#createGridConfig').serialize(),
+			data: {
+				'columns' : x,
+				'rows' : y,
+			},
 		});
 	});
 	alert('Congratulations! Your new grid has been created');

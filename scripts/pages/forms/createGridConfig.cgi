@@ -7,8 +7,10 @@ use File::Basename;
 
 my $query = new CGI;
 
-my $rows = $query->param("rows") || '';
-my $columns = $query->param("columns") || '';
+print $query->header();
+
+my $rows = $query->param("rows") // $ARGV[0] // '';
+my $columns = $query->param("columns") // $ARGV[1] // '';
 
 chomp(my $maindir = `cat homeDir.txt` || '');
 my $confdir = $maindir . 'config/';

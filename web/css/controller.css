@@ -1300,8 +1300,7 @@ table.stbConfigGrid {
 	height:50%;
 }
 .newSeqSubmit.createGrid {
-	position:static;
-	top:0;
+	top:20%;
 	left:0;
 }
 .seqLabel {
@@ -2140,7 +2139,8 @@ p.narrow {
 	transform:translateY(-20%);
 	border-radius:10px;
 	border:2px solid red;
-	background-color:rgba(0,0,0,0.8);
+	border:none;
+	background-color:#333333;
 	overflow:hidden;
 }
 .errorDiv h1 {
