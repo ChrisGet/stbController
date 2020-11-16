@@ -1,0 +1,10 @@
+[2020-11-12 15:32:45] Info 
+=== Starting RedRatHub (V5.11) ===
+ 
+[2020-11-12 15:32:45] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-12 15:32:45] Info Searching for RedRat devices...  
+[2020-11-12 15:32:48] Warn Failed to locate any RedRat hardware. 
+[2020-11-12 15:32:48] Info Socket server started on port 40000. Can accept 20 connections. 
+[2020-11-12 15:32:49] Info HTTP server started at http://[::]:5248 
+[2020-11-12 15:32:52] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:32:57] Debug GET http://192.168.1.169:5248/api/redrats 

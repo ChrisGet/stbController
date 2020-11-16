@@ -1,0 +1,65 @@
+﻿/*
+    Modifies the swashbuckle/swagger UI to be closer to the RRHub look and feel.
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+
+.swagger-ui .topbar {
+    background-color: #B71C1C;
+}
+
+.topbar-wrapper img[alt="Swagger UI"], .topbar-wrapper span {
+    visibility: hidden;
+}
+
+.topbar-wrapper .link:after {
+    content: 'REDRAT HUB API';
+    color: #fff;
+    visibility: visible;
+    display: block;
+    position: absolute;
+    padding: 15px;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    font-family: 'Roboto', sans-serif;
+}
+
+.swagger-ui .info {
+    margin: 30px 0;
+}
+
+.swagger-ui .info .title {
+    font-size: 30px;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select {
+    border: 2px solid #AAA;
+}
+
+.swagger-ui .opblock.opblock-get {
+    border-color: #888;
+    background: #EEE;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: #777;
+}
+
+.swagger-ui .opblock.opblock-post {
+    border-color: #C31F1F;
+    background: #EBD8D8;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background: #C31F1F;
+}
+
+.swagger-ui .opblock.opblock-delete {
+    border-color: #00A;
+    background: #C0C0D7;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background: #00A;
+}

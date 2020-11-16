@@ -1,0 +1,55 @@
+[2020-11-12 15:12:33] Info 
+=== Starting RedRatHub (V5.11) ===
+ 
+[2020-11-12 15:12:33] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-12 15:12:33] Info Searching for RedRat devices...  
+[2020-11-12 15:12:36] Warn Failed to locate any RedRat hardware. 
+[2020-11-12 15:12:36] Info Socket server started on port 40000. Can accept 20 connections. 
+[2020-11-12 15:12:36] Info HTTP server started at http://[::]:5248 
+[2020-11-12 15:12:36] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:12:41] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:12:46] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:12:51] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:12:56] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:01] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:06] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:11] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:16] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:21] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:26] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:31] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:36] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:41] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:46] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:51] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:13:56] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:01] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:06] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:11] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:16] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:21] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:26] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:31] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:36] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:41] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:46] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:51] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:14:56] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:01] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:06] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:11] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:16] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:21] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:26] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:31] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:36] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:41] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:46] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:51] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:15:56] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:01] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:06] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:11] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:16] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:21] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 15:16:26] Debug GET http://192.168.1.169:5248/api/redrats 

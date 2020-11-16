@@ -1,0 +1,24 @@
+[2020-11-12 16:21:11] Info 
+=== Starting RedRatHub (V5.11) ===
+ 
+[2020-11-12 16:21:11] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-12 16:21:11] Info Searching for RedRat devices...  
+[2020-11-12 16:21:14] Warn Failed to locate any RedRat hardware. 
+[2020-11-12 16:21:14] Fatal Unable to start Kestrel. Failed to bind to address http://[::]:5248: address already in use.
+[2020-11-12 16:21:14] Fatal Failed to bind to address http://[::]:5248: address already in use. 
+[2020-11-12 16:21:14] Info    at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.ListenOptions.BindAsync(AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.AnyIPListenOptions.BindAsync(AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(IServerAddressesFeature addresses, KestrelServerOptions serverOptions, ILogger logger, Func`2 createBinding)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServer.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at RedRat.RedRatHub.RedRatHub.Startup() 
+[2020-11-12 16:21:24] Info RedRatHub shutting down. 
+[2020-11-12 16:21:[2020-11-12 16:21:25] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 16:21:30] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-12 16:21:35] Debug GET http://192.168.1.169:5248/api/redrats 

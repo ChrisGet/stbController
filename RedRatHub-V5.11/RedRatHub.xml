@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedRatHub</name>
+    </assembly>
+    <members>
+        <member name="M:RedRat.RedRatHub.Controllers.AdminController.GetSettings">
+            <summary>
+            Returns all hub settings and parameters.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.AdminController.GetLogSettings">
+            <summary>
+            Gets the currently used log settings, as configured in the file NLog.config.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.AdminController.GetLogEntries">
+            <summary>
+            Returns the most recent set of log messages - max 100.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.AdminController.GetVersion">
+            <summary>
+            Gets the application version.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.AdminController.GetSiteBase">
+            <summary>
+            Gets the base URL for the HTTP server.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.ApiControllerBase.AggregateExceptionToString(System.AggregateException,System.Boolean)">
+            <summary>
+            Converts an AggregateException to a printable form, including inner exceptions etc..
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.IrDataController.Get">
+            <summary>
+            Returns the list of all IR datasets and the signals in each dataset.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.IrDataController.GetDataset(System.String)">
+            <summary>
+            Gets the list of signals in the given dataset (case insensitive).
+            </summary>
+            <param name="dataset" example="sky+">The IR dataset name.</param>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.IrDataController.GetSignal(System.String,System.String)">
+            <summary>
+            Gets the IR data of the given signal (case insensitive).
+            </summary>
+            <param name="dataset" example="sky+">The IR dataset name.</param>
+            <param name="signal" example="play">The IR signal name.</param>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.Dataset">
+            <summary>
+            The name of the IR dataset to use. Example = "sky+".
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.Signal">
+            <summary>
+            The IR signal from the dataset to transmit. Example = "Play".
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.Duration">
+            <summary>
+            The length of time the IR signal should be transmitted for (ms). This must be longer than the
+            basic signal duration. It cannot be used with the "repeats" parameter.
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.Repeats">
+            <summary>
+            The number of times the repeat section of the signal should be transmitted, simulating a long
+            button press. It cannot be used with the "duration" parameter and cannot be greater than 255.
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.Data">
+            <summary>
+            Rather than using an IR signal from the loaded datasets, a full IR data block can be given for transmission.
+            The data format is the irNetBox data block, which can be exported from the Signal DB Utility application.
+            For example: "00000000FF6900000006000000FC00124E04B4091A5F225C6B5B0...."
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.MaxLengths">
+            <summary>
+            Associated with the "data" structure. The default for this format is 16. In the very unlikely case that the data
+            structure has a different value, it can be passed with this parameter so that the server can correctly parse the data block.
+            </summary>
+        </member>
+        <member name="P:RedRat.RedRatHub.Controllers.Models.IrDataModel.JsonData">
+            <summary>
+            A complete IR signal in JSON format can be passed for transmission. IR data downloaded from the /api/irdata
+            interface will be in the correct format.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.Get(System.Boolean)">
+            <summary>
+            Returns information about all known RedRat devices.
+            </summary>
+            <param name="rescan" example="false">Do a new scan for RedRat devices. This will take a number of seconds.</param>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.Get(System.String)">
+            <summary>
+            Gets information about the RedRat device with the given id.
+            </summary>
+            <param name="id" example="192.168.1.50">Can be the name, IP address or MAC address.</param>
+            <response code="200">If successfully removed.</response> 
+            <response code="404">If the RedRat device is not found.</response>
+            <response code="500">With some other server error.</response>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.Remove(System.String)">
+            <summary>
+            Removes this RedRat from the list of available devices which can be used by this RedRatHub instance.
+            </summary>
+            <param name="id" example="192.168.1.50">Can be the name, IP address or MAC address.</param>
+            <response code="200">If successfully removed.</response> 
+            <response code="404">If the RedRat device is not found.</response>
+            <response code="500">With some other server error.</response>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.Send(System.String,System.String,RedRat.RedRatHub.Controllers.Models.IrDataModel)">
+            <summary>
+            Transmits an IR signal. Use POST for IR signal output. This is an action, so doesn't map that well onto a
+            RESTful API, but we can consider the outputs as a resource, and we POST IR signals to them.
+            </summary>
+            <param name="id" example="192.168.1.200">Can be the name, IP address or MAC address.</param>
+            <param name="outputs" example="3">The outputs value can define one or more ports with port power. Examples are "3", "3-8:16", "1:40,10-12:80".</param>
+            <param name="signalData">Describes the IR data to be transmitted. This could be the dataset and signal names, or the actual data itself.</param>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.Reset(System.String)">
+            <summary>
+            Resets the RedRat device with the given id.
+            </summary>
+            <param name="id" example="192.168.1.200">id can be the name, IP address or MAC address.</param>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.ResetNic(System.String)">
+            <summary>
+            Resets the network interface for the RedRat device if it is not accepting connections on the standard TCP port.
+            This bypasses standard comms, so should work even if the RedRat device is not responding to normal commands.
+            With an irNetBox-III, it will reset just the XPort. With the irNetBox-IV and RedRat-X, it uses a UDP message and causes a
+            complete device reset.
+            </summary>
+            <param name="id" example="192.168.1.200">The name, IP address or MAC address.</param>
+        </member>
+        <member name="M:RedRat.RedRatHub.Controllers.RedRatsController.CreateCommandFromId(System.String)">
+            <summary>
+            Determine whether the ID is a the name, IP address or MAC address of a RedRat device.
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Http.ExceptionHandler">
+            <summary>
+            Handles exceptions in ASP.NET calls.
+            Ideas from https://blog.jonblankenship.com/2020/04/12/global-exception-handling-in-aspnet-core-api
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Http.HttpController">
+            <summary>
+            Setup for the ASP.NET web server.
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Http.LifetimeEventsHostedService">
+            <summary>
+            Captures ASP.NET Core startup and shutdown events
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Http.RequestLogger">
+            <summary>
+            "Middleware" to log the requested URL.
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Models.ExceptionViewModel">
+            <summary>
+            Serializing exception data to return to the client can result in circular references and possibly other
+            serialization complications. So put info we want into this view model for return.
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.Program">
+            <summary>
+            Console application wrapper for RedRatHub.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Program.CurrentDomainProcessExit(System.Object,System.EventArgs)">
+            <summary>
+            Hoping that this gets called when the process is terminated on Linux (daemon). It doesn't seem
+            to get called yet. Maybe need to checkout mono-service2.
+            </summary>
+        </member>
+        <member name="T:RedRat.RedRatHub.RedRatHub">
+            <summary>
+            RESTful API for RedRat Hub plus web based management.
+            </summary>
+        </member>
+        <member name="F:RedRat.RedRatHub.Settings.SettingsList.LogSettingEnum.Quiet">
+            <summary>
+            Logs more of less nothing.
+            </summary>
+        </member>
+        <member name="F:RedRat.RedRatHub.Settings.SettingsList.LogSettingEnum.Info">
+            <summary>
+            Logs main actions.
+            </summary>
+        </member>
+        <member name="F:RedRat.RedRatHub.Settings.SettingsList.LogSettingEnum.Verbose">
+            <summary>
+            Logs in much more detail.
+            </summary>
+        </member>
+        <member name="M:RedRat.RedRatHub.Settings.SettingsList.LoadFromConfigFile">
+            <summary>
+            Load any settings found in the config file.
+            </summary>
+        </member>
+    </members>
+</doc>
