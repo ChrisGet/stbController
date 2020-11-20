@@ -1,21 +1,8 @@
-[2020-11-12 15:30:38] Info 
+[2020-11-17 10:34:36] Info 
 === Starting RedRatHub (V5.11) ===
  
-[2020-11-12 15:30:38] Info Loaded signal data from file: DeviceDB.xml 
-[2020-11-12 15:30:38] Info Searching for RedRat devices...  
-[2020-11-12 15:30:40] Warn Failed to locate any RedRat hardware. 
-[2020-11-12 15:30:40] Info Socket server started on port 40000. Can accept 20 connections. 
-[2020-11-12 15:30:57] Info HTTP server started at http://[::]:5248 
-[2020-11-12 15:30:57] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:02] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:07] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:12] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:17] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:22] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:27] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:32] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:37] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:42] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:47] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:52] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 15:31:57] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-17 10:34:37] Error File DeviceDB.xml doesn't exist. 
+[2020-11-17 10:34:37] Warn WARNING: No IR signal data has been loaded. 
+[2020-11-17 10:34:37] Fatal Signal DB data has not been set. 
+[2020-11-17 10:34:37] Info    at RedRat.RedRatHub.Core.RrHubController.Start(String configFile, Boolean noRedRatScan)
+   at RedRat.RedRatHub.RedRatHub.Startup() 

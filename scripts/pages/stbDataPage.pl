@@ -25,7 +25,7 @@ stbConfig(\$box) if ($option =~ /configSTB/i);
 stbConfig(\$box,\'printDuskyTable') and exit if ($option =~ /printDusky/i);
 stbConfig(\$box,\'printBluetoothTable') and exit if ($option =~ /printBluetooth/i);
 stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
-stbConfig(\$box,\'printIRTable') and exit if ($option =~ /printIR/i);
+stbConfig(\$box,\'printIRNetBoxIV') and exit if ($option =~ /printInfraRed IRNetBoxIV/i);
 
 sub stbSelect {
 	my %stbdata;
@@ -194,9 +194,8 @@ HEAD
 	my $duskyport = $stbdata{$$stb}{'DuskyPort'} || '';
 	my $btcontip = $stbdata{$$stb}{'BTContIP'} || '';
 	my $btcontport = $stbdata{$$stb}{'BTContPort'} || '';
-	my $irip = $stbdata{$$stb}{'IRIP'} || '';
-	my $irport = $stbdata{$$stb}{'IRPort'} || '';
-	my $irout = $stbdata{$$stb}{'IROutput'} || '';
+	my $irnb4ip = $stbdata{$$stb}{'IRNetBoxIVIP'} || '';
+	my $irnb4out = $stbdata{$$stb}{'IRNetBoxIVOutput'} || '';
 	my $networkip = $stbdata{$$stb}{'VNCIP'} || '';
 	my $btnclr = $stbdata{$$stb}{'ButtonColour'} || '';
 	my $btntextclr = $stbdata{$$stb}{'ButtonTextColour'} || '';
@@ -227,7 +226,14 @@ HEAD
 	#### STB Details Table stuff	
 
 	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9,-class=>'stbDataTextField');
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
+	my @controltypes = (	'Bluetooth (SkyQ)',
+				'Network (SkyQ)',
+				'InfraRed IRNetBoxIV (SkyQ)',
+				'Dusky (Sky+)',
+				'Network (Sky+)',
+				'InfraRed IRNetBoxIV (NowTV)'	);
+	#my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>[@controltypes],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15,-class=>'stbDataTextField');
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5,-class=>'stbDataTextField');
 	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1",-class=>'stbDataSelect');
@@ -268,10 +274,14 @@ HEAD
 			printNetworkTable($networkip);
 			exit;
 		}
-		if ($$option =~ /IR/i) {
-			printIRTable($irip,$irport,$irout);
+		if ($$option =~ /IRNetBoxIV/i) {
+			printIRNetBoxIV($irnb4ip,$irnb4out);
 			exit;
 		}
+		#if ($$option =~ /IR/i) {
+		#	printIRTable($irip,$irport,$irout);
+		#	exit;
+		#}
 	}
 	# End of $option actions
 
@@ -304,9 +314,9 @@ DATARIGHT
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
 		printNetworkTable($networkip) if ($type =~ /Network/i);
-		printIRTable($irip,$irport,$irout) if ($type =~ /IR/i);
+		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV/i);
 	} else {
-		printDuskyTable('','','');
+		printBluetoothTable('','');
 	}
 
 	print '</div>';	# End of 'typeChange' div
@@ -394,17 +404,15 @@ print <<NETWORK;
 NETWORK
 }
 
-sub printIRTable {
-	my ($irip,$irport,$irout) = @_;
-	my $iriptext = $query->textfield(-id=>'irip',-name=>'IRIP',-size=>'15',-default=>$irip,-maxlength=>15,-class=>'stbDataTextField');
-	my $irporttext = $query->textfield(-id=>'irport',-name=>'IRPort',-size=>'15',-default=>$irport,-class=>'stbDataTextField');
-	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IROutput',-values=>['01'..'05'],-default=>$irout,-class=>'stbDataSelect');
+sub printIRNetBoxIV {
+	my ($irnb4ip,$irnb4out) = @_;
+	my $iriptext = $query->textfield(-id=>'irnb4ip',-name=>'IRNetBoxIVIP',-size=>'15',-default=>$irnb4ip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IRNetBoxIVOutput',-values=>['01'..'05'],-default=>$irnb4out,-class=>'stbDataSelect');
 print <<IR;
 <p class="narrow" style="font-size:1.8vh;">IR Control</p>
 <table class="stbDataFormTable ctrltype">
-<tr><td>IR Blaster IP:</td><td>$iriptext</td></tr>
-<tr><td>IR Blaster Port:</td><td>$irporttext</td></tr>
-<tr><td>IR Blaster Output:</td><td>$irouttext</td></tr>
+<tr><td>IRNetBoxIV IP:</td><td>$iriptext</td></tr>
+<tr><td>IRNetBoxIV Output:</td><td>$irouttext</td></tr>
 </table>
 IR
 }

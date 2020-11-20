@@ -2085,6 +2085,130 @@ p.narrow {
 	left:46.8%;	
 }
 
+/*------ Now TV Remote Buttons ------*/
+.ntvRemBtn {
+	position:absolute;
+	display:block;
+	background:none;
+	border:none;
+	border-radius:4px;
+}
+.ntvRemBtn:hover {
+	cursor:pointer;
+}
+.ntvRemBtn.back {
+	top:17%;
+	left:32%;
+	width:17%;
+	height:5%;
+	border-radius:30%;
+}
+.ntvRemBtn.home {
+	top:17%;
+	left:52.5%;
+	width:17%;
+	height:5%;
+	border-radius:30%;
+}
+.ntvRemBtn.up {
+	top:24.5%;
+	left:44%;
+	width:13.5%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.down {
+	top:37%;
+	left:44%;
+	width:13.5%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.left {
+	top:29.5%;
+	left:33%;
+	width:10%;
+	height:7.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.right {
+	top:29.5%;
+	left:58.5%;
+	width:10%;
+	height:7.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.ok {
+	top:30%;
+	left:43.6%;
+	width:14%;
+	height:6.4%;
+	border-radius:50%;
+}
+.ntvRemBtn.backsmall {
+	top:44.7%;
+	left:32%;
+	width:12%;
+	height:4%;
+	border-radius:10px;
+}
+.ntvRemBtn.star {
+	top:44.7%;
+	left:57.5%;
+	width:12%;
+	height:4%;
+	border-radius:10px;
+}
+.ntvRemBtn.rewind {
+	top:49.7%;
+	left:32%;
+	width:8%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.playpause {
+	top:49.7%;
+	left:42%;
+	width:17%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.ffwd {
+	top:49.7%;
+	left:61%;
+	width:8%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.mytv {
+	top:58.5%;
+	left:32%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.tvguide {
+	top:58.5%;
+	left:52%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.kids {
+	top:64.5%;
+	left:32%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.skystore {
+	top:64.5%;
+	left:52%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+
 #rowControlBtnDiv {
 	display:block;
 	position:absolute;

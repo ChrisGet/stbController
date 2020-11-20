@@ -1,40 +1,23 @@
-[2020-11-12 16:22:55] Info 
+[2020-11-17 15:19:12] Info 
 === Starting RedRatHub (V5.11) ===
  
-[2020-11-12 16:22:56] Info Loaded signal data from file: DeviceDB.xml 
-[2020-11-12 16:22:56] Info Searching for RedRat devices...  
-[2020-11-12 16:22:58] Warn Failed to locate any RedRat hardware. 
-[2020-11-12 16:22:58] Info Socket server started on port 40000. Can accept 20 connections. 
-[2020-11-12 16:22:59] Info HTTP server started at http://[::]:5248 
-[2020-11-12 16:23:00] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:05] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:05] Debug Connection accepted from client '192.168.1.169'. There are 1 connection(s). 
-[2020-11-12 16:23:05] Debug [irNetBox-IV] NowTV irNetBox-IV (70-B3-D5-FD-16-01) at 192.168.4.161 [DISCONNECTED] added. 
-[2020-11-12 16:23:05] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.4.161 
-[2020-11-12 16:23:05] Debug [NowTV irNetBox-IV] Connection timer started. 
-[2020-11-12 16:23:05] Debug [NowTV irNetBox-IV] Connection timer reset. 
-[2020-11-12 16:23:05] Debug [NowTV irNetBox-IV] Connection timer reset. 
-[2020-11-12 16:23:05] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.4.161 
-[2020-11-12 16:23:05] Debug [NowTV irNetBox-IV] Connection timer stopped. 
-[2020-11-12 16:23:05] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
-[2020-11-12 16:23:10] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:15] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:20] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:25] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:30] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:35] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:40] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:45] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:50] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:23:55] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:00] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:05] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:10] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:15] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:20] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:25] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:30] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:35] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:40] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:45] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:24:50] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-17 15:19:13] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-17 15:19:13] Info Searching for RedRat devices...  
+[2020-11-17 15:19:16] Info Found the following RedRat devices: 
+[2020-11-17 15:19:16] Info  >> [irNetBox-IV] NowTV irNetBox-IV (70-B3-D5-FD-16-01) at 192.168.10.17 [DISCONNECTED] 
+[2020-11-17 15:19:16] Info  
+[2020-11-17 15:19:16] Info Socket server started on port 40000. Can accept 20 connections. 
+[2020-11-17 15:19:17] Info HTTP server started at http://[::]:5248 
+[2020-11-17 15:19:19] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 15:19:19] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 15:19:21] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:25] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:45] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:19:55] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:20:00] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:20:05] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 15:20:10] Debug GET http://192.168.10.16:5248/api/redrats 

@@ -9,12 +9,14 @@ Added:
 - Sequence description pops up when users hover over the sequence on the main controller page.
 - Ability to now control STB groups via the live control interface. Users can toggle between the STB grid or a list of STB groups for live control.
 - Helpful alerts when exporting sequences. Alerts will inform users of incorrect web server setup if export file locations (URL) cannot be reached.
+- InfraRed control support using RedRat IRNetBoxIV hardware. This includes extra dotnet packages and the RedRatHub in order to communicate with the RedRat hardware.
 
 Changed:
 - Moved to JSON format for storing of STB Groups, Sequences, and Event Schedule data. Conversion is managed by legacyCheck.pl in the scripts directory.
 	Other page scripts also run legacy checking sub routines to ensure unconverted data gets converted accordingly.
 - Many javascript improvements around UI navigation, ajax requests, error messages, data validation, etc.
 - Sequence timeouts are now displayed in a different colour to help distinguish them from actual commands.
+- Initial setup script updated to include setup for RedRatHub and IR features.
 
 Fixed:
 - Erratic behaviour in divs where content is added dynamically through button presses. Examples of this would be when adding STBs to a group or adding commands to a sequence.

@@ -1,0 +1,17 @@
+back:Back
+cursor right:Right
+cursor left:Left
+cursor up:Up
+cursor down:Down
+exit:Back
+fast forward:Fast Forward
+home:Home
+kids:Kids
+my tv:My TV
+ok:OK
+playpause:Play/Pause
+power:Power
+rewind:Rewind
+sky store:Sky Store
+star:*
+tv guide:TV Guide

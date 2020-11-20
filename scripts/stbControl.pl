@@ -8,11 +8,9 @@ use Tie::File::AsHash;
 use Time::HiRes qw (sleep);
 use FindBin qw($Bin);
 
-my $query = CGI->new;
-print $query->header();
-
 chomp(my $fullpath = $ARGV[3] || '');
 my $maindir;
+BEGIN {
 if ($fullpath) {
 	$maindir = $fullpath;
 	chomp($maindir);
@@ -26,6 +24,14 @@ if ($fullpath) {
         }
 }
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
+}
+
+use lib "$maindir/scripts";
+use RedRat::RedRatHub qw(openSocket sendMessage closeSocket readData);
+
+my $query = CGI->new;
+print $query->header();
+
 my $filedir = $maindir . '/files/';
 my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
@@ -33,6 +39,9 @@ my $groupsfile = $filedir . 'stbGroups.json';
 my $seqfile = $filedir . 'commandSequences.json';
 my $pidfile = $filedir . 'scheduler.pid';
 my $stbdatafile = $confdir . 'stbData.json';
+my $archfile = $filedir . 'hostArchitecture.txt';
+my $redrathubdir = $maindir . '/RedRatHub-V5.11/';
+my $redrathubip = '';
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
@@ -142,6 +151,7 @@ sub control {
 	my ($commands,$boxes) = @_;	# All input args are scalar references at this point
 	my @stbs = split (',', $$boxes);			
 	my %duskydata;
+	my %irnetboxiv;
 
 	foreach my $stb (@stbs) {
 		my %boxdata = %{ $stbdata{$stb}};		# Get the box details from the main %stbData hash 
@@ -156,6 +166,22 @@ sub control {
 			my $duskyinfo = $moxaip . '-' . $moxaport;
 			$duskydata{$duskyinfo}{$stb}{'Name'} = $name;
 			$duskydata{$duskyinfo}{$stb}{'DuskyPort'} = $duskyport;
+		} elsif ($type =~ /IRNetBoxIV/) {
+			checkRedRatHub();
+			my $irnbip = $boxdata{'IRNetBoxIVIP'};
+			my $irnbout = $boxdata{'IRNetBoxIVOutput'};
+			my $type = $boxdata{'Type'};
+			my $hw = 'skyq';	# Identify the hardware type from the box type data
+			if ($type) {
+				if ($type =~ /\(SkyQ\)/i) {
+					$hw = 'skyq';
+				} elsif ($type =~ /\(Sky\+\)/i) {
+					$hw = 'sky+';
+				} elsif ($type =~ /\(Now\s*TV\)/i) {
+					$hw = 'nowtv';
+				}
+			}
+			$irnetboxiv{$irnbip}{$hw}{'outputs'} .= "$irnbout,";
 		} else {
 			my $pid = fork;
         		if ($pid==0) {
@@ -166,7 +192,7 @@ sub control {
         	                        $0 = "stbControl - $stb - $type";
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
-				sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
+				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
 				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
 	                	exit;
 	        	}
@@ -186,6 +212,26 @@ sub control {
 				}
 				sendDuskyCommsNew(\$dusky,$commands,$duskydata{$dusky},\$logging,\$runningpids);
 				exit;
+			}
+		}
+	}
+
+	### Now deal with IRNetBoxIV controlled STBs
+	if (%irnetboxiv) {
+		foreach my $nbiv (keys %irnetboxiv) {
+			my %hwdata = %{$irnetboxiv{$nbiv}};
+			foreach my $hwtype (keys %hwdata) {
+				my $outs = $hwdata{$hwtype}{'outputs'};
+				my $pid = fork;
+				if ($pid==0) {
+					if ($logging) {
+						$0 = "stbControl(Scheduler-$schedpid) - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+					} else {
+						$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+					}
+					sendIRNetBoxIVComms($nbiv,$commands,$hwtype,$outs,$logging,$runningpids);
+					exit;
+				}
 			}
 		}
 	}
@@ -361,19 +407,65 @@ URI
 	}
 }
 
-sub sendIRComms {
-	my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
-	if ($$logging) {
-		my $logpid = $$runningpids . $$;
+sub sendIRNetBoxIVComms {
+	my ($netboxip,$commands,$hwtype,$outputs,$logging,$runningpids) = @_;
+	if ($logging) {
+		my $logpid = $runningpids . $$;
 		system("touch $logpid");
 	}
 
+	$outputs =~ s/,$//;
+
+	#warn "Connecting to RedRatHub at $redrathubip\n";
+	&openSocket($redrathubip, 40000);
+
+	my @commands = split(',',$$commands);
+
+	my $rrres = '';
+	$rrres = &readData('hubquery="list redrats"');
+	warn "$rrres\n";
+	if ($rrres) {
+		if ($rrres !~ m/$netboxip/) {
+			$rrres = &readData('hubquery="add redrat" ip="' . $netboxip . '"');
+			warn "Add RedRat $netboxip - $rrres\n";
+		} else {
+			warn "$netboxip already added\n";
+		}
+	}
+	$rrres = &readData('hubquery="connect redrat" ip="' . $netboxip . '"');
+	#warn "Connect to RedRat $netboxip - $rrres\n";
+	
+        my $comfile = $filedir . 'skyQIRNetBoxIVCommands.txt';
+        if ($hwtype eq 'nowtv') {
+		$comfile = $filedir . 'nowTVIRNetBoxIVCommands.txt';
+        }
+	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%ircoms: $!\n";
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+		if (exists $ircoms{$command}) {
+			my $sig = $ircoms{$command};
+			#warn "$netboxip - $hwtype - $sig\n";
+			my $res = &readData('ip="' . $netboxip . '" dataset="' . $hwtype . '" signal="' . $sig . '" output="' . $outputs . '"');
+			#warn "$res\n";
+			if ($res and $res !~ /OK/) {
+				warn "Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
+			}
+		} else {
+			warn "No entry found for $command\n";
+		}
+	}
 	# To be determined
 
-	if ($$logging) {
-		my $logpid = $$runningpids . $$;
+	if ($logging) {
+		my $logpid = $runningpids . $$;
 		system("rm $logpid");
 	}
+	&readData('hubquery="disconnect redrat" ip="' . $netboxip . '"');
+	untie %ircoms;
 }
 
 sub sendVNCComms {
@@ -475,4 +567,44 @@ sub sendVNCComms {
 		$last = eval $last;
 		return ($first,$last);
 	}
+}
+
+sub checkRedRatHub {
+	my $redrathubdll = $redrathubdir . 'RedRatHub.dll';
+	my $dotnetbin = 'dotnet';
+	my $redrathubdebug = $filedir . '/RedRatHubDebug.txt';
+	chomp(my $arch = `cat $archfile` // '');
+	if ($arch) {
+		$dotnetbin = $maindir . "/dotnet$arch" . '/dotnet';
+	} else {
+		die "CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
+	}
+	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+        if (!$running) {
+                print "RedRatHub is NOT running. Attempting to start it, waiting for 10 seconds\n";
+                chomp(my $sysip = `hostname -I | awk \'\{print \$1\}\'` // '');
+                $sysip =~ s/\s+//g;
+                $sysip =~ s/\r|\n//g;
+                if ($sysip) {
+                        system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
+                        sleep 10;
+                } else {
+                        die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+                }
+                chomp($running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+                if ($running) {
+                        if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                                $redrathubip = $1;
+                                return;
+                        }
+                } else {
+                        die "ERROR: RedRatHub was not running and I was unable to start it.\n";
+                }
+        } else {
+                #print "Hub is running - $running\n";
+                if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                        $redrathubip = $1;
+                        return;
+                }
+        }
 }

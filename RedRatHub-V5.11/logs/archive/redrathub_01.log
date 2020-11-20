@@ -1,24 +1,1156 @@
-[2020-11-12 16:21:11] Info 
+[2020-11-17 11:58:17] Info 
 === Starting RedRatHub (V5.11) ===
  
-[2020-11-12 16:21:11] Info Loaded signal data from file: DeviceDB.xml 
-[2020-11-12 16:21:11] Info Searching for RedRat devices...  
-[2020-11-12 16:21:14] Warn Failed to locate any RedRat hardware. 
-[2020-11-12 16:21:14] Fatal Unable to start Kestrel. Failed to bind to address http://[::]:5248: address already in use.
-[2020-11-12 16:21:14] Fatal Failed to bind to address http://[::]:5248: address already in use. 
-[2020-11-12 16:21:14] Info    at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context)
-   at Microsoft.AspNetCore.Server.Kestrel.Core.ListenOptions.BindAsync(AddressBindContext context)
-   at Microsoft.AspNetCore.Server.Kestrel.Core.AnyIPListenOptions.BindAsync(AddressBindContext context)
-   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context)
-   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(IServerAddressesFeature addresses, KestrelServerOptions serverOptions, ILogger logger, Func`2 createBinding)
-   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServer.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
-   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
-   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
-   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
-   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
-   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
-   at RedRat.RedRatHub.RedRatHub.Startup() 
-[2020-11-12 16:21:24] Info RedRatHub shutting down. 
-[2020-11-12 16:21:[2020-11-12 16:21:25] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:21:30] Debug GET http://192.168.1.169:5248/api/redrats 
-[2020-11-12 16:21:35] Debug GET http://192.168.1.169:5248/api/redrats 
+[2020-11-17 11:58:18] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-17 11:58:18] Info Searching for RedRat devices...  
+[2020-11-17 11:58:21] Info Found the following RedRat devices: 
+[2020-11-17 11:58:21] Info  >> [irNetBox-IV] NowTV irNetBox-IV (70-B3-D5-FD-16-01) at 192.168.10.17 [DISCONNECTED] 
+[2020-11-17 11:58:21] Info  
+[2020-11-17 11:58:21] Info Socket server started on port 40000. Can accept 20 connections. 
+[2020-11-17 11:58:22] Info HTTP server started at http://[::]:5248 
+[2020-11-17 11:58:25] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 11:58:25] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 11:59:11] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 11:59:13] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 11:59:13] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 11:59:13] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 11:59:13] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:00:04] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 12:00:04] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:00:04] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/settings 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/Content/js/bundle.js 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/Content/js/app-settings.js 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/api/admin/logsettings 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/api/admin/settings 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/api/irdata 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/api/admin/version 
+[2020-11-17 12:00:46] Debug GET http://192.168.10.16:5248/Content/favicon.ico 
+[2020-11-17 12:01:04] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:01:04] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 12:01:04] Debug [NowTV irNetBox-IV] Connection timer completed. 
+[2020-11-17 12:01:19] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 12:01:19] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:01:19] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 12:01:19] Error Failed to find signal '$query'. 
+[2020-11-17 12:01:19] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:01:35] Debug GET http://192.168.10.16:5248/api/irdata/skyq/Power 
+[2020-11-17 12:01:36] Debug GET http://192.168.10.16:5248/favicon.ico 
+[2020-11-17 12:02:19] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:02:19] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 12:02:19] Debug [NowTV irNetBox-IV] Connection timer completed. 
+[2020-11-17 12:02:58] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:18] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:25] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 12:03:25] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:03:25] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 12:03:25] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:03:25] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:03:25] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:03:25] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 12:03:25] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:03:28] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:33] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:38] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:43] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:48] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:53] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:03:55] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 12:03:55] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:03:55] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 12:03:55] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:03:55] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:03:55] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:03:55] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 12:03:55] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:03:58] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:18] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:28] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:33] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:38] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:43] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:48] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:49] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 12:04:49] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:04:49] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 12:04:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:04:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 12:04:50] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 12:04:50] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 12:04:50] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 12:04:53] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:04:58] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:18] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:28] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:33] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:38] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:43] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:48] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:53] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:05:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:18] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:28] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:33] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:38] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:43] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:48] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:53] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:06:58] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:28] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 12:07:32] Debug GET http://192.168.10.16:5248/api/admin/settings 
+[2020-11-17 12:07:32] Debug GET http://192.168.10.16:5248/api/admin/logsettings 
+[2020-11-17 12:07:32] Debug GET http://192.168.10.16:5248/api/irdata 
+[2020-11-17 13:17:51] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:17:51] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:17:51] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:17:51] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:17:51] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:20:18] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:20:18] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:18] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:18] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:18] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:20:57] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:20:57] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:57] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:57] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:20:57] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:22:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:22:34] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:22:34] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:22:34] Error Failed to assign $netboxip to ip. An invalid IP address was specified. 
+[2020-11-17 13:22:34] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:23:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:23:58] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:03] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:08] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:13] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:18] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:23] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:33] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:24:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:25:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:40] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:26:40] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:26:40] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:26:40] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:26:40] Error Failed to assign 01, to output. Input string was not in a correct format. 
+[2020-11-17 13:26:40] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:26:40] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:26:40] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:26:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:26:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:25] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:27:25] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:27:25] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:27:25] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:27:25] Error Failed to assign 01, to output. Input string was not in a correct format. 
+[2020-11-17 13:27:25] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:27:25] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:27:25] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:27:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:27:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:12] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:28:12] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:12] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:28:12] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:12] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:13] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:13] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:28:13] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:28:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:28:34] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:34] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:28:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:35] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:35] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:28:35] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:28:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:47] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:28:47] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:47] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:28:47] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:47] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:28:47] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:28:47] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:28:47] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:28:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:28:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:03] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:03] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:03] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:03] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:03] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:03] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:03] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:03] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:24] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:24] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:24] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:24] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:24] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:25] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:25] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:25] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:34] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:34] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:35] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:35] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:35] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:41] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:41] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:41] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:41] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:41] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:41] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:50] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:50] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:50] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:50] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:50] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:50] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:50] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:50] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:29:57] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:29:57] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:57] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:29:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:29:57] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:29:57] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:29:57] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:29:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:03] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:03] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:03] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:03] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:03] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:03] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:03] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:03] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:27] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:27] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:27] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:27] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:27] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:27] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:30] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:30] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:30] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:30] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:30] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:30] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:30] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:30] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:31] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:31] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:31] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:31] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:31] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:31] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:32] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:32] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:32] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:34] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:34] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:34] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:34] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:35] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:35] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:35] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:35] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:35] Debug Connection accepted from client '192.168.10.16'. There are 2 connection(s). 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:36] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:36] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:36] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:36] Debug A client has disconnected from the server. There are 1 client(s) still connected. 
+[2020-11-17 13:30:36] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:38] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:38] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:38] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:38] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:38] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:38] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:38] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:38] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:39] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:39] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:39] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:39] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:39] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:39] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:41] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:41] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:41] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:42] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:42] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:42] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:46] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:46] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:46] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:46] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:46] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:46] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:49] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:49] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:49] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:50] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:50] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:50] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:30:57] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:30:57] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:57] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:30:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:30:58] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:30:58] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:30:58] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:30:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:00] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:00] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:00] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:00] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:00] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:00] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:00] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:00] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:05] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:05] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:05] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:05] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:05] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:05] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:05] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:05] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:09] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:09] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:09] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:09] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:09] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:09] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:09] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:09] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:14] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:14] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:14] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:14] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:14] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:14] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:14] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:14] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:18] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:18] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:18] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:18] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:18] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:19] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:19] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:19] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:23] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:23] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:23] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:24] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:24] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:24] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:27] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:27] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:27] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:27] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:27] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:27] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:30] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:30] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:30] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:30] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:30] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:31] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:31] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:31] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:33] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:33] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:33] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:33] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:33] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:33] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:33] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:33] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:35] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:35] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:35] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:35] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:35] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:35] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:35] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:37] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:37] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:37] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:37] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:37] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:37] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:37] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:37] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:41] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:41] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:41] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:42] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:42] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:42] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:43] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:43] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:43] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:43] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:43] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:43] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:46] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:46] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:46] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:46] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:46] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:46] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:49] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:49] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:49] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:31:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:31:49] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:31:49] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:31:49] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:31:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:31:54] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:31:56] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:31:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:01] Debug Connection accepted from client '192.168.10.16'. There are 2 connection(s). 
+[2020-11-17 13:32:03] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:06] Debug Connection accepted from client '192.168.10.16'. There are 3 connection(s). 
+[2020-11-17 13:32:08] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:13] Debug Connection accepted from client '192.168.10.16'. There are 4 connection(s). 
+[2020-11-17 13:32:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:15] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:18] Debug Connection accepted from client '192.168.10.16'. There are 5 connection(s). 
+[2020-11-17 13:32:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:20] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:21] Error RedRat.RedRatHub.Core.GetRedRatFailedException: [TCP-192.168.10.17:10001] Timeout when attempting to connect to remote host.
+ ---> RedRat.StreamIO.StreamIOTimeoutException: [TCP-192.168.10.17:10001] Timeout when attempting to connect to remote host.
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   --- End of inner exception stack trace ---
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   at RedRat.RedRatHub.Core.ConnectionManager.ConnectRedRat(Command command, Boolean irnetboxOnly)
+   at RedRat.RedRatHub.Core.RrHubController.ConnectRedRat(Command command, Boolean irnetboxOnly) [TCP-192.168.10.17:10001] Timeout when attempting to connect to remote host.
+[2020-11-17 13:32:21] Error RedRat.StreamIO.StreamIOTimeoutException: [TCP-192.168.10.17:10001] Timeout when attempting to connect to remote host.
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat() [TCP-192.168.10.17:10001] Timeout when attempting to connect to remote host.
+[2020-11-17 13:32:21] Error Failed to connect to RedRat with ID = ip = 192.168.10.17 
+[2020-11-17 13:32:21] Debug A client has disconnected from the server. There are 4 client(s) still connected. 
+[2020-11-17 13:32:23] Debug Connection accepted from client '192.168.10.16'. There are 5 connection(s). 
+[2020-11-17 13:32:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:25] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:28] Error RedRat.RedRatHub.Core.GetRedRatFailedException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   --- End of inner exception stack trace ---
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   at RedRat.RedRatHub.Core.ConnectionManager.ConnectRedRat(Command command, Boolean irnetboxOnly)
+   at RedRat.RedRatHub.Core.RrHubController.ConnectRedRat(Command command, Boolean irnetboxOnly) Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:28] Error RedRat.StreamIO.StreamIOException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat() Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:28] Error RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace --- Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:28] Error System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult) Connection timed out 192.168.10.17:10001
+[2020-11-17 13:32:28] Error Failed to connect to RedRat with ID = ip = 192.168.10.17 
+[2020-11-17 13:32:28] Debug A client has disconnected from the server. There are 4 client(s) still connected. 
+[2020-11-17 13:32:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:38] Debug Connection accepted from client '192.168.10.16'. There are 5 connection(s). 
+[2020-11-17 13:32:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:40] Error [TCP-192.168.10.17:30718] Timeout when attempting to connect to remote host. 
+[2020-11-17 13:32:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:53] Error RedRat.RedRatHub.Core.GetRedRatFailedException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   --- End of inner exception stack trace ---
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat()
+   at RedRat.RedRatHub.Core.ConnectionManager.ConnectRedRat(Command command, Boolean irnetboxOnly)
+   at RedRat.RedRatHub.Core.RrHubController.ConnectRedRat(Command command, Boolean irnetboxOnly) Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:53] Error RedRat.StreamIO.StreamIOException: Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at RedRat.StreamIO.TcpConn.Open()
+   at RedRat.RedRat4.StreamIO.RedRat4ProtocolHandler.Connect()
+   at RedRat.RedRat4.StreamIO.RetryMessageRouter.Connect()
+   at RedRat.RedRat4.StreamIO.RedRat4StreamIOImpl.Connect()
+   at RedRat.RedRatHub.Core.ConnectionInfo.GetRedRat() Error when trying to open socket: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:53] Error RedRat.StreamIO.StreamIOException: Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+ ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult)
+   --- End of inner exception stack trace --- Problem opening socket to client: [TCP-192.168.10.17:10001] [TCP-192.168.10.17:10001]
+[2020-11-17 13:32:53] Error System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (110): Connection timed out 192.168.10.17:10001
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at RedRat.StreamIO.TcpConn.ConnectCallback(IAsyncResult asyncResult) Connection timed out 192.168.10.17:10001
+[2020-11-17 13:32:53] Error Failed to connect to RedRat with ID = ip = 192.168.10.17 
+[2020-11-17 13:32:53] Debug A client has disconnected from the server. There are 4 client(s) still connected. 
+[2020-11-17 13:32:53] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:32:53] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:32:53] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:32:53] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:32:53] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:32:53] Debug A client has disconnected from the server. There are 2 client(s) still connected. 
+[2020-11-17 13:32:53] Debug A client has disconnected from the server. There are 3 client(s) still connected. 
+[2020-11-17 13:32:53] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:32:53] Debug A client has disconnected from the server. There are 1 client(s) still connected. 
+[2020-11-17 13:32:53] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:32:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:32:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:07] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:33:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:09] Error Index was outside the bounds of the array. 
+[2020-11-17 13:33:09] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:33:09] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:33:09] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:33:09] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:33:09] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:33:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/ 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/Content/js/app-settings.js 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/Content/js/bundle.js 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/api/admin/version 
+[2020-11-17 13:33:22] Debug GET http://192.168.10.16:5248/Content/favicon.ico 
+[2020-11-17 13:33:27] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:32] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:37] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:42] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:47] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:52] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:33:57] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:02] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:07] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:12] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:17] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:22] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:27] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:32] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:37] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:42] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:47] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:52] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:34:57] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:02] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:07] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:12] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:17] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:22] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:27] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:32] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:37] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:39] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:35:39] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:35:42] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:47] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:52] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:35:57] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:02] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:07] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:12] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:17] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:22] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:27] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:32] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:37] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:42] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:47] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:52] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:36:57] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:02] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:07] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:12] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:17] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:22] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:23] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:37:23] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:23] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:37:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:24] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:24] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:37:24] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:37:27] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:32] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:37:32] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:32] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:37:32] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:32] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:32] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:32] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:37:32] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:37:32] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:37] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:40] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:37:40] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:40] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:37:40] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:40] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:37:41] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:37:41] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:37:41] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:37:42] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:47] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:52] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:37:57] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:02] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:07] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:12] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:14] Debug GET http://192.168.10.16:5248/ 
+[2020-11-17 13:38:14] Debug GET http://192.168.10.16:5248/Content/js/app-settings.js 
+[2020-11-17 13:38:14] Debug GET http://192.168.10.16:5248/Content/js/bundle.js 
+[2020-11-17 13:38:14] Debug GET http://192.168.10.16:5248/api/admin/version 
+[2020-11-17 13:38:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:38:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:15] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:15] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:15] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:15] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:15] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:15] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:15] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:15] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:27] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:27] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:27] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:27] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:28] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:28] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:28] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:37] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:37] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:37] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:37] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:37] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:38] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:38] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:38] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:43] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:43] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:43] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:43] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:43] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:43] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:48] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:48] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:48] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:48] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:48] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:48] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:48] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:48] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:52] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:52] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:52] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:52] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:52] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:52] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:52] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:52] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:39:56] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:56] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:56] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:56] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:56] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:56] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:56] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:56] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:56] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:57] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:39:57] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:57] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:39:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:57] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:39:57] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:39:57] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:39:57] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:39:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:02] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:02] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:02] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:02] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:02] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:02] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:02] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:02] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:06] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:06] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:06] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:06] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:06] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:06] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:06] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:06] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:20] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:20] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:20] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:20] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:20] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:20] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:20] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:20] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:23] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:23] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:23] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:23] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:24] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:24] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:24] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:26] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:26] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:26] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:26] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:26] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:26] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:26] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:26] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:28] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:28] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:28] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:28] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:28] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:29] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:29] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:29] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:29] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:29] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:29] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:29] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:29] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:29] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:29] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:29] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:31] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:31] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:31] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:31] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:32] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:32] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:32] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:33] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:33] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:33] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:33] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:33] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:33] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:33] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:33] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:34] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:34] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:34] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:34] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:34] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:34] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:34] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:36] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:36] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:36] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:36] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:36] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:36] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:36] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:36] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:39] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:39] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:39] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:39] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:39] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:39] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:39] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:40] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:40] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:40] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:41] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:41] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:41] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:41] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:42] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:42] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:42] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:42] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:43] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:43] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:43] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:43] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:43] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:43] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:43] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:44] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:44] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:44] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:44] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:44] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:44] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:44] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:44] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:46] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:46] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:46] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:46] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:46] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:46] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:46] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:49] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:49] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:49] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:49] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:50] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:50] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:50] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:52] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:52] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:52] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:52] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:52] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:53] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:53] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:53] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:40:55] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:55] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:55] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:55] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:55] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:56] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:56] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:56] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:58] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:40:58] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:58] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:40:58] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:58] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:40:58] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:40:58] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:40:58] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:40:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:29] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:34] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:39] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:42] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 13:41:42] Warn Connected to RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:41:42] Debug [NowTV irNetBox-IV] Connection timer started. 
+[2020-11-17 13:41:42] Debug [NowTV irNetBox-IV] Connection timer reset. 
+[2020-11-17 13:41:42] Error Failed to find signal 'Sky'. 
+[2020-11-17 13:41:42] Warn Disconnected from RedRat 'NowTV irNetBox-IV' at IP 192.168.10.17 
+[2020-11-17 13:41:42] Debug [NowTV irNetBox-IV] Connection timer stopped. 
+[2020-11-17 13:41:42] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 13:41:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:49] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:54] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:41:59] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:04] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:09] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:14] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:19] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:24] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:44] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:42:55] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:00] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:05] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:10] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:15] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:20] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:25] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:45] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:43:55] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:00] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:05] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:10] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:15] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:20] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:25] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:45] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:44:55] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:00] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:05] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:10] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:15] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:20] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:25] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:45] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:50] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:45:55] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:00] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:05] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:10] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:15] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:20] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:25] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:30] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:35] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:40] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:45] Debug GET http://192.168.10.16:5248/api/redrats 
+[2020-11-17 13:46:50] Debug GET http://192.168.10.16:5248/api/redrats 
