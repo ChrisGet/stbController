@@ -314,12 +314,17 @@ function stbControl($action,$commands) {	// This function handles the control of
 	// For STB control requests, we just need to fire the event and NOT wait for script output
 	$.ajax({
                 type: 'get',
-                timeout: 500,	// Force the Ajax call to timeout after half a second
+                timeout: 2000,	// Force the Ajax call to timeout after 2 seconds
                 url: 'cgi-bin/scripts/stbControl.pl',
                 data: { 'action' : $action,
                         'command' : $commands,
                         'info' : comstring2
                 },
+                success: function(result) {
+			if (result.match(/RedRatHub/)) {
+				alert(result);
+			}
+                }
         });
 }
 // ############### End of stbControl function
@@ -1796,7 +1801,7 @@ function remoteChange($this) {
 				$('#controllerButtons').html(result);
 			}
 		},
-	});	
+	});
 }
 
 function seqRowHighlight($this) {

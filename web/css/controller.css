@@ -143,10 +143,10 @@ button:hover {
 	display:inline-block;
 	width:70%;
 	height:80%;
-	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png");
-	background-size:40% auto, 40% auto;
-	background-position:bottom left, bottom right;
-	background-repeat:no-repeat, no-repeat;
+	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png"),url("../images/now-tv-smart-box.png");
+	background-size:30% auto, 30% auto, 30% auto;
+	background-position:bottom left, bottom center, bottom right;
+	background-repeat:no-repeat, no-repeat, no-repeat;
 	margin-top:40px;
 	text-align:center;
 }
@@ -2096,7 +2096,7 @@ p.narrow {
 .ntvRemBtn:hover {
 	cursor:pointer;
 }
-.ntvRemBtn.back {
+.ntvRemBtn.exit {
 	top:17%;
 	left:32%;
 	width:17%;
@@ -2189,10 +2189,14 @@ p.narrow {
 }
 .ntvRemBtn.tvguide {
 	top:58.5%;
-	left:52%;
-	width:18%;
+	left:51%;
+	width:19%;
 	height:5%;
 	border-radius:10px;
+	background-color:#2d2d2d;
+}
+.ntvRemBtn.tvguide:hover {
+	cursor:default;
 }
 .ntvRemBtn.kids {
 	top:64.5%;
@@ -2352,7 +2356,9 @@ p.narrow {
 	background-color:#333333;
 	text-align:center;
 }
-
+.stbDataSelect.nowtvmodel {
+	width:80%;
+}
 .stbDataBtn {
 	display:inline-block;
 	border-radius:5px;
@@ -2423,6 +2429,28 @@ p.narrow {
 	top:50%;
 	transform:translateY(-50%);
 	font-size:1.5vh;
+	color:white;
+	margin:0;
+}
+#stbDataNoteDivNowTV {
+	display:inline-block;
+	position:absolute;
+	left:105%;
+	top:50%;
+	transform:translateY(-60%);
+	width:55%;
+	height:70%;
+	border-radius:5px;
+	background-color:#07575b;
+	text-align:center;
+	padding:2%;
+}
+#stbDataNoteDivNowTV p {
+	display:inline-block;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.3vh;
 	color:white;
 	margin:0;
 }

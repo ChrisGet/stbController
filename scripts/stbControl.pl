@@ -29,6 +29,8 @@ die "Couldn't find where my main files are installed. No \"stbController\" direc
 use lib "$maindir/scripts";
 use RedRat::RedRatHub qw(openSocket sendMessage closeSocket readData);
 
+$|++;
+
 my $query = CGI->new;
 print $query->header();
 
@@ -167,7 +169,6 @@ sub control {
 			$duskydata{$duskyinfo}{$stb}{'Name'} = $name;
 			$duskydata{$duskyinfo}{$stb}{'DuskyPort'} = $duskyport;
 		} elsif ($type =~ /IRNetBoxIV/) {
-			checkRedRatHub();
 			my $irnbip = $boxdata{'IRNetBoxIVIP'};
 			my $irnbout = $boxdata{'IRNetBoxIVOutput'};
 			my $type = $boxdata{'Type'};
@@ -178,7 +179,18 @@ sub control {
 				} elsif ($type =~ /\(Sky\+\)/i) {
 					$hw = 'sky+';
 				} elsif ($type =~ /\(Now\s*TV\)/i) {
+					##### First set the hardware type ($hw) to generic nowtv
 					$hw = 'nowtv';
+					if (exists $boxdata{'IRNetBoxIVNowTVModel'}) {
+						##### If this STB has the NOW TV Model defined, set that as the specific hardware type
+						if ($boxdata{'IRNetBoxIVNowTVModel'}) {
+							$hw .= $boxdata{'IRNetBoxIVNowTVModel'};
+							##### Format the NOW TV Model text to lower case with no spaces
+							##### "nowtvSmart Box 4631UK" becomes "nowtvsmartbox4631uk" for RedRatHub reference
+							$hw = lc($hw);
+							$hw =~ s/\s+//g;
+						}
+					}
 				}
 			}
 			$irnetboxiv{$irnbip}{$hw}{'outputs'} .= "$irnbout,";
@@ -193,7 +205,8 @@ sub control {
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
-				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
+				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky/);
+				sendNowTVNetwork(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(NowTV/);
 	                	exit;
 	        	}
 		}
@@ -218,6 +231,7 @@ sub control {
 
 	### Now deal with IRNetBoxIV controlled STBs
 	if (%irnetboxiv) {
+		checkRedRatHub();
 		foreach my $nbiv (keys %irnetboxiv) {
 			my %hwdata = %{$irnetboxiv{$nbiv}};
 			foreach my $hwtype (keys %hwdata) {
@@ -423,21 +437,26 @@ sub sendIRNetBoxIVComms {
 
 	my $rrres = '';
 	$rrres = &readData('hubquery="list redrats"');
-	warn "$rrres\n";
+	#warn "$rrres\n";
 	if ($rrres) {
 		if ($rrres !~ m/$netboxip/) {
 			$rrres = &readData('hubquery="add redrat" ip="' . $netboxip . '"');
-			warn "Add RedRat $netboxip - $rrres\n";
-		} else {
-			warn "$netboxip already added\n";
-		}
+			warn "Adding RedRat $netboxip to RedRatHub - $rrres\n";
+		}# else {
+		#	warn "$netboxip already added\n";
+		#}
 	}
 	$rrres = &readData('hubquery="connect redrat" ip="' . $netboxip . '"');
 	#warn "Connect to RedRat $netboxip - $rrres\n";
 	
         my $comfile = $filedir . 'skyQIRNetBoxIVCommands.txt';
-        if ($hwtype eq 'nowtv') {
-		$comfile = $filedir . 'nowTVIRNetBoxIVCommands.txt';
+        if ($hwtype =~ /nowtv/) {
+		my $newfile = $filedir . $hwtype . 'IRNetBoxIVCommands.txt';
+        	if (-e $newfile) {
+			$comfile = $newfile;
+        	} else {
+			$comfile = $filedir . 'nowTVIRNetBoxIVCommands.txt';
+		}
         }
 	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%ircoms: $!\n";
 
@@ -450,7 +469,7 @@ sub sendIRNetBoxIVComms {
 			my $sig = $ircoms{$command};
 			#warn "$netboxip - $hwtype - $sig\n";
 			my $res = &readData('ip="' . $netboxip . '" dataset="' . $hwtype . '" signal="' . $sig . '" output="' . $outputs . '"');
-			#warn "$res\n";
+			warn "$res\n";
 			if ($res and $res !~ /OK/) {
 				warn "Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
 			}
@@ -581,30 +600,79 @@ sub checkRedRatHub {
 	}
 	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
         if (!$running) {
-                print "RedRatHub is NOT running. Attempting to start it, waiting for 10 seconds\n";
+                print "RedRatHub which controls IRNetBoxIV communication is NOT running. I have tried to start it for you. Please wait 10 seconds and then try to control IRNetBoxIV devices again\n\nIf the problem persists, check your webserver error log for details or contact your system administrator.";
                 chomp(my $sysip = `hostname -I | awk \'\{print \$1\}\'` // '');
                 $sysip =~ s/\s+//g;
                 $sysip =~ s/\r|\n//g;
                 if ($sysip) {
-                        system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
-                        sleep 10;
+			system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
+			#system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan > $redrathubdebug 2>&1 \&\" \&");
+                        #sleep 10;
+			exit;
                 } else {
                         die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
                 }
-                chomp($running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
-                if ($running) {
-                        if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
-                                $redrathubip = $1;
-                                return;
-                        }
-                } else {
-                        die "ERROR: RedRatHub was not running and I was unable to start it.\n";
-                }
+                #chomp($running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+                #if ($running) {
+                #        if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                #                $redrathubip = $1;
+                #                return;
+                #        }
+                #} else {
+                #        die "ERROR: RedRatHub was not running and I was unable to start it.\n";
+                #}
         } else {
                 #print "Hub is running - $running\n";
                 if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
                         $redrathubip = $1;
                         return;
                 }
+        }
+}
+
+sub sendNowTVNetwork {
+        use LWP::UserAgent;
+        use HTTP::Request;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $ntvfile = $filedir . 'nowTVNetworkCommands.txt';
+        my $nowtvip = $$boxdata{'NOWTVIP'};
+        my $nowtvport = '8060';
+
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $ntvcoms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+                my $ua = new LWP::UserAgent;
+                my $service = "http://$nowtvip:$nowtvport/" . $basecom;
+
+                $ua->timeout(3);
+                my $request = new HTTP::Request('POST',$service);
+                my $response = $ua->request($request);
+                if ($response->is_success) {
+                        my $stuff = $response->code . " " . $response->message;
+                } else {
+                        my $stuff = $response->code . " " . $response->message;
+                        warn "PID $$: Failed to send \"$command\" to Now TV Box \"$$stb\" at $nowtvip on port $nowtvport: $stuff\n";
+                }
+        }
+
+        untie %ntvcoms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
         }
 }

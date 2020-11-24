@@ -1,0 +1,18 @@
+back:keypress/Backspace
+exit:keypress/Back
+home:keypress/Home
+cursor up:keypress/Up
+cursor down:keypress/Down
+cursor left:keypress/Left
+cursor right:keypress/Right
+ok:keypress/Select
+rewind:keypress/Rev
+fast forward:keypress/Fwd
+playpause:keypress/Play
+star:keypress/Info
+nowtv:launch/26614?contentID=0
+search:keypress/Search
+tv guide:launch/49848?context=["Sports"]
+sky store:launch/35491
+kids:launch/26614?context=["kidsHome"]
+my tv:launch/26614?context=["mytv"]

@@ -59,15 +59,15 @@ if ($archraw) {
 
 if ($arch and $dotnetfile) {
 	my $dir = $maindir . 'dotnet' . $arch;
-	chomp(my $installcheck = `ls -1 $dir \| grep LICENSE`);
-	if (!$installcheck) {
-		my $file = "$dir/$dotnetfile";
-		print "Architecture successfully found. Will use $dir\nUnpacking dotnet files, please wait...\n";
-		system("cd $dir && tar -xf $file");
-		print "dotnet files unpacked. Finished\n";
-	} else {
-		print "The correct version of dotnet already appears to be extracted\nFinished\n";
-	}
+	#chomp(my $installcheck = `ls -1 $dir \| grep LICENSE`);
+	#if (!$installcheck) {
+	#	my $file = "$dir/$dotnetfile";
+	#	print "Architecture successfully found. Will use $dir\nUnpacking dotnet files, please wait...\n";
+	#	#system("cd $dir && tar -xf $file");
+	#	#print "dotnet files unpacked. Finished\n";
+	#} else {
+	#	print "The correct version of dotnet already appears to be extracted\nFinished\n";
+	#}
 	system("echo $arch > $archfile && chmod 777 $archfile");
 }
 
