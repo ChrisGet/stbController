@@ -2455,6 +2455,22 @@ p.narrow {
 	margin:0;
 }
 
+#stbDataNoteDivNowTVGC {
+	display:inline-block;
+	position:absolute;
+	left:105%;
+	top:50%;
+	transform:translateY(-60%);
+	width:65%;
+	height:99%;
+	border-radius:5px;
+	text-align:center;
+	background:url("../images/ip2ir-labels.png");
+	background-size:auto 100%;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+
 /** STB Data Page - Existing STB Data **/
 
 /** Sequences Page **/

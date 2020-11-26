@@ -207,6 +207,8 @@ sub control {
 				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
 				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky/);
 				sendNowTVNetwork(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(NowTV/);
+				sendGlobalCacheIRNowTV(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(NowTV/);
+				sendGlobalCacheIRSkyQ(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(SkyQ/);
 	                	exit;
 	        	}
 		}
@@ -670,6 +672,94 @@ sub sendNowTVNetwork {
         }
 
         untie %ntvcoms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+}
+
+sub sendGlobalCacheIRNowTV {
+        use IO::Socket::INET;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $ntvfile = $filedir . 'nowTVGlobalCacheIRCommands.txt';
+        my $gcip = $$boxdata{'GlobalCacheIP'};
+        my $gcport = $$boxdata{'GlobalCachePort'};
+
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+
+	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $ntvcoms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+		my $EOL = "\015\012";
+		my $fullcom = 'sendir,1:' . $gcport . ',' . $basecom . $EOL;
+		my $res = '';
+		$sock->send($fullcom);
+		$sock->recv($res,16);
+		if ($res !~ /completeir/) {
+			warn "PID $$: ERROR: Issue when sending command \"$command\" to GlobalCache device at $gcip: $res\n";
+		}
+        }
+
+        untie %ntvcoms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+}
+
+sub sendGlobalCacheIRSkyQ {
+        use IO::Socket::INET;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $comfile = $filedir . 'skyQGlobalCacheIRCommands.txt';
+        my $gcip = $$boxdata{'GlobalCacheIP'};
+        my $gcport = $$boxdata{'GlobalCachePort'};
+
+        tie my %coms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%coms to $comfile: $!\n";
+
+	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $coms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+		my $EOL = "\015\012";
+		my $fullcom = 'sendir,1:' . $gcport . ',' . $basecom . $EOL;
+		my $res = '';
+		$sock->send($fullcom);
+		$sock->recv($res,16);
+		if ($res !~ /completeir/) {
+			warn "PID $$: ERROR: Issue when sending command \"$command\" to GlobalCache device at $gcip: $res\n";
+		}
+        }
+
+        untie %coms;
 
         if ($$logging) {
                 my $logpid = $$runningpids . $$;

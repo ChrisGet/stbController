@@ -1790,6 +1790,20 @@ function saveLayoutChoice() {
 
 function remoteChange($this) {
 	var opt = $this.value;
+	if (opt.match(/seq/i)) {
+		var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
+		var commands = [];
+		for (var i = 0; i < elements.length; i++) {
+			commands.push(elements[i].name);
+		}
+		if (commands[0]) {
+			var c = confirm("Creating sequences with commands from different remotes is not recommended due to potential compatibility issues.\n\nAre you sure you want to change remotes?");
+			if (c == false) {
+				return;
+			}
+		}
+	}
+
 	$.ajax({
 		type : 'GET',
 		url : 'cgi-bin/scripts/pages/remoteSelect.pl',
