@@ -1317,6 +1317,133 @@ table.stbConfigGrid {
 	cursor:context-menu;
 }
 
+/* Sequence Categories Stuff */
+#seqCatHeadDiv {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:left;
+}
+#seqCatHeadDiv h2 {
+	display:inline-block;
+	margin:0.6% 0;
+	font-size:1.6vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+#seqCatHeadDiv p {
+	display:inline-block;
+	margin:0.5% 0;
+	font-size:1.4vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+.seqCatPageSection {
+	display:inline-block;
+	width:30%;
+	height:86%;
+	vertical-align:top;
+	text-align:center;
+}
+.seqCatPageSection.list {
+	width:50%;
+}
+#catListHead {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	background-color:#07575b;	
+	border-radius:5px;
+	position:relative;
+	text-align:center;
+}
+#catListHead p {
+	display:inline-block;
+	margin:0;
+	font-size:1.6vh;
+	color:white;
+	font-weight:normal;
+	width:100%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+#catListMain {
+	display:inline-block;
+	width:100%;
+	height:95%;
+	overflow:auto;
+}
+#catListMain p {
+	display:inline-block;
+	margin:2% 0;
+	font-size:1.6vh;
+	font-weight:normal;
+	width:100%;
+	color:red;
+}
+.catListRow {
+	display:inline-block;
+	width:100%;
+	height:7%;
+}
+.catListRow {
+
+}
+
+#createCatDiv {
+	display:inline-block;
+	width:90%;
+	height:30%;
+	border-bottom:1px solid #cccccc;
+}
+#createCatDiv h2 {
+	display:inline-block;
+	margin:2% 0;
+	font-size:1.6vh;
+	color:#2e2e9e;
+	font-weight:normal;
+	width:100%;
+}
+#createCatDiv p {
+	display:inline-block;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+.seqCatText {
+	display:inline-block;
+	border:1px solid #333333;
+	border-radius:3px;
+	height:15%;
+	width:60%;	
+	font-size:1.3vh;
+	text-align:center;
+	margin:1% 0 2% 0;
+}
+#createCatBtn {
+	display:inline-block;
+	height:15%;
+	width:30%;
+	font-size:1.5vh;
+	border-radius:5px;
+	background-color:#29a329;
+	color:white;
+	border:none;
+	margin:5% 0;
+}
+#createCatBtn:hover {
+	background-color:#196619;
+}
+
+/* Sequence Categories Stuff */
+
+
+
 .wrapLeft {
 	float:left;
 	width:auto;
@@ -2709,7 +2836,7 @@ input[type='file'] {
 #sequencesAvailable {
 	display:inline-block;
 	width:87%;
-	height:99%;
+	height:100%;
 	float:left;
 	text-align:left;
 	position:relative;
@@ -2725,10 +2852,48 @@ input[type='file'] {
 	border-radius:5px;
 	overflow:hidden;
 }
+#seqSwitchModeDiv {
+	display:inline-block;
+	width:20%;
+	height:3%;
+	text-align:center;
+	position:relative;
+	border-radius:5px;
+	border:1px solid black;
+	overflow:hidden;
+	margin-bottom:0.5%;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+.seqSwitchModeBtn {
+	display:inline-block;
+	height:100%;
+	width:50%;
+	position:relative;
+}
+.seqSwitchModeBtn:hover {
+	cursor:pointer;
+}
+.seqSwitchModeBtn.selected {
+	background-color:green;
+}
+.seqSwitchModeBtn p {
+	font-size:1.2vh;
+	color:green;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+.seqSwitchModeBtn.selected p {
+	color:white;
+}
+
 #expMultiSeqDiv {
 	position:absolute;
 	left:101%;
-	top:0;
+	top:4%;
 	width:13%;
 	height:20%;
 	z-index:5;
@@ -2766,7 +2931,7 @@ input[type='file'] {
 #sequenceListDiv {
 	display:inline-block;
 	width:100%;
-	height:95%;
+	height:92%;
 	text-align:center;
 	overflow:auto;
 }

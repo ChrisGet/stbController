@@ -12,7 +12,7 @@ chomp(my $action = $query->param('action') || $ARGV[0] || '');
 chomp(my $sequence = $query->param('sequence') || $ARGV[1] || '');
 
 die "No Action given for sequencesPages.pl\n" if (!$action);
-die "Invalid Action \"$action\" given for sequencesPage.pl\n" if ($action !~ /^Menu$|^Create$|^Edit$|^Delete$/i);
+die "Invalid Action \"$action\" given for sequencesPage.pl\n" if ($action !~ /^Menu$|^Categories$|^Create$|^Edit$|^Delete$/i);
 die "No Sequence given to be edited for sequencesPage.pl\n" if (($action =~ /^Edit$/i) and (!$sequence));
 
 chomp(my $maindir = (`cat homeDir.txt` || ''));
@@ -26,6 +26,7 @@ my $image = $maindir . '/images/RT_Logo.png';
 my $htmldir = $maindir . '/scripts/pages/';
 my $conthtml = $htmldir . 'sequenceController.html';
 my $remfile = $confdir . 'sequencesRemote.txt';
+my $catlistfile = $filedir . 'sequenceCategories.json';
 
 checkLegacy();	# Initial check to see if any old sequence files have been converted to the new JSON format
 
@@ -33,6 +34,7 @@ checkLegacy();	# Initial check to see if any old sequence files have been conver
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
 
+##### Load the sequences data
 my %sequences;
 if (-e $jsonfile) {
 	local $/ = undef;
@@ -42,7 +44,19 @@ if (-e $jsonfile) {
 	%sequences = %{$decoded};
 }
 
+##### Load the sequence categories data
+my %categories;
+if (-e $catlistfile) {
+	local $/ = undef;
+	open my $fh, "<", $catlistfile or die "ERROR: Unable to open $catlistfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%categories = %{$decoded};
+}
+
+
 mainMenu() and exit if ($action =~ /^Menu$/i);
+categories() and exit if ($action =~ /^Categories$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Create$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Edit$/i);
 
@@ -94,6 +108,14 @@ print <<HEAD;
 	<h2>Multi Export</h2>
 	<p>Use the checkboxes to select multiple sequences for exporting (Native format only)</p>
 	<button class="multiExportBtn" onclick="exportSequence('native','multi-export')">Export</button>
+</div>
+<div id="seqSwitchModeDiv">
+	<div class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
+		<p>Sequences</p>
+	</div>
+	<div class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
+		<p>Categories</p>
+	</div>
 </div>
 <div id="sequenceListHeader">
 	<div class="seqListRowSec state"><h2>Active</h2></div>
@@ -263,3 +285,42 @@ print <<MAIN;
 </div>
 MAIN
 } # End of sub 'createSeq'
+
+sub categories {
+	my $catdata = '';
+	if (%categories) {
+
+	} else {
+		$catdata = '<p>You currently have no categories</p>';
+	}
+
+print <<OUT;
+<div id="seqSwitchModeDiv">
+	<div class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
+		<p>Sequences</p>
+	</div>
+	<div class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
+		<p>Categories</p>
+	</div>
+</div>
+<div id="seqCatHeadDiv">
+	<h2>Sequence categories allow you to group sequences with similar functions or target behaviours</h2>
+	<p>Sequences with the same category will be listed together on the Controller page under the category heading.<br>(Categories are listed alphabetically)</p>
+</div>
+<div class="seqCatPageSection">
+	<div id="createCatDiv">
+		<h2>Create new category</h2>
+		<p>Name:</p>
+		<input type="text" id="newCatName" class="seqCatText" placeholder="25 Characters max" maxlength="25" /><br>
+		<button id="createCatBtn">Create</button>
+	</div>
+</div>
+<div class="seqCatPageSection list">
+	<div id="catListHead"><p>Category List</p></div>
+	<div id="catListMain">
+		$catdata
+	</div>
+</div>
+OUT
+
+}
