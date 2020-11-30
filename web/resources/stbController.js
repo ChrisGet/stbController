@@ -953,6 +953,10 @@ function seqValidate($origname) {	// This function handles validation and submit
 	var invalidnameregex = /[^\w\s]|\_+/;	// Check the sequence name does not contain any non alphanumeric characters along with "_"
 	var invalidnamematch = invalidnameregex.exec(name);
 	var $seqdesc = $('#sequenceDesc').val();
+	var $seqcategory = $('#categoryList').val();
+	if ($seqcategory.match(/None Selected/)) {
+		$seqcategory = '';
+	}
 	if (!name) {
 		alert('Please give the new sequence a name!');
 	} else {
@@ -992,7 +996,7 @@ function seqValidate($origname) {	// This function handles validation and submit
 								}
 							}
 						});
-					}			//console.log('New description passed');
+					}
 
 					data = {};
 					data['action'] = 'Edit';
@@ -1000,6 +1004,7 @@ function seqValidate($origname) {	// This function handles validation and submit
 					data['commands'] = string;
 					data['originalName'] = $origname;
 					data['description'] = $seqdesc;
+					data['category'] = $seqcategory;
 
 					scriptCall('','scripts/sequenceControl.pl',data);
 					alert('Success! Sequence "' + $origname + '" was updated');
@@ -1025,6 +1030,7 @@ function seqValidate($origname) {	// This function handles validation and submit
 							data['sequence'] = name;
 							data['commands'] = string;
 							data['description'] = $seqdesc;
+							data['category'] = $seqcategory;
 							scriptCall('','scripts/sequenceControl.pl',data);
 							alert('Success! Event "' + name + '" has been created');
 							$('#menuSequences').click();
@@ -1037,8 +1043,8 @@ function seqValidate($origname) {	// This function handles validation and submit
 }
 // ############### End of seqValidate function
 
-function exportSequence($option,$seq) {	// This function handles exporting of single or multiple sequences
-	var $list = '';		// This will be populated with the list of sequences to be exported when the Multi Export process is run
+function exportSequence($option,$seq) {		// This function handles exporting of single or multiple sequences
+	var $list = '';				// This will be populated with the list of sequences to be exported when the Multi Export process is run
 	if ($option.match(/show/)) {
 		var $seqn = $seq.replace(/\s+/g,'_');
 		$('#seqExportOverlay-' + $seqn).css('display','inline-block');
@@ -1059,8 +1065,6 @@ function exportSequence($option,$seq) {	// This function handles exporting of si
 			alert('Please select at least one sequence to export');
 			return;
 		}
-		//alert($list);
-		//return;
 	}
 
 	$.ajax({
@@ -1759,7 +1763,7 @@ function ctrlSettings($opt) {
 	if ($opt.match(/show/i)) {
 		$('#controllerPageSettingsHolder').css('display','inline-block');
 	} else {
-		$('#controllerPageSettingsHolder').css('display','none');	
+		$('#controllerPageSettingsHolder').css('display','none');
 	}
 }
 
@@ -1772,7 +1776,7 @@ function saveLayoutChoice() {
 			return false;
 		}
 	});
-	
+
 	$.ajax({
 		type : 'POST',
 		url : 'cgi-bin/scripts/settings.pl',
@@ -1952,7 +1956,7 @@ function expSeqSelect($id) {
 		if ($('#' + $id).is(":checked")) {
 			checkstate = true;
 		}
-		
+
 		$('.seqExpCheck').each(function() {
 			if (!$(this).attr('id').match($id)) {
 				$(this).prop('checked',checkstate);
@@ -2173,4 +2177,124 @@ function legacyCheck() {
 		url : 'cgi-bin/scripts/legacyCheck.pl',
 	});
 }
+
+function createSeqCategory($this) {
+	var name = $('#newCatName').val();
+	//alert(name);
+	if (!name) {
+		alert('New category name cannot be blank...');
+		return;
+	} else if (name.match(/[^A-Za-z0-9 ]/)) {
+		alert('Please only use letters, numbers, and spaces in the category name');
+		return;
+	}
+
+	$($this).prop('disabled','true');
+	$($this).text('Creating');
+
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceCategoryControl.pl',
+		data : {
+			'action' : 'Search',
+			'category' : name,
+		},
+		success : function(result) {
+			if (result == 'Found') {
+				alert('ERROR: A category already exists with the name "' + name + '"');
+				$($this).prop('disabled','false');
+				$($this).text('Create');
+				return;
+			} else {
+				$.ajax({
+					type : 'GET',
+					url : 'cgi-bin/scripts/sequenceCategoryControl.pl',
+					data : {
+						'action' : 'Add',
+						'category' : name,
+					},
+					success : function(result) {
+						if (!result) {
+							alert('Success! New category "' + name + '" was created');
+						}
+						$('#seqSwitchModeCategories').click();
+					}
+				});
+			}
+		}
+	});
+}
+
+function deleteSeqCategory($cat) {	// This function handles deletion of an existing sequence category
+	var c = confirm('Are you sure you want to delete the sequence category "' + $cat + '" ?' + "\nSequences in this category will be listed in the \"Unassigned\" category.");
+	if (c == false) {
+		return;
+	}
+
+	if (c == true) {
+		$.ajax({
+			type : 'GET',
+			url : 'cgi-bin/scripts/sequenceCategoryControl.pl',
+			data : {
+				'action' : 'Delete',
+				'category' : $cat,
+			},
+			success : function(result) {
+				if (!result) {
+					alert('Success! Category "' + $cat + '" was deleted');
+				}
+				$('#seqSwitchModeCategories').click();
+			}
+		});
+	}
+}
+// ############### End of deleteSeqCategory function
+
+function editSeqCategory($cat) {	// This function handles deletion of an existing sequence category
+	var newname = prompt('Please enter the new name for the category "' + $cat + '"' + "\n\nNOTE: 25 Characters Maximum");
+
+	if (!newname) {
+		alert('Category name cannot be blank...');
+		return;
+	} else if (newname.match(/[^A-Za-z0-9 ]/)) {
+		alert('Please only use letters, numbers, and spaces in the category name');
+		return;
+	} else if (newname.length > 25) {
+		alert('Name too long. Please try again.');
+		return;
+	}
+
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/sequenceCategoryControl.pl',
+		data : {
+			'action' : 'Search',
+			'category' : newname,
+		},
+		success : function(result) {
+			if (result == 'Found') {
+				alert('ERROR: A category already exists with the name "' + newname + '"');
+				return;
+			} else {
+				$.ajax({
+					type : 'GET',
+					url : 'cgi-bin/scripts/sequenceCategoryControl.pl',
+					data : {
+						'action' : 'Edit',
+						'category' : newname,
+						'originalName' : $cat
+					},
+					success : function(result) {
+						if (!result) {
+							alert('Success! Category "' + $cat + '" was renamed to "' + newname + '"');
+						}
+						$('#seqSwitchModeCategories').click();
+					}
+				});
+			}
+		}
+	});
+}
+// ############### End of editSeqCategory function
+
 // end hiding script from old browsers -->

@@ -15,7 +15,8 @@ chomp(my $origname = $query->param('originalName') // $ARGV[3] // '');
 chomp(my $expformat = $query->param('exportFormat') // $ARGV[4] // '');
 chomp(my $explist = $query->param('list') // $ARGV[5] // '');
 chomp(my $desc = $query->param('description') // $ARGV[6] // '');
-chomp(my $state = $query->param('state') // $ARGV[7] // '');
+chomp(my $category = $query->param('category') // $ARGV[7] // '');
+chomp(my $state = $query->param('state') // $ARGV[8] // '');
 
 die "No Action defined for sequenceControl.pl\n" if (!$action);
 die "No Sequence name given for sequenceControl.pl \"$action\"" if (!$sequence);
@@ -78,6 +79,7 @@ sub checkLegacy {
                         foreach my $old (sort keys %temp) {
                                 $newjson{$old}{'commands'} = $temp{$old};
                                 $newjson{$old}{'description'} = '';
+                                $newjson{$old}{'category'} = '';
                                 $newjson{$old}{'active'} = 'yes';
                         }
 
@@ -149,6 +151,7 @@ sub addSequence {
 	$sequences{$$seq}{'commands'} = $$coms;
 	$sequences{$$seq}{'active'} = 'yes';
 	$sequences{$$seq}{'description'} = $desc;
+	$sequences{$$seq}{'category'} = $category;
 
 	saveSequences();
 } # End of sub 'addSequence'

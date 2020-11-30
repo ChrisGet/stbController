@@ -54,7 +54,6 @@ if (-e $catlistfile) {
 	%categories = %{$decoded};
 }
 
-
 mainMenu() and exit if ($action =~ /^Menu$/i);
 categories() and exit if ($action =~ /^Categories$/i);
 createSeq(\$sequence) and exit if ($action =~ /^Create$/i);
@@ -80,6 +79,7 @@ sub checkLegacy {
 				$newjson{$old}{'commands'} = $temp{$old};
 				$newjson{$old}{'description'} = '';
 				$newjson{$old}{'active'} = 'yes';
+				$newjson{$old}{'category'} = '';
 			}
 
 			if (%newjson) {
@@ -98,7 +98,6 @@ sub checkLegacy {
 }
 
 sub mainMenu {
-	#tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 	if (!%sequences) {
 		print '<font size="4" color="red">You currently have no Command Sequences</font>';
 		exit;
@@ -110,10 +109,10 @@ print <<HEAD;
 	<button class="multiExportBtn" onclick="exportSequence('native','multi-export')">Export</button>
 </div>
 <div id="seqSwitchModeDiv">
-	<div class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
+	<div id="seqSwitchModeSequences" class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
 		<p>Sequences</p>
 	</div>
-	<div class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
+	<div id="seqSwitchModeCategories" class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
 		<p>Categories</p>
 	</div>
 </div>
@@ -128,34 +127,54 @@ print <<HEAD;
 </div>
 <div id="sequenceListDiv">
 HEAD
-	my $colcount = '1';
-	foreach my $key (sort keys %sequences) {
-		my $id = $key;
-		$id =~ s/\s+/_/g;
-		if ($colcount == '8') {
-			print '</tr><tr>';
-			$colcount = '1';
+
+	##### Sort the sequences by their categories
+	my %seqsbycat;
+	foreach my $seq (keys %sequences) {
+		my $cat = $sequences{$seq}{'category'} // '';
+		if ($cat) {
+			$seqsbycat{$cat}{$seq} = 1;
+		} else {
+			$seqsbycat{'zzzzzUnassigned'}{$seq} = 1;			
 		}
-		
-		my $titlestring = $sequences{$key}{'commands'} || '';
-		my @coms = split(',',$titlestring);
-		my $comstring = '';
-		foreach my $com (@coms) {
-			my $classextra = '';
-			if ($com =~ /^t\d+$/) {
-				$classextra = 'timeout';
+	}
+
+
+	foreach my $cat (sort keys %seqsbycat) {
+	#foreach my $key (sort keys %sequences) {
+		if ($cat eq 'zzzzzUnassigned') {
+			$cat = 'Unassigned';
+		}
+		print '<div class="seqCatTitleListDiv"><p>' . $cat . '</p></div>';
+		my %catseqs = %{$seqsbycat{$cat}};
+		my $colcount = '1';
+		foreach my $key (sort keys %catseqs) {
+			my $id = $key;
+			$id =~ s/\s+/_/g;
+			if ($colcount == '8') {
+				print '</tr><tr>';
+				$colcount = '1';
 			}
-			$comstring .= "<div class=\"seqListIconOuter\"><div class=\"seqListIcon $classextra\"><p>$com</p></div><div class=\"seqListArrowDiv $classextra\"></div></div>";
-		}
+		
+			my $titlestring = $sequences{$key}{'commands'} || '';
+			my @coms = split(',',$titlestring);
+			my $comstring = '';
+			foreach my $com (@coms) {
+				my $classextra = '';
+				if ($com =~ /^t\d+$/) {
+					$classextra = 'timeout';
+				}
+				$comstring .= "<div class=\"seqListIconOuter\"><div class=\"seqListIcon $classextra\"><p>$com</p></div><div class=\"seqListArrowDiv $classextra\"></div></div>";
+			}
 
-		my $description = $sequences{$key}{'description'} // '';
-		$description = 'No description' if ($description !~ /\S+/);
+			my $description = $sequences{$key}{'description'} // '';
+			$description = 'No description' if ($description !~ /\S+/);
 
-		my $active = $sequences{$key}{'active'} // '';
-		my $stateclass = 'stateBox';
-		if ($active and $active eq 'yes') {
-			$stateclass .= ' active';
-		}
+			my $active = $sequences{$key}{'active'} // '';
+			my $stateclass = 'stateBox';
+			if ($active and $active eq 'yes') {
+				$stateclass .= ' active';
+			}
 
 print <<SEQ;
 <div class="seqListRow">
@@ -192,10 +211,9 @@ print <<SEQ;
 	</div>
 </div>
 SEQ
-		$colcount++;
+			$colcount++;
+		}
 	}
-	
-	print '</div>';
 }
 
 sub createSeq {
@@ -222,6 +240,7 @@ sub createSeq {
 	my $description = '';
 	my $buttontext = 'Create!';
 	my $onclick = 'seqValidate()';
+	my $category = '';
 
 	if ($$seq) {
 		$headertext = "Sequences \&\#8594; Edit \&\#8594; <font color\=\"green\">\"$$seq\"<\/font>";
@@ -229,6 +248,7 @@ sub createSeq {
 		#tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n";
 		$commands = $sequences{$defname}{'commands'};		
 		$description = $sequences{$defname}{'description'} // '';
+		$category = $sequences{$defname}{'category'} // '';
 		$buttontext = 'Update!';
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "seqValidate(\'$defname\')";
@@ -238,6 +258,9 @@ sub createSeq {
 	my $tobtn = '<button class="seqTimeoutBtn" onclick="addSeqTO()">Add Timeout</button>';
 	my $namefield = $query->textfield(-id=>'sequenceName',-name=>'sequenceName',-size=>30,,-maxlength=>25,-default=>$defname);
 	my $descfield = $query->textarea(-id=>'sequenceDesc',-name=>'sequenceDescription',-default=>$description);
+	my @cats = sort keys %categories;
+	unshift(@cats,'None Selected');
+	my $catlist = $query->popup_menu(-id=>'categoryList',-name=>'categoryList',-values=>[@cats],-class=>'seqCatSelect',-default=>$category);
 
 print <<MAIN;
 <div id="sequencesPageHolder">
@@ -263,8 +286,14 @@ print <<MAIN;
 					</div>
 				</div>
 				<div class="seqTopSec">
-					<p>Sequence Description</p>
-					$descfield
+					<div class="seqTopSec short">
+						<p>Sequence Description</p>
+						$descfield
+					</div>
+					<div class="seqTopSec short">
+						<p>Sequence Category</p>
+						$catlist
+					</div>
 				</div>
 			</div>
 			<div id="seqAreaMiddle">
@@ -289,17 +318,45 @@ MAIN
 sub categories {
 	my $catdata = '';
 	if (%categories) {
-
+		my %seqsbycat = getSeqsByCategory();	##### Sorts the sequences by categories which become the keys from %seqsbycat
+		foreach my $cat (sort keys %categories) {
+			my $membersdata = '';
+			if (exists $seqsbycat{$cat}) {
+				if ($seqsbycat{$cat}) {
+					$membersdata = '<div class="catListSeqHolder">';
+					$membersdata .= $seqsbycat{$cat};
+					$membersdata .= '</div>';
+				}
+			}
+			$membersdata = '<p>No Sequences in this category</p>' if (!$membersdata);
+			
+			my $idname = $cat;
+			$idname =~ s/\s+/_/g;
+$catdata .= <<CAT
+<div id="categoryRow-$idname" class="catListRow">
+	<div class="catListRowSection">
+		<p>$cat</p>
+	</div>
+	<div class="catListRowSection members">
+		$membersdata
+	</div>
+	<div class="catListRowSection">
+		<button class="seqListBtn Edit category" title="Edit" onclick="editSeqCategory('$cat')"></button>
+		<button class="seqListBtn Del category" title="Delete" onclick="deleteSeqCategory('$cat')"></button>
+	</div>
+</div>
+CAT
+		}
 	} else {
-		$catdata = '<p>You currently have no categories</p>';
+		$catdata = '<h2>You currently have no categories</h2>';
 	}
 
 print <<OUT;
 <div id="seqSwitchModeDiv">
-	<div class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
+	<div id="seqSwitchModeSequences" class="seqSwitchModeBtn" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu')">
 		<p>Sequences</p>
 	</div>
-	<div class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
+	<div id="seqSwitchModeCategories" class="seqSwitchModeBtn selected" onclick="perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Categories')">
 		<p>Categories</p>
 	</div>
 </div>
@@ -307,20 +364,41 @@ print <<OUT;
 	<h2>Sequence categories allow you to group sequences with similar functions or target behaviours</h2>
 	<p>Sequences with the same category will be listed together on the Controller page under the category heading.<br>(Categories are listed alphabetically)</p>
 </div>
+<div class="seqCatPageSection list">
+	<div id="catListHead">
+		<div class="catListRowSection">
+			<p>Category Name</p>
+		</div>
+		<div class="catListRowSection members">
+			<p>Sequences</p>
+		</div>
+		<div class="catListRowSection">
+			<p>Manage</p>
+		</div>
+	</div>
+	<div id="catListMain">
+		$catdata
+	</div>
+</div>
 <div class="seqCatPageSection">
 	<div id="createCatDiv">
 		<h2>Create new category</h2>
 		<p>Name:</p>
 		<input type="text" id="newCatName" class="seqCatText" placeholder="25 Characters max" maxlength="25" /><br>
-		<button id="createCatBtn">Create</button>
-	</div>
-</div>
-<div class="seqCatPageSection list">
-	<div id="catListHead"><p>Category List</p></div>
-	<div id="catListMain">
-		$catdata
+		<button id="createCatBtn" onclick="createSeqCategory(this)">Create</button>
 	</div>
 </div>
 OUT
 
+}
+
+sub getSeqsByCategory {
+	my %data;
+	foreach my $seq (sort keys %sequences) {
+		if ($sequences{$seq}{'category'}) {
+			my $cat = $sequences{$seq}{'category'};
+			$data{$cat} .= "<div class=\"catSeqListItem\"><p>$seq</p></div>";
+		}
+	}
+	return %data;
 }
