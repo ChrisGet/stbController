@@ -21,6 +21,7 @@ my $seqjsonfile = $filedir . 'commandSequences.json';
 my $groupsfile = $filedir . 'stbGroups.json';
 my $orderfile = $confdir . 'controllerPageOrder.conf';
 my $remfile = $confdir . 'controllerRemote.txt';
+my $catlistfile = $filedir . 'sequenceCategories.json';
 my $confs = `ls -1 $confdir`;
 my %laststbs;
 chomp(my $lastboxstring = `cat $lastboxfile` || '');
@@ -58,6 +59,16 @@ if (-e $seqjsonfile) {
 	%sequences = %{$decoded};
 }
 
+##### Load the sequence categories data
+my %categories;
+if (-e $catlistfile) {
+	local $/ = undef;
+	open my $fh, "<", $catlistfile or die "ERROR: Unable to open $catlistfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%categories = %{$decoded};
+}
+                                        
 ##### Load the STB Groups data
 my %groups;
 if (-e $groupsfile) {
@@ -302,14 +313,34 @@ CONTROL
 
 sub loadSequences {
 	my $seqlist = '';
-	foreach my $seq (sort keys %sequences) {
-		if ($sequences{$seq}{'active'} eq 'yes') {
-			my $seqdesc = $sequences{$seq}{'description'};
-			my $val = 'No description';
-			if ($seqdesc =~ /\S+/) {
-				$val = $seqdesc;
+
+	##### Sort the sequences by their categories
+	my %seqsbycat;
+	foreach my $seq (keys %sequences) {
+		my $cat = $sequences{$seq}{'category'} // '';
+		if ($cat) {
+			$seqsbycat{$cat}{$seq} = 1;
+		} else {
+			$seqsbycat{'zzzzzUnassigned'}{$seq} = 1;
+		}
+	}
+
+	foreach my $cat (sort keys %seqsbycat) {
+		my $catname = $cat;
+		if ($cat eq 'zzzzzUnassigned') {
+                        $catname = 'Unassigned';
+                }
+		$seqlist .= '<div class="seqCatTitleGridDiv"><p>' . $catname . '</p></div>';
+                my %catseqs = %{$seqsbycat{$cat}};
+		foreach my $seq (sort keys %catseqs) {
+			if ($sequences{$seq}{'active'} eq 'yes') {
+				my $seqdesc = $sequences{$seq}{'description'};
+				my $val = 'No description';
+				if ($seqdesc =~ /\S+/) {
+					$val = $seqdesc;
+				}
+				$seqlist .= "<button id=\"$seq\" class=\"sequenceButton masterTooltip\" value=\"$val\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
 			}
-			$seqlist .= "<button id=\"$seq\" class=\"sequenceButton masterTooltip\" value=\"$val\" onclick=\"stbControl('Event','$seq')\">$seq</button>";
 		}
 	}
 	if (!$seqlist) {

@@ -139,23 +139,16 @@ HEAD
 		}
 	}
 
-
 	foreach my $cat (sort keys %seqsbycat) {
-	#foreach my $key (sort keys %sequences) {
+		my $catname = $cat;
 		if ($cat eq 'zzzzzUnassigned') {
-			$cat = 'Unassigned';
+			$catname = 'Unassigned';
 		}
-		print '<div class="seqCatTitleListDiv"><p>' . $cat . '</p></div>';
+		print '<div class="seqCatTitleListDiv"><p>' . $catname . '</p></div>';
 		my %catseqs = %{$seqsbycat{$cat}};
-		my $colcount = '1';
 		foreach my $key (sort keys %catseqs) {
 			my $id = $key;
 			$id =~ s/\s+/_/g;
-			if ($colcount == '8') {
-				print '</tr><tr>';
-				$colcount = '1';
-			}
-		
 			my $titlestring = $sequences{$key}{'commands'} || '';
 			my @coms = split(',',$titlestring);
 			my $comstring = '';
@@ -211,7 +204,6 @@ print <<SEQ;
 	</div>
 </div>
 SEQ
-			$colcount++;
 		}
 	}
 }

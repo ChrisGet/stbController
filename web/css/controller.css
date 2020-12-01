@@ -3004,7 +3004,7 @@ input[type='file'] {
 }
 .seqCatTitleListDiv {
 	display:inline-block;
-	width:25%;
+	width:23%;
 	height:3%;
 	border-radius:5px 5px 0 0;
 	padding:0.5%;
@@ -3014,6 +3014,7 @@ input[type='file'] {
 	text-align:center;
 	border:2px solid #d9d9d9;
 	border-bottom:none;
+	position:relative;
 }
 .seqCatTitleListDiv p {
 	display:inline-block;
@@ -3025,6 +3026,25 @@ input[type='file'] {
 	font-weight:normal;
 	color:#333333;
 }
+.seqCatTitleGridDiv {
+	display:inline-block;
+	width:99%;
+	height:auto;
+	padding:0.5%;
+	margin:0.5% 0 0 0;
+	text-align:left;
+	position:relative;
+	word-wrap:break-word;
+	overflow:auto;
+}
+.seqCatTitleGridDiv p {
+	display:inline-block;
+	margin:1% 0 1% 5%;
+	font-size:1.3vh;
+	font-weight:normal;
+	color:#333333;
+}
+
 .seqListRow {
 	display:inline-block;
 	width:100%;
