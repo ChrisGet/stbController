@@ -144,7 +144,7 @@ HEAD
 		if ($cat eq 'zzzzzUnassigned') {
 			$catname = 'Unassigned';
 		}
-		print '<div class="seqCatTitleListDiv"><p>' . $catname . '</p></div>';
+		print '<section class="seqCatTitleListDiv"><p>' . $catname . '</p></section>';	##### Use a "section" tag so that it isn't included in the nth rules in css
 		my %catseqs = %{$seqsbycat{$cat}};
 		foreach my $key (sort keys %catseqs) {
 			my $id = $key;
