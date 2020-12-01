@@ -1,32 +1,40 @@
 <div id="sequencesPageMain">
-	<div id="sequencesPageHeader">
-		<h1>Command Sequence Control</h1>
-		<h2>Command Sequences allow you to send multiple button press commands to STBs at the click of a single button</h2>
-		<p>Any sequences you have already created will be shown to the right. Hover your mouse over the title to see at a glance what commands that sequences contains</p>
+	<div class="seqPageSection">
+		<div id="sequencesPageHeader">
+			<h1>Command Sequence Control</h1>
+			<h2>Command Sequences allow you to send multiple button press commands to STBs at the click of a single button.</h2>
+			<p>Any sequences you have already created will be shown to the right.</p>
+			<p style="color:#2e2e9e;margin:1% 0;">Sequences that have the "Active" option enabled will be listed in the Sequences bar on the main controller page.</p>
+		</div>
+		<div id="createNewSeqBtnHolder">
+			<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Create');">Create A New Command Sequence</button>
+		</div>
+		<div id="sequencesImportHolder">
+			<h1>Import "Stress" script (.txt file format only)</h1>
+			<p>These usually come from Brentwood and are used in the stress tests</p>
+			<p style="color:#ff1a1a;">NOTE: Due to the differences between our sequences and the stress scripts, the conversion will be a "best guess" attempt. If a stress script includes mutliple STBs, multiple sequences will be created with the appropriate STB name attached.</p>
+			<div class="input-container">
+				<input type="file" id="real-input">
+				<button class="browse-btn">Browse Files</button>
+				<span class="file-info">Select script for upload</span>
+			</div>
+			<h2>Sequence Name/Prefix</h2>
+			<p>If you want to give the imported script a sequence name (or prefix if it will create multiple sequences), enter it below</p>
+			<input type="text" id="importStressName" placeholder="25 Characters Max" maxlength="25"></input>
+			<button id="importStressBtn" onclick="importStressScript()" disabled>Import</button>
+			<div class="seqSepDiv"></div>
+			<h1>Import "Native" Sequence (.txt or .json file format only)</h1>
+			<p>These will have been exported from another installation of this version of STB controller</p>	
+			<div class="input-container2">
+				<input type="file" id="real-input2">
+				<button class="browse-btn2">Browse Files</button>
+				<span class="file-info2">Select sequence file for upload</span>
+			</div>
+			<button id="importNativeBtn" onclick="importNativeScript()" disabled>Import</button>
+		</div>
 	</div>
-	<button class="newSeqSubmit create" onclick="perlCall('dynamicPage','scripts/pages/sequencesPage.pl','action','Create');">Create A New Command Sequence</button>
-	<div id="sequencesAvailable"></div>
-	<div id="sequencesImportHolder">
-		<h1>Import "Stress" script (.txt file format only)</h1>
-		<p>These usually come from Brentwood and are used in the stress tests</p>
-		<p style="color:#ff1a1a;">NOTE: Due to the differences between our sequences and the stress scripts, the conversion will be a "best guess" attempt. If a stress script includes mutliple STBs, multiple sequences will be created with the appropriate STB name attached.</p>
-		<div class="input-container">
-			<input type="file" id="real-input">
-			<button class="browse-btn">Browse Files</button>
-			<span class="file-info">Select script for upload</span>
+	<div class="seqPageSection seqlist">
+		<div id="sequencesAvailable">
 		</div>
-		<h2>Sequence Name/Prefix</h2>
-		<p>If you want to give the imported script a sequence name (or prefix if it will create multiple sequences), enter it below</p>
-		<input type="text" id="importStressName" placeholder="25 Characters Max"></input>
-		<button id="importStressBtn" onclick="importStressScript()" disabled>Import</button>
-		<div class="seqSepDiv"></div>
-		<h1>Import "Native" Sequence (.txt file format only)</h1>
-		<p>These will have been exported from another installation of this version of STB controller</p>	
-		<div class="input-container2">
-			<input type="file" id="real-input2">
-			<button class="browse-btn2">Browse Files</button>
-			<span class="file-info2">Select sequence file for upload</span>
-		</div>
-		<button id="importNativeBtn" onclick="importNativeScript()" disabled>Import</button>
 	</div>
 </div>

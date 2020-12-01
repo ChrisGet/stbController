@@ -1,9 +1,15 @@
 <div id="stbGroupsPageMain">
-	<div id="stbGroupsHeader">
-		<h1>STB Group Control</h1>
-		<h2>Setting up STB groups will allow you to group boxes in to families</h2>
-		<p>These can later be used to run specific commands, sequences, or events on a single or multiple groups</p>
+	<div class="groupsPageSection">
+		<div id="stbGroupsHeader">
+			<h1>STB Group Control</h1>
+			<h2>Setting up STB groups will allow you to group boxes in to families</h2>
+			<p>These can later be used to run specific commands, sequences, or events on a single or multiple groups</p>
+		</div>
+		<div id="createNewGroupBtnHolder">
+			<button class="newSTBGroup create" onclick="perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Create')">Create A New STB Group</button>
+		</div>
 	</div>
-	<button class="newSTBGroup create" onclick="perlCall('dynamicPage','scripts/pages/stbGroupsPage.pl','action','Create')">Create A New STB Group</button>
-	<div id="stbGroupsAvailable"></div>
+	<div class="groupsPageSection grouplist">
+		<div id="stbGroupsAvailable"></div>
+	</div>
 </div>

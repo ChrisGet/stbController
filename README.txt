@@ -1,10 +1,11 @@
 ### Instructions for setting up your new STB Controller ###
 
 ############## STEP 1:
-- Go to the scripts directory and run "perl initialSetup.pl" as root. This will set up file permissions as well as 
-	other things for the controller
+- Go to the scripts directory and run "perl initialSetup.pl" as root. This will set up file permissions as well as other things for the controller
 
-- Upgrading to version 2.1 - Within the scripts directory, run the convertSTBDB.pl script. This will convert the old STB 	database file to the new JSON format.
+- Upgrading to version 2.1 - Within the scripts directory, run the convertSTBDB.pl script. This will convert the old STB database file to the new JSON format.
+
+- Upgrading to version 2.3 - Within the scripts directory, run "perl initialSetup.pl" as root or sudo. This will setup the new features needed for RedRatHub and IR functionality.
 
 ############## STEP 2:
 - Below is a list of perl modules that the controller requires. These can be installed using CPAN.
@@ -22,6 +23,8 @@
 
 - Handy cpan command for installing these modules (While in the cpan shell)
 install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Schedule::Cron Time::HiRes FindBin JSON
+
+- Install the package libusb-1.0-0-dev via your package manager.
 
 ############## STEP 3:
 - Set up the web server:-

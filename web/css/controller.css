@@ -143,10 +143,10 @@ button:hover {
 	display:inline-block;
 	width:70%;
 	height:80%;
-	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png");
-	background-size:40% auto, 40% auto;
-	background-position:bottom left, bottom right;
-	background-repeat:no-repeat, no-repeat;
+	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png"),url("../images/now-tv-smart-box.png");
+	background-size:30% auto, 30% auto, 30% auto;
+	background-position:bottom left, bottom center, bottom right;
+	background-repeat:no-repeat, no-repeat, no-repeat;
 	margin-top:40px;
 	text-align:center;
 }
@@ -200,8 +200,9 @@ button:hover {
 	left:1%;
 	top:0;
 	width:20%;
-	height:20%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #settingsPageHeader h1 {
 	display:inline-block;
@@ -403,6 +404,7 @@ button:hover {
 	margin-top:0.3%;
 	height:auto;
 	width:auto;
+	min-width:25%;
 	padding:2px;
 	overflow:auto;
 	vertical-align:top;
@@ -425,6 +427,40 @@ button:hover {
 	margin:0;
 	color:#333333;
 	position:relative;
+}
+#gridModeSwitch {
+	position:absolute;
+	left:50%;
+	transform:translateX(-50%);
+	top:0;
+	height:2.5%;
+	width:30%;
+	border-radius:5px;
+	border:1px solid #333333;
+}
+.gridModeDiv {
+	display:inline-block;
+	width:50%;
+	height:100%;
+	position:relative;	
+}
+.gridModeDiv:hover {
+	cursor:pointer;
+}
+.gridModeDiv p {
+	display:inline-block;
+	font-size:1.2vh;
+	margin:0;
+	color:#333333;
+	position:relative;	
+	top:50%;
+	transform:translateY(-50%);	
+}
+.gridModeDiv.selected {
+	background-color:green;
+}
+.gridModeDiv.selected p {
+	color:white;
 }
 #gridTableHolder {
 	display:inline-block;
@@ -803,7 +839,7 @@ button.highlighted {
 .gridButton.clear {
    	background-color:red;
    	width:40px;
-   	font-size: 1.2vh;
+   	font-size: 1vh;
 }
 .gridButton.clear:hover {
    	background:#800000;
@@ -915,8 +951,9 @@ table.stbConfigGrid {
 	left:1%;
 	top:0;
 	width:20%;
-	height:20%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #stbDataTextDiv h1 {
 	display:inline-block;
@@ -1039,7 +1076,7 @@ table.stbConfigGrid {
 #seqMain {
 	display:inline-block;
 	width:54%;
-	height:70%;
+	height:90%;
 	vertical-align:top;
 	text-align:left;
 	border-radius:5px;
@@ -1077,7 +1114,7 @@ table.stbConfigGrid {
 }
 #seqAreaTop {
 	display:inline-block;
-	height:15%;
+	height:20%;
 	width:100%;
 }
 .seqTopSec {
@@ -1087,6 +1124,16 @@ table.stbConfigGrid {
 	vertical-align:top;
 	text-align:center;
 	position:relative;
+}
+.seqTopSec.short {
+	height:50%;
+	width:100%;
+}
+.seqTopSec.left {
+	float:left;
+}
+.seqTopSec.right {
+	float:right;
 }
 .seqTopSec p {
 	display:inline-block;
@@ -1130,6 +1177,26 @@ table.stbConfigGrid {
 	text-align:center;
 	font-size:1.5vh;
 }
+#sequenceDesc {
+	font-family:'Source Sans Pro', sans-serif, Helvetica, Arial, Sans-Serif;
+	display:inline-block;
+	width:90%;
+	height:48%;
+	border:1px solid black;
+	border-radius:2%;
+	resize:none;
+	overflow-y:auto;
+	font-size:1.2vh;
+}
+.seqCatSelect {
+	height:30%;
+	background-color:#333333;
+	color:white;
+	width:80%;
+	font-size:1.3vh;
+	border:1px solid white;
+	border-radius:5px;
+}
 #seqAreaMiddle {
 	display:inline-block;
 	height:5%;
@@ -1162,7 +1229,7 @@ table.stbConfigGrid {
 #clearSeqAreaBtn {
 	display:inline-block;
 	width:15%;
-	height:55px;
+	height:11%;
 	border:none;
 	border-radius:3px;
 	font-size:1.3vh;
@@ -1200,6 +1267,10 @@ table.stbConfigGrid {
 	height:auto;
         font-size:1.3vh;
 }
+.seqAreaBtn.timeout {
+	background-color:#999966;
+	border:1px solid #999966;
+}
 .seqAreaBtn:hover {
 	background-color:#ff6600;
 	cursor:pointer;
@@ -1212,7 +1283,13 @@ table.stbConfigGrid {
 .grpSubmitBtnDiv {
 	float:right;
 }
-
+#createNewSeqBtnHolder {
+	display:inline-block;
+	width:99%;
+	height:10%;
+	text-align:center;
+	position:relative;
+}
 .newSeqSubmit {
 	border:none;
 	background-color:#29a329;
@@ -1220,12 +1297,11 @@ table.stbConfigGrid {
    	border-radius: 5px;	
    	color: #ffffff;
    	font-size: 16px;
-	margin:3% 0;
 	display:inline-block;
 	word-wrap:break-word;	
-	position:absolute;
-	left:4%;
-	top:18%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
 }
 .newSeqSubmit:hover {
    	background: #235e11;
@@ -1233,13 +1309,11 @@ table.stbConfigGrid {
 	cursor:pointer;
 }
 .newSeqSubmit.create {
-	float:left;
-        margin-top:1px;
         display:inline-block;
+	height:50%;
 }
 .newSeqSubmit.createGrid {
-	position:static;
-	top:0;
+	top:20%;
 	left:0;
 }
 .seqLabel {
@@ -1251,6 +1325,191 @@ table.stbConfigGrid {
 .seqLabel:hover {
 	cursor:context-menu;
 }
+
+/* Sequence Categories Stuff */
+#seqCatHeadDiv {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:left;
+}
+#seqCatHeadDiv h2 {
+	display:inline-block;
+	margin:0.6% 0;
+	font-size:1.6vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+#seqCatHeadDiv p {
+	display:inline-block;
+	margin:0.5% 0;
+	font-size:1.4vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+.seqCatPageSection {
+	display:inline-block;
+	width:30%;
+	height:86%;
+	vertical-align:top;
+	text-align:center;
+}
+.seqCatPageSection.list {
+	width:70%;
+}
+#catListHead {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	background-color:#07575b;	
+	border-radius:5px;
+	position:relative;
+	text-align:center;
+}
+#catListHead p {
+	display:inline-block;
+	margin:0;
+	font-size:1.6vh;
+	color:white;
+	font-weight:normal;
+	width:100%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+#catListMain {
+	display:inline-block;
+	width:100%;
+	height:95%;
+	overflow:auto;
+}
+#catListMain h2 {
+	display:inline-block;
+	margin:2% 0;
+	font-size:1.6vh;
+	font-weight:normal;
+	width:100%;
+	color:red;
+}
+.catListRow {
+	display:inline-block;
+	width:100%;
+	height:10%;
+}
+.catListRow:nth-of-type(even) {
+        background-color:#d9d9d9;
+}
+.catListRowSection {
+	display:inline-block;
+	width:20%;
+	height:100%;
+	text-align:center;
+	vertical-align:top;
+	overflow:auto;
+	word-wrap:break-word;
+}
+.catListRowSection p {
+	display:inline-block;
+	margin:0;
+	font-size:1.6vh;
+	color:brown;
+	font-weight:normal;
+	width:100%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+.catListRowSection.members {
+	position:relative;
+	width:60%;
+	overflow:auto;
+}
+.catListRowSection.members p {
+	color:#333333;
+	font-size:1.3vh;
+}
+.catListSeqHolder {
+	display: inline-block;
+	width: 100%;
+	height: auto;
+	max-height: 95%;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	overflow: auto;
+}
+.catSeqListItem {
+	display:inline-block;
+	height:30px;
+	width:30%;
+	margin:0.5% 0.5%;
+	border-radius:5px;
+	background-color:#07575b;
+}
+.catSeqListItem p {
+	display:inline-block !important;
+	margin:0 !important;
+	font-size:1.2vh !important;
+	color:white !important;
+	font-weight:normal !important;
+	width:100% !important;
+	position:relative !important;
+	top:50% !important;
+	transform:translateY(-50%) !important;
+}
+#createCatDiv {
+	display:inline-block;
+	width:90%;
+	height:30%;
+	border-radius:10px;
+	background-color:#cccccc;
+}
+#createCatDiv h2 {
+	display:inline-block;
+	margin:8% 0 2% 0;
+	font-size:1.8vh;
+	color:brown;
+	font-weight:normal;
+	width:100%;
+}
+#createCatDiv p {
+	display:inline-block;
+	margin:2% 0;
+	font-size:1.4vh;
+	color:#333333;
+	font-weight:normal;
+	width:100%;
+}
+.seqCatText {
+	display:inline-block;
+	border:1px solid #333333;
+	border-radius:3px;
+	height:15%;
+	width:60%;	
+	font-size:1.3vh;
+	text-align:center;
+	margin:1% 0 2% 0;
+}
+#createCatBtn {
+	display:inline-block;
+	height:15%;
+	width:30%;
+	font-size:1.5vh;
+	border-radius:5px;
+	background-color:#29a329;
+	color:white;
+	border:none;
+	margin:5% 0;
+}
+#createCatBtn:hover {
+	background-color:#196619;
+}
+
+/* Sequence Categories Stuff */
+
+
 
 .wrapLeft {
 	float:left;
@@ -1500,7 +1759,8 @@ p.narrow {
 	width:98%;
 	padding:0;
 	height:90%;
-	background-color:#333333;
+	background-color:#CCCCCC;
+	background-color:#07575b;
 	color:white;
 	font-size:1.2vh;
 	border:none;
@@ -2019,6 +2279,134 @@ p.narrow {
 	left:46.8%;	
 }
 
+/*------ Now TV Remote Buttons ------*/
+.ntvRemBtn {
+	position:absolute;
+	display:block;
+	background:none;
+	border:none;
+	border-radius:4px;
+}
+.ntvRemBtn:hover {
+	cursor:pointer;
+}
+.ntvRemBtn.exit {
+	top:17%;
+	left:32%;
+	width:17%;
+	height:5%;
+	border-radius:30%;
+}
+.ntvRemBtn.home {
+	top:17%;
+	left:52.5%;
+	width:17%;
+	height:5%;
+	border-radius:30%;
+}
+.ntvRemBtn.up {
+	top:24.5%;
+	left:44%;
+	width:13.5%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.down {
+	top:37%;
+	left:44%;
+	width:13.5%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.left {
+	top:29.5%;
+	left:33%;
+	width:10%;
+	height:7.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.right {
+	top:29.5%;
+	left:58.5%;
+	width:10%;
+	height:7.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.ok {
+	top:30%;
+	left:43.6%;
+	width:14%;
+	height:6.4%;
+	border-radius:50%;
+}
+.ntvRemBtn.backsmall {
+	top:44.7%;
+	left:32%;
+	width:12%;
+	height:4%;
+	border-radius:10px;
+}
+.ntvRemBtn.star {
+	top:44.7%;
+	left:57.5%;
+	width:12%;
+	height:4%;
+	border-radius:10px;
+}
+.ntvRemBtn.rewind {
+	top:49.7%;
+	left:32%;
+	width:8%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.playpause {
+	top:49.7%;
+	left:42%;
+	width:17%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.ffwd {
+	top:49.7%;
+	left:61%;
+	width:8%;
+	height:6.5%;
+	border-radius:10px;
+}
+.ntvRemBtn.mytv {
+	top:58.5%;
+	left:32%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.tvguide {
+	top:58.5%;
+	left:51%;
+	width:19%;
+	height:5%;
+	border-radius:10px;
+	background-color:#2d2d2d;
+}
+.ntvRemBtn.tvguide:hover {
+	cursor:default;
+}
+.ntvRemBtn.kids {
+	top:64.5%;
+	left:32%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+.ntvRemBtn.skystore {
+	top:64.5%;
+	left:52%;
+	width:18%;
+	height:5%;
+	border-radius:10px;
+}
+
 #rowControlBtnDiv {
 	display:block;
 	position:absolute;
@@ -2077,7 +2465,8 @@ p.narrow {
 	transform:translateY(-20%);
 	border-radius:10px;
 	border:2px solid red;
-	background-color:rgba(0,0,0,0.8);
+	border:none;
+	background-color:#333333;
 	overflow:hidden;
 }
 .errorDiv h1 {
@@ -2161,7 +2550,9 @@ p.narrow {
 	background-color:#333333;
 	text-align:center;
 }
-
+.stbDataSelect.nowtvmodel {
+	width:80%;
+}
 .stbDataBtn {
 	display:inline-block;
 	border-radius:5px;
@@ -2235,6 +2626,44 @@ p.narrow {
 	color:white;
 	margin:0;
 }
+#stbDataNoteDivNowTV {
+	display:inline-block;
+	position:absolute;
+	left:105%;
+	top:50%;
+	transform:translateY(-60%);
+	width:55%;
+	height:70%;
+	border-radius:5px;
+	background-color:#07575b;
+	text-align:center;
+	padding:2%;
+}
+#stbDataNoteDivNowTV p {
+	display:inline-block;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.3vh;
+	color:white;
+	margin:0;
+}
+
+#stbDataNoteDivNowTVGC {
+	display:inline-block;
+	position:absolute;
+	left:105%;
+	top:50%;
+	transform:translateY(-60%);
+	width:65%;
+	height:99%;
+	border-radius:5px;
+	text-align:center;
+	background:url("../images/ip2ir-labels.png");
+	background-size:auto 100%;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
 
 /** STB Data Page - Existing STB Data **/
 
@@ -2246,13 +2675,23 @@ p.narrow {
 	height:98%;
 	margin-top:1%;
 }
-#sequencesPageHeader {
-	position:absolute;
-	left:1%;
-	top:0;
+.seqPageSection {
+	display:inline-block;
 	width:20%;
+	height:99%;
+	vertical-align:top;
+	float:left;
+	margin:0 1%;
+}
+.seqPageSection.seqlist {
+	width:75%;
+}
+#sequencesPageHeader {
+	display:inline-block;
+	width:99%;
 	height:20%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #sequencesPageHeader h1 {
 	display:inline-block;
@@ -2273,15 +2712,13 @@ p.narrow {
 #sequencesPageHeader p {
 	display:inline-block;
 	width:100%;
-	margin:2% 0;
+	margin:1% 0;
 	font-size:1.4vh;
 	color:#737373;
 }
 #sequencesImportHolder {
-	position:absolute;
-	left:1%;
-	top:23%;
-	width:20%;
+	display:inline-block;
+	width:99%;
 	height:70%;
 	text-align:left;
 	background-color:#e6e6e6;
@@ -2327,6 +2764,7 @@ input[type='file'] {
 }
 
 .file-info {
+	display:inline-block;
 	font-size: 1.5vh;
 	width:70%;
 	height:100%;
@@ -2335,6 +2773,7 @@ input[type='file'] {
 }
 
 .browse-btn {
+	display:inline-block;
 	background: #03A595;
 	color: white;
 	height: 100%;
@@ -2343,7 +2782,8 @@ input[type='file'] {
 	border: none;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
-	font-size:1.4vh;
+	font-size:1.3vh;
+	vertical-align:top;
 }
 
 .browse-btn:hover {
@@ -2384,8 +2824,8 @@ input[type='file'] {
 .seqSepDiv {
 	display:inline-block;
 	width:100%;
-	height:5%;
-	margin:5% 0 1% 0;
+	height:2%;
+	margin:4% 0 1% 0;
 	background-color:#f3f3f3;
 }
 .input-container2 {
@@ -2401,6 +2841,7 @@ input[type='file'] {
 	transform:translateX(-50%);
 }
 .file-info2 {
+	display:inline-block;
 	font-size: 1.5vh;
 	width:70%;
 	height:100%;
@@ -2409,6 +2850,7 @@ input[type='file'] {
 }
 
 .browse-btn2 {
+	display:inline-block;
 	background: #03A595;
 	color: white;
 	height: 100%;
@@ -2417,7 +2859,8 @@ input[type='file'] {
 	border: none;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
-	font-size:1.4vh;
+	font-size:1.3vh;
+	vertical-align:top;
 }
 
 .browse-btn2:hover {
@@ -2459,10 +2902,9 @@ input[type='file'] {
 
 #sequencesAvailable {
 	display:inline-block;
-	width:65%;
-	height:99%;
-	float:right;
-	margin-right:10%;
+	width:87%;
+	height:100%;
+	float:left;
 	text-align:left;
 	position:relative;
 	z-index:4;
@@ -2477,10 +2919,48 @@ input[type='file'] {
 	border-radius:5px;
 	overflow:hidden;
 }
+#seqSwitchModeDiv {
+	display:inline-block;
+	width:20%;
+	height:3%;
+	text-align:center;
+	position:relative;
+	border-radius:5px;
+	border:1px solid black;
+	overflow:hidden;
+	margin-bottom:0.5%;
+	position:relative;
+	left:50%;
+	transform:translateX(-50%);
+}
+.seqSwitchModeBtn {
+	display:inline-block;
+	height:100%;
+	width:50%;
+	position:relative;
+}
+.seqSwitchModeBtn:hover {
+	cursor:pointer;
+}
+.seqSwitchModeBtn.selected {
+	background-color:green;
+}
+.seqSwitchModeBtn p {
+	font-size:1.2vh;
+	color:green;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+.seqSwitchModeBtn.selected p {
+	color:white;
+}
+
 #expMultiSeqDiv {
 	position:absolute;
 	left:101%;
-	top:0;
+	top:4%;
 	width:13%;
 	height:20%;
 	z-index:5;
@@ -2518,10 +2998,53 @@ input[type='file'] {
 #sequenceListDiv {
 	display:inline-block;
 	width:100%;
-	height:95%;
+	height:92%;
 	text-align:center;
 	overflow:auto;
 }
+.seqCatTitleListDiv {
+	display:inline-block;
+	width:23%;
+	height:3%;
+	border-radius:5px 5px 0 0;
+	padding:0.5%;
+	background-color:white;
+	margin:0.5% 0 0 0;
+	float:left;
+	text-align:center;
+	border:2px solid #d9d9d9;
+	border-bottom:none;
+	position:relative;
+}
+.seqCatTitleListDiv p {
+	display:inline-block;
+	margin:0 2%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.6vh;
+	font-weight:normal;
+	color:#333333;
+}
+.seqCatTitleGridDiv {
+	display:inline-block;
+	width:99%;
+	height:auto;
+	padding:0.5%;
+	margin:0.5% 0 0 0;
+	text-align:left;
+	position:relative;
+	word-wrap:break-word;
+	overflow:auto;
+}
+.seqCatTitleGridDiv p {
+	display:inline-block;
+	margin:1% 0 1% 5%;
+	font-size:1.3vh;
+	font-weight:normal;
+	color:#333333;
+}
+
 .seqListRow {
 	display:inline-block;
 	width:100%;
@@ -2531,6 +3054,7 @@ input[type='file'] {
 }
 .seqListRow:nth-of-type(even) {
 	background-color:#d9d9d9;
+	border-radius:0 5px 5px 5px !important;
 }
 .seqListRow.focussed {
 	box-shadow: inset 0 0 0 7px orange;
@@ -2545,10 +3069,13 @@ input[type='file'] {
 	position:relative;
 }
 .seqListRowSec.comlist {
-	width:60%;
+	width:55%;
 }
 .seqListRowSec.manage {
 	width:20%;
+}
+.seqListRowSec.state {
+	width:5%;
 }
 .seqListRowSec h2 {
 	display:inline-block;
@@ -2570,6 +3097,65 @@ input[type='file'] {
 	font-weight:normal;
 	color:black;
 	word-break:break-all;
+}
+.seqListTitleSec {
+	display:inline-block;
+	width:99%;
+	height:30%;
+	vertical-align:top;
+	float:right;
+	overflow:auto;
+	position:relative;
+	margin-right:3%;
+	border-bottom:1px solid #cccccc;
+}
+.seqListTitleSec p {
+	color:brown;
+}
+.seqListDescSec {
+	display:inline-block;
+	width:99%;
+	height:69%;
+	vertical-align:top;
+	float:right;
+	overflow:auto;
+	position:relative;
+	margin-right:3%;
+}
+.seqListDescSec p {
+	display:inline-block;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	font-size:1.2vh;
+	font-weight:normal;
+	color:#333333;
+	word-break:break-word;
+	width:98%;
+}
+.stateBox {
+	display:inline-block;
+	width:30%;
+	height:23%;
+	border-radius:3px;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	background:url("../images/redCrossIcon.jpg");
+	background-size:100% 100%;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+.stateBox.active {
+	background:url("../images/greenTickIcon.jpg");
+	background-size:100% 100%;
+	background-position:center center;
+	background-repeat:no-repeat;
+	border:none;
+}
+.stateBox:hover {
+	cursor:pointer;
 }
 .comStringHolder {
 	display:inline-block;
@@ -2597,6 +3183,11 @@ input[type='file'] {
 	border-radius:3px 2px 2px 3px;
 	background-color:#008000;
 }
+.seqListIcon.timeout {
+	background-color:#999966;
+	margin-right:5px;
+	border-radius:50%;
+}
 .seqListArrowDiv {
 	display:inline-block;
 	width:10px;
@@ -2606,6 +3197,9 @@ input[type='file'] {
 	background-size:100% 100%;
 	background-position:-2px center;
 	background-repeat:no-repeat;
+}
+.seqListArrowDiv.timeout {
+	display:none;
 }
 .seqListIcon p {
 	display:inline-block;
@@ -2654,6 +3248,11 @@ input[type='file'] {
 	height:40%;
 	top:10%;
 }
+.seqListBtn.category {
+	width:20%;
+	height:45%;
+}
+
 .exportOptionsDiv {
 	display:none;
 	position:absolute;
@@ -2721,13 +3320,24 @@ input[type='file'] {
 	height:98%;
 	margin-top:1%;
 }
-#stbGroupsHeader {
-	position:absolute;
-	left:1%;
-	top:0;
+.groupsPageSection {
+	display:inline-block;
 	width:20%;
-	height:20%;
+	height:99%;
+	vertical-align:top;
+	float:left;
+	margin:0 1%;
+}
+.groupsPageSection.grouplist {
+	width:75%;
+}
+#stbGroupsHeader {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:16%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #stbGroupsHeader h1 {
 	display:inline-block;
@@ -2754,10 +3364,8 @@ input[type='file'] {
 }
 #stbGroupsAvailable {
 	display:inline-block;
-	width:75%;
+	width:99%;
 	height:100%;
-	float:right;
-	margin-right:2%;
 	overflow:auto;
 	text-align:left;
 }
@@ -2836,6 +3444,9 @@ input[type='file'] {
 	border-radius:3px;
 	background-color:#008000;
 }
+.stbGroupIcon.problem {
+	background-color:red;
+}
 .stbGroupIcon p {
 	display:inline-block;
 	margin:0;
@@ -2843,7 +3454,7 @@ input[type='file'] {
 	top:50%;
 	transform:translateY(-50%);
 	font-size:1.3vh;
-	color:white;
+	color:white !important;
 }
 .memStringHolder {
 	display:inline-block;
@@ -2884,18 +3495,26 @@ input[type='file'] {
 .stbGroupBtn.Copy {
 	background-image:url("../images/copySeq.png");
 }
+#createNewGroupBtnHolder {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:center;
+}
 .newSTBGroup {
+	display:inline-block;
 	border:none;
 	background-color:#29a329;
-   	padding: 5px 10px;
    	border-radius: 5px;	
    	color: #ffffff;
    	font-size: 16px;
 	display:inline-block;
 	word-wrap:break-word;	
-	position:absolute;
-	left:4%;
-	top:20%;
+	padding:0 10px;
+	height:50%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);	
 }
 .newSTBGroup:hover {
    	background: #235e11;
@@ -3000,7 +3619,7 @@ input[type='file'] {
 #createSTBGroupBtn {
 	display:inline-block;
 	width:15%;
-	height:55px;
+	height:10%;
 	border:none;
 	border-radius:3px;
 	font-size:1.2vh;
@@ -3023,7 +3642,7 @@ input[type='file'] {
 #clearSTBGroupAreaBtn {
 	display:inline-block;
 	width:15%;
-	height:55px;
+	height:10%;
 	border:none;
 	border-radius:3px;
 	font-size:1.3vh;
@@ -3047,13 +3666,24 @@ input[type='file'] {
 	height:98%;
 	margin-top:1%;
 }
-#schedulePageHeader {
-	position:absolute;
-	left:1%;
-	top:0;
+.schedPageSection {
+	display:inline-block;
 	width:20%;
-	height:20%;
+	height:99%;
+	vertical-align:top;
+	float:left;
+	margin:0 1%;
+}
+.schedPageSection.schedlist {
+	width:75%;
+}
+#schedulePageHeader {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:10%;
 	text-align:left;
+	border-bottom:1px solid #cccccc;
 }
 #schedulePageHeader h1 {
 	display:inline-block;
@@ -3078,11 +3708,16 @@ input[type='file'] {
 	font-size:1.4vh;
 	color:#737373;
 }
+#createNewSchedBtnHolder {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	text-align:center;
+}
 #evSchedsAvailable {
 	display:inline-block;
-	width:75%;
+	width:99%;
 	height:99%;
-	float:right;
 	overflow:auto;
 	text-align:left;
 }
@@ -3358,7 +3993,7 @@ input[type='file'] {
 }
 #scheduledEventSubmitBtn {
 	position:relative;
-	top:0;
+	top:1%;
 	left:0;
 	transform:none;
 	padding:0;
@@ -3551,3 +4186,81 @@ input[type='file'] {
 	background-color:#a62626;
 }
 /** Events Schedule Page **/
+
+/** STB Control - STB Groups **/
+#groupControlHolder {
+	display:inline-block;
+	position:relative;
+	width:900px;
+	height:100%;
+	border-radius:5px;
+	overflow:hidden;
+	/*box-shadow: 0 0 8px black;
+	margin:0 8px 8px 8px;*/
+}
+#groupControlHeader {
+	display:inline-block;
+	width:100%;
+	height:5%;
+	background-color:#07575b;
+	position:relative;
+}
+#groupControlHeader p {
+	display:inline-block;
+	width:100%;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:white;
+	font-size:1.5vh;
+}
+#groupControlListHolder {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:95%;
+	overflow:auto;
+	text-align:center;
+}
+.groupSTBControlRow {
+	display:inline-block;
+	width:100%;
+	height:10%;
+}
+.groupSTBControlRow:hover {
+	cursor:pointer;
+}
+.groupSTBControlRow:nth-of-type(even) {
+	background-color:#cccccc;
+}
+.groupSTBControlRow.selected {
+	background-color:orange;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	border:2px solid #cc8500;
+}
+.groupControlRowSection {
+	display:inline-block;
+	width:30%;
+	height:100%;	
+	text-align:center;
+	vertical-align:top;
+}
+.groupControlRowSection p {
+	display:inline-block;
+	width:100%;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:#333333;
+	font-size:1.3vh;
+}
+.groupControlRowSection.members {
+	width:70%;
+	overflow:auto;
+}
+/** STB Control - STB Groups **/
+

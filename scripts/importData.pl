@@ -15,12 +15,26 @@ $maindir =~ s/\/$//;
 my $filedir = $maindir . '/files/';
 my $importdir = $filedir . 'imports/';
 my $seqfile = $filedir . 'commandSequences.txt';
-tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n"; 
+my $jsonfile = $filedir . 'commandSequences.json';
+#tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n"; 
 
 chomp(my $importfile = $query->param('file') || $ARGV[0] || '');
 chomp(my $name = $query->param('name') || $ARGV[1] || '');
 chomp(my $type = $query->param('type') || $ARGV[2] || '');
 chomp(my $format = $query->param('format') || $ARGV[3] || '');
+
+##### Create new JSON object for later use
+my $json = JSON->new->allow_nonref;
+$json = $json->canonical('1');
+
+my %sequences;
+if (-e $jsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $jsonfile or die "ERROR: Unable to open $jsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %sequences = %{$decoded};
+}
 
 if (!$importfile) {
 	print "ERROR: No file was detected for the import!";
@@ -45,7 +59,7 @@ if ($type =~ /sequence/i and $format =~ /native/i) {
 	importNativeSequence();
 }
 
-untie %sequences;
+#untie %sequences;
 
 #################### Sub Routines Below ####################
 sub importStressSequence {
@@ -85,6 +99,7 @@ sub importStressSequence {
 	my $inloop = '';
 	my $processed = '0';
 	my $prev = '';		# This will store what the last element of the string was. Values will be either 'COM' for command or 'TO' for timeout.
+	my $description = '';
 	
 	chomp (my @lines = <$infh>);
 	until (!@lines) {
@@ -202,6 +217,8 @@ sub importStressSequence {
 	                        	}
         	        	}
         		}
+		} elsif ($line =~ /Description\: ([^\n]+)/) {
+			$description = $1;
 		}
 	}
 	
@@ -226,26 +243,29 @@ sub importStressSequence {
 				$found = 'Not Found';
 			}
 		}
-		addSequence(\$newseqname,\$commands);
+		$newseqname = uc($newseqname);
+		$newseqname =~ s/^\s+//g;     # Remove leading whitespace
+		$newseqname =~ s/\s+$//g;     # Remove trailing whitespace
+	        $newseqname =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
+
+		%{$sequences{$newseqname}} = (	'active' => 'yes',
+						'commands' => $commands,
+						'description' => $description,
+						);
+		#addSequence(\$newseqname,\$commands);
 	}
-	
+
+	saveSequences();
 	unlink $srcfile;
 	print "Success! The stress script was imported and sequences were created with the name/prefix of $seqname";
 } # End of sub 'importStressSequence'
 
 sub importNativeSequence {
-	#my $seqname = $importfile;
-	#if ($name) {
-	#	$seqname = $name;
-	#}
-	#$seqname =~ s/\.txt$//i;
-	#$seqname =~ s/[^a-zA-Z0-9]+/ /g;
-
 	my $srcfile = $importdir . $importfile;
 
-	##### Validate that the file is plain text #####
-	if (!-f $srcfile or $srcfile !~ /\.txt$/) {
-		print "ERROR: The file you uploaded ($srcfile) is not a plain text file. Import failed.";
+	##### Validate that the file is in json or text (for legacy) format #####
+	if (!-f $srcfile or $srcfile !~ /\.txt$|\.json$/i) {
+		print "ERROR: The file you uploaded ($srcfile) is not a .json or .txt file. Import failed.";
 		unlink $srcfile;
 		exit;
 	}
@@ -258,40 +278,77 @@ sub importNativeSequence {
 	}
 
 	my $valid = '';
-	while (my $line = <$infh>) {
-		chomp $line;
-		my @bits = split(':',$line);
-		my $sequence = $bits[0] // '';
-		my $commands = $bits[1] // '';
-		
-		if ($sequence and $commands) {
-			$valid = 1;
-			$sequence =~ s/[^a-zA-Z0-9]+/ /g;
-			my $found = 'Found';
-			my $cnt = '1';
-			until ($found eq 'Not Found') {
-				my $f = searchSequences(\$sequence,'noprint');
-				if ($f eq 'Found') {
-					$sequence =~ s/ \d+$//;
-					$sequence .= " $cnt";
-					$cnt++;
-				} else {
-					$found = 'Not Found';
+	if ($srcfile =~ /\.txt$/) {
+		while (my $line = <$infh>) {
+			chomp $line;
+			my @bits = split(':',$line);
+			my $sequence = $bits[0] // '';
+			my $commands = $bits[1] // '';
+			
+			if ($sequence and $commands) {
+				$valid = 1;
+				$sequence =~ s/[^a-zA-Z0-9]+/ /g;
+				my $found = 'Found';
+				my $cnt = '1';
+				until ($found eq 'Not Found') {
+					my $f = searchSequences(\$sequence,'noprint');
+					if ($f eq 'Found') {
+						$sequence =~ s/ \d+$//;
+						$sequence .= " $cnt";
+						$cnt++;
+					} else {
+						$found = 'Not Found';
+					}
 				}
+				$sequence = uc($sequence);
+				$sequence =~ s/^\s+//g;     # Remove leading whitespace
+				$sequence =~ s/\s+$//g;     # Remove trailing whitespace
+			        $sequence =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
+
+				%{$sequences{$sequence}} = (	'active' => 'yes',
+								'commands' => $commands,
+								'description' => '',
+								);
 			}
-			addSequence(\$sequence,\$commands);
+		}
+	} elsif ($srcfile =~ /\.json/) {
+		my %newseqs;
+	        local $/ = undef;
+	        my $data = <$infh>;
+	        my $decoded = $json->decode($data);
+	        %newseqs = %{$decoded};
+		foreach my $newseq (sort keys %newseqs) {
+				my %data = %{$newseqs{$newseq}};
+				my $found = 'Found';
+				my $cnt = '1';
+				until ($found eq 'Not Found') {
+					my $f = searchSequences(\$newseq,'noprint');
+					if ($f eq 'Found') {
+						$newseq =~ s/ \d+$//;
+						$newseq .= " $cnt";
+						$cnt++;
+					} else {
+						$found = 'Not Found';
+					}
+				}
+				$newseq = uc($newseq);
+				$newseq =~ s/^\s+//g;     # Remove leading whitespace
+				$newseq =~ s/\s+$//g;     # Remove trailing whitespace
+			        $newseq =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
+				
+				%{$sequences{$newseq}} = %data;
+				$valid = 1;
 		}
 	}
-
 	if (!$valid) {
 		print "ERROR: No valid sequences were created after processing the file. Double check the contents of the file and try again.";
 		unlink $srcfile;
 		exit;
 	}
 
+	saveSequences();
 	unlink $srcfile;
 	print "Success! The sequence file was imported successfully";
-
 } # End of sub 'importNativeSequence'
 
 sub searchSequences {
@@ -310,21 +367,31 @@ sub searchSequences {
 	}
 } # End of sub 'searchSequences'
 
-sub addSequence {
-	my ($seq,$coms,$origname) = @_;
+#sub addSequence {
+#	my ($seq,$coms,$origname) = @_;
 
 	##### Do this for 'Edit' Action
-	if ($origname) {		##### Check that the actual reference is defined (It wont be for 'Add' Actions)
-		if (($$origname) and ($$origname ne $$seq)) {
-			delete $sequences{$$origname};
-		}
-	}
+#	if ($origname) {		##### Check that the actual reference is defined (It wont be for 'Add' Actions)
+#		if (($$origname) and ($$origname ne $$seq)) {
+#			delete $sequences{$$origname};
+#		}
+#	}
 	##### Do this for 'Edit' Action
 
-	$$seq = uc($$seq);
-	$$seq =~ s/^\s+//g;     # Remove leading whitespace
-        $$seq =~ s/\s+$//g;     # Remove trailing whitespace
-        $$seq =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
+#	$$seq = uc($$seq);
+#	$$seq =~ s/^\s+//g;     # Remove leading whitespace
+ #       $$seq =~ s/\s+$//g;     # Remove trailing whitespace
+  #      $$seq =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
 
-	$sequences{$$seq} = $$coms;
-} # End of sub 'addSequence'
+#	$sequences{$$seq} = $$coms;
+#} # End of sub 'addSequence'
+
+sub saveSequences {
+        my $encoded = $json->pretty->encode(\%sequences);
+        if (open my $newfh, '+>', $jsonfile) {
+                print $newfh $encoded;
+                close $newfh;
+        } else {
+                die "ERROR: Unable to open $jsonfile: $!\n";
+        }
+}

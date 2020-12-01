@@ -1,0 +1,30 @@
+<div id="remoteSelectorDiv">
+	<select id="remoteSelector">
+		<option value="nowTVRemote" selected disabled>Now TV</option>
+		<option value="skyQRemote">Sky Q</option>
+		<option value="skyPlusRemote">Sky Plus</option>
+		<option value="universalRemote">Universal</option>
+	</select>
+</div>
+<img src="web/images/nowTVRemote.png" alt="Now TV Remote" usemap="#nowTVRemMap" style="border-radius:5px;height:100%;width:100%;">
+<button class="ntvRemBtn exit" onclick="stbControl('control', 'exit')" title="Exit"></button>
+<button class="ntvRemBtn home" onclick="stbControl('control', 'home')" title="Home"></button>
+<button class="ntvRemBtn up" onclick="stbControl('control', 'cursor up')" title="Up"></button>
+<button class="ntvRemBtn down" onclick="stbControl('control', 'cursor down')" title="Down"></button>
+<button class="ntvRemBtn left" onclick="stbControl('control', 'cursor left')" title="Left"></button>
+<button class="ntvRemBtn right" onclick="stbControl('control', 'cursor right')" title="Right"></button>
+<button class="ntvRemBtn ok" onclick="stbControl('control', 'ok')" title="OK"></button>
+<button class="ntvRemBtn backsmall" onclick="stbControl('control', 'back')" title="Back"></button>
+<button class="ntvRemBtn star" onclick="stbControl('control', 'star')" title="*"></button>
+<button class="ntvRemBtn rewind" onclick="stbControl('control', 'rewind')" title="Rewind"></button>
+<button class="ntvRemBtn playpause" onclick="stbControl('control', 'playpause')" title="Play/Pause"></button>
+<button class="ntvRemBtn ffwd" onclick="stbControl('control', 'fast forward')" title="FFWD"></button>
+<button class="ntvRemBtn mytv masterTooltip" value="Network control only (No IR)" onclick="stbControl('control', 'my tv')" title="My TV"></button>
+<button class="ntvRemBtn tvguide"></button>
+<button class="ntvRemBtn kids masterTooltip" value="Network control only (No IR)" onclick="stbControl('control', 'kids')" title="Kids"></button>
+<button class="ntvRemBtn skystore" onclick="stbControl('control', 'sky store')" title="Sky Store"></button>
+<div id="rowControlBtnDiv">
+	<button class="remoteRowBtn up" onclick="arrowDir('DEC')" title="Row Up"></button>
+	<div id="rowCtrlTextDiv"><p>ROW</p></div>
+	<button class="remoteRowBtn down" onclick="arrowDir('INC')" title="Row Down"></button>
+</div>

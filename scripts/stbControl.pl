@@ -8,11 +8,9 @@ use Tie::File::AsHash;
 use Time::HiRes qw (sleep);
 use FindBin qw($Bin);
 
-my $query = CGI->new;
-print $query->header();
-
 chomp(my $fullpath = $ARGV[3] || '');
 my $maindir;
+BEGIN {
 if ($fullpath) {
 	$maindir = $fullpath;
 	chomp($maindir);
@@ -26,13 +24,26 @@ if ($fullpath) {
         }
 }
 die "Couldn't find where my main files are installed. No \"stbController\" directory was found on your system...\n" if (!$maindir);
+}
+
+use lib "$maindir/scripts";
+use RedRat::RedRatHub qw(openSocket sendMessage closeSocket readData);
+
+$|++;
+
+my $query = CGI->new;
+print $query->header();
+
 my $filedir = $maindir . '/files/';
 my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
-my $groupsfile = ($filedir . 'stbGroups.txt');
-my $seqfile = ($filedir . 'commandSequences.txt');
-my $pidfile = ($filedir . 'scheduler.pid');
+my $groupsfile = $filedir . 'stbGroups.json';
+my $seqfile = $filedir . 'commandSequences.json';
+my $pidfile = $filedir . 'scheduler.pid';
 my $stbdatafile = $confdir . 'stbData.json';
+my $archfile = $filedir . 'hostArchitecture.txt';
+my $redrathubdir = $maindir . '/RedRatHub-V5.11/';
+my $redrathubip = '';
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
@@ -44,6 +55,26 @@ if (-e $stbdatafile) {
         my $data = <$fh>;
         my $decoded = $json->decode($data);
         %stbdata = %{$decoded};
+}
+
+##### Load the groups data
+my %groups;
+if (-e $groupsfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
+
+##### Load the sequences data
+my %seqs;
+if (-e $seqfile) {
+        local $/ = undef;
+        open my $fh, "<", $seqfile or die "ERROR: Unable to open $seqfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %seqs = %{$decoded};
 }
 
 chomp(my $action = $ARGV[0] // $query->param('action') // '');
@@ -73,12 +104,11 @@ my @targetsraw = split(',',$info);
 my $targetstring = '';
 
 #### Below we separate the target STB input ($info) and process each item to see whether it is a group or a single STB
-tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";	# Tie the %group hash to the groups file for quick group member lookup
 
 foreach my $target (@targetsraw) {
 	$target = uc($target);
 	if (exists $groups{$target}) {
-		my @members = split(',',$groups{$target});
+		my @members = split(',',$groups{$target}{'stbs'});
 		foreach my $member (@members) {
 			$targetstring .= "$member,";
 		}
@@ -87,7 +117,6 @@ foreach my $target (@targetsraw) {
 	}
 }
 
-untie %groups;
 #### End of processing the target STB input ($info)
 
 if (!$targetstring or $targetstring !~ /\S+/) {
@@ -99,18 +128,16 @@ if (!$targetstring or $targetstring !~ /\S+/) {
 }
 
 if ($action =~ m/^Event$/i) {
-	tie my %seqs, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%seqs to $seqfile: $!\n";
 	my @sequences = split(',',$command);
 	my $seqcoms = '';
 	foreach my $seq (@sequences) {
 		$seq = uc($seq);
 		warn "Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
-		$seqcoms .= $seqs{$seq};
+		$seqcoms .= $seqs{$seq}{'commands'};
 		$seqcoms .= ',';
 	}
 
 	control(\$seqcoms,\$targetstring);
-	untie %seqs;
 }
 
 if ($action =~ m/^Control$/i) {
@@ -126,6 +153,7 @@ sub control {
 	my ($commands,$boxes) = @_;	# All input args are scalar references at this point
 	my @stbs = split (',', $$boxes);			
 	my %duskydata;
+	my %irnetboxiv;
 
 	foreach my $stb (@stbs) {
 		my %boxdata = %{ $stbdata{$stb}};		# Get the box details from the main %stbData hash 
@@ -140,6 +168,32 @@ sub control {
 			my $duskyinfo = $moxaip . '-' . $moxaport;
 			$duskydata{$duskyinfo}{$stb}{'Name'} = $name;
 			$duskydata{$duskyinfo}{$stb}{'DuskyPort'} = $duskyport;
+		} elsif ($type =~ /IRNetBoxIV/) {
+			my $irnbip = $boxdata{'IRNetBoxIVIP'};
+			my $irnbout = $boxdata{'IRNetBoxIVOutput'};
+			my $type = $boxdata{'Type'};
+			my $hw = 'skyq';	# Identify the hardware type from the box type data
+			if ($type) {
+				if ($type =~ /\(SkyQ\)/i) {
+					$hw = 'skyq';
+				} elsif ($type =~ /\(Sky\+\)/i) {
+					$hw = 'sky+';
+				} elsif ($type =~ /\(Now\s*TV\)/i) {
+					##### First set the hardware type ($hw) to generic nowtv
+					$hw = 'nowtv';
+					if (exists $boxdata{'IRNetBoxIVNowTVModel'}) {
+						##### If this STB has the NOW TV Model defined, set that as the specific hardware type
+						if ($boxdata{'IRNetBoxIVNowTVModel'}) {
+							$hw .= $boxdata{'IRNetBoxIVNowTVModel'};
+							##### Format the NOW TV Model text to lower case with no spaces
+							##### "nowtvSmart Box 4631UK" becomes "nowtvsmartbox4631uk" for RedRatHub reference
+							$hw = lc($hw);
+							$hw =~ s/\s+//g;
+						}
+					}
+				}
+			}
+			$irnetboxiv{$irnbip}{$hw}{'outputs'} .= "$irnbout,";
 		} else {
 			my $pid = fork;
         		if ($pid==0) {
@@ -150,8 +204,11 @@ sub control {
         	                        $0 = "stbControl - $stb - $type";
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
-				sendIRComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IR/);
-				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network/);
+				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
+				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky/);
+				sendNowTVNetwork(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(NowTV/);
+				sendGlobalCacheIRNowTV(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(NowTV/);
+				sendGlobalCacheIRSkyQ(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(SkyQ/);
 	                	exit;
 	        	}
 		}
@@ -170,6 +227,27 @@ sub control {
 				}
 				sendDuskyCommsNew(\$dusky,$commands,$duskydata{$dusky},\$logging,\$runningpids);
 				exit;
+			}
+		}
+	}
+
+	### Now deal with IRNetBoxIV controlled STBs
+	if (%irnetboxiv) {
+		checkRedRatHub();
+		foreach my $nbiv (keys %irnetboxiv) {
+			my %hwdata = %{$irnetboxiv{$nbiv}};
+			foreach my $hwtype (keys %hwdata) {
+				my $outs = $hwdata{$hwtype}{'outputs'};
+				my $pid = fork;
+				if ($pid==0) {
+					if ($logging) {
+						$0 = "stbControl(Scheduler-$schedpid) - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+					} else {
+						$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+					}
+					sendIRNetBoxIVComms($nbiv,$commands,$hwtype,$outs,$logging,$runningpids);
+					exit;
+				}
 			}
 		}
 	}
@@ -345,19 +423,70 @@ URI
 	}
 }
 
-sub sendIRComms {
-	my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
-	if ($$logging) {
-		my $logpid = $$runningpids . $$;
+sub sendIRNetBoxIVComms {
+	my ($netboxip,$commands,$hwtype,$outputs,$logging,$runningpids) = @_;
+	if ($logging) {
+		my $logpid = $runningpids . $$;
 		system("touch $logpid");
 	}
 
+	$outputs =~ s/,$//;
+
+	#warn "Connecting to RedRatHub at $redrathubip\n";
+	&openSocket($redrathubip, 40000);
+
+	my @commands = split(',',$$commands);
+
+	my $rrres = '';
+	$rrres = &readData('hubquery="list redrats"');
+	#warn "$rrres\n";
+	if ($rrres) {
+		if ($rrres !~ m/$netboxip/) {
+			$rrres = &readData('hubquery="add redrat" ip="' . $netboxip . '"');
+			warn "Adding RedRat $netboxip to RedRatHub - $rrres\n";
+		}# else {
+		#	warn "$netboxip already added\n";
+		#}
+	}
+	$rrres = &readData('hubquery="connect redrat" ip="' . $netboxip . '"');
+	#warn "Connect to RedRat $netboxip - $rrres\n";
+	
+        my $comfile = $filedir . 'skyQIRNetBoxIVCommands.txt';
+        if ($hwtype =~ /nowtv/) {
+		my $newfile = $filedir . $hwtype . 'IRNetBoxIVCommands.txt';
+        	if (-e $newfile) {
+			$comfile = $newfile;
+        	} else {
+			$comfile = $filedir . 'nowTVIRNetBoxIVCommands.txt';
+		}
+        }
+	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%ircoms: $!\n";
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+		if (exists $ircoms{$command}) {
+			my $sig = $ircoms{$command};
+			#warn "$netboxip - $hwtype - $sig\n";
+			my $res = &readData('ip="' . $netboxip . '" dataset="' . $hwtype . '" signal="' . $sig . '" output="' . $outputs . '"');
+			warn "$res\n";
+			if ($res and $res !~ /OK/) {
+				warn "Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
+			}
+		} else {
+			warn "No entry found for $command\n";
+		}
+	}
 	# To be determined
 
-	if ($$logging) {
-		my $logpid = $$runningpids . $$;
+	if ($logging) {
+		my $logpid = $runningpids . $$;
 		system("rm $logpid");
 	}
+	&readData('hubquery="disconnect redrat" ip="' . $netboxip . '"');
+	untie %ircoms;
 }
 
 sub sendVNCComms {
@@ -459,4 +588,181 @@ sub sendVNCComms {
 		$last = eval $last;
 		return ($first,$last);
 	}
+}
+
+sub checkRedRatHub {
+	my $redrathubdll = $redrathubdir . 'RedRatHub.dll';
+	my $dotnetbin = 'dotnet';
+	my $redrathubdebug = $filedir . '/RedRatHubDebug.txt';
+	chomp(my $arch = `cat $archfile` // '');
+	if ($arch) {
+		$dotnetbin = $maindir . "/dotnet$arch" . '/dotnet';
+	} else {
+		die "CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
+	}
+	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+        if (!$running) {
+                print "RedRatHub which controls IRNetBoxIV communication is NOT running. I have tried to start it for you. Please wait 10 seconds and then try to control IRNetBoxIV devices again\n\nIf the problem persists, check your webserver error log for details or contact your system administrator.";
+                chomp(my $sysip = `hostname -I | awk \'\{print \$1\}\'` // '');
+                $sysip =~ s/\s+//g;
+                $sysip =~ s/\r|\n//g;
+                if ($sysip) {
+			system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
+			#system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan > $redrathubdebug 2>&1 \&\" \&");
+                        #sleep 10;
+			exit;
+                } else {
+                        die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+                }
+                #chomp($running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+                #if ($running) {
+                #        if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                #                $redrathubip = $1;
+                #                return;
+                #        }
+                #} else {
+                #        die "ERROR: RedRatHub was not running and I was unable to start it.\n";
+                #}
+        } else {
+                #print "Hub is running - $running\n";
+                if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                        $redrathubip = $1;
+                        return;
+                }
+        }
+}
+
+sub sendNowTVNetwork {
+        use LWP::UserAgent;
+        use HTTP::Request;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $ntvfile = $filedir . 'nowTVNetworkCommands.txt';
+        my $nowtvip = $$boxdata{'NOWTVIP'};
+        my $nowtvport = '8060';
+
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $ntvcoms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+                my $ua = new LWP::UserAgent;
+                my $service = "http://$nowtvip:$nowtvport/" . $basecom;
+
+                $ua->timeout(3);
+                my $request = new HTTP::Request('POST',$service);
+                my $response = $ua->request($request);
+                if ($response->is_success) {
+                        my $stuff = $response->code . " " . $response->message;
+                } else {
+                        my $stuff = $response->code . " " . $response->message;
+                        warn "PID $$: Failed to send \"$command\" to Now TV Box \"$$stb\" at $nowtvip on port $nowtvport: $stuff\n";
+                }
+        }
+
+        untie %ntvcoms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+}
+
+sub sendGlobalCacheIRNowTV {
+        use IO::Socket::INET;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $ntvfile = $filedir . 'nowTVGlobalCacheIRCommands.txt';
+        my $gcip = $$boxdata{'GlobalCacheIP'};
+        my $gcport = $$boxdata{'GlobalCachePort'};
+
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+
+	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $ntvcoms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+		my $EOL = "\015\012";
+		my $fullcom = 'sendir,1:' . $gcport . ',' . $basecom . $EOL;
+		my $res = '';
+		$sock->send($fullcom);
+		$sock->recv($res,16);
+		if ($res !~ /completeir/) {
+			warn "PID $$: ERROR: Issue when sending command \"$command\" to GlobalCache device at $gcip: $res\n";
+		}
+        }
+
+        untie %ntvcoms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+}
+
+sub sendGlobalCacheIRSkyQ {
+        use IO::Socket::INET;
+        my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+        my @commands = split(',',$$commands);
+        my $comfile = $filedir . 'skyQGlobalCacheIRCommands.txt';
+        my $gcip = $$boxdata{'GlobalCacheIP'};
+        my $gcport = $$boxdata{'GlobalCachePort'};
+
+        tie my %coms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%coms to $comfile: $!\n";
+
+	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
+
+        foreach my $command (@commands) {
+                if ($command =~ /^t(\d+)/i) {
+                        sleep $1;
+                        next;
+                }
+                my $basecom = $coms{$command};
+                unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
+                        warn "$command is not a valid command for $$stb\n" and next;
+                }
+
+		my $EOL = "\015\012";
+		my $fullcom = 'sendir,1:' . $gcport . ',' . $basecom . $EOL;
+		my $res = '';
+		$sock->send($fullcom);
+		$sock->recv($res,16);
+		if ($res !~ /completeir/) {
+			warn "PID $$: ERROR: Issue when sending command \"$command\" to GlobalCache device at $gcip: $res\n";
+		}
+        }
+
+        untie %coms;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
 }

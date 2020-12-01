@@ -45,6 +45,8 @@ my $encoded = $json->pretty->encode(\%stbdata);
 if (open my $newfh, '+>', $stbdatafile) {
 	print $newfh $encoded;
 	close $newfh;
+	print "Success";
 } else {
+	print "Fail";
 	die "ERROR: Unable to open $stbdatafile: $!\n";
 }

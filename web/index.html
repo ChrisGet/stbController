@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
-	<script type="text/javascript" src="web/resources/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="web/resources/jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="web/resources/jquery.form.js"></script>
+        <script type="text/javascript" src="web/resources/jquery.caret.js"></script>
 	<script type="text/javascript" src="web/resources/stbController.js"></script>
 	<link href="web/css/controller.css" rel="stylesheet" type="text/css"/>
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
@@ -21,7 +22,7 @@
 		</div>
 		<div id="topDivEmpty"></div>
 		<div id="menuButtonDiv">
-			<button id="menuController" class="menuBtn" value="STB Controller Grid" onclick="perlCall('dynamicPage','scripts/pages/stbGrid.pl');getLastBoxes();">Controller</button>
+			<button id="menuController" class="menuBtn" value="STB Controller Grid" onclick="controllerPage()">Controller</button>
 			<button id="menuSTBData" class="menuBtn" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()">STB Data</button>
 			<button id="menuSequences" class="menuBtn" value="Sequences" onclick="pageCall('dynamicPage','web/sequencesPage.html');logLastBoxes();perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');focusEl('sequencesAvailable')">Sequences</button>
 			<button id="menuSchedule" class="menuBtn" value="Events Schedule" onclick="pageCall('dynamicPage','web/eventsSchedulePage.html');logLastBoxes();perlCall('evSchedsAvailable','scripts/pages/eventSchedulePage.pl','action','Menu')">Schedule</button>
@@ -39,7 +40,7 @@
 	</div>
 	<div id="versionInfoDiv">
 		<p style="float:left;margin-left:1%;">Author and maintainer: <a href="mailto:Christopher.get@sky.uk?Subject=STB%20Controller" target="_top">Christopher.get@sky.uk</a></p>
-		<p style="float:right;margin-right:1%;"><b>Version:</b> 2.2</p>
+		<p style="float:right;margin-right:1%;"><b>Version:</b> 2.3</p>
 	</div>
 </body>
 </html>

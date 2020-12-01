@@ -19,12 +19,16 @@ $maindir =~ s/\/$//;
 my $confdir = $maindir . '/config/';
 my $filedir = $maindir . '/files/';
 my $groupsfile = ($filedir . 'stbGroups.txt');
+my $groupsjsonfile = $filedir . 'stbGroups.json';
 my $htmldir = $maindir . '/scripts/pages/';
 my $stbdatafile = $confdir . 'stbData.json';
+
+checkLegacy(); # Initial check to see if any old STB group files have been converted to the new JSON format
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
 
+##### Load the STB data
 my %stbdata;
 if (-e $stbdatafile) {
         local $/ = undef;
@@ -34,11 +38,21 @@ if (-e $stbdatafile) {
         %stbdata = %{$decoded};
 }
 
+##### Load the groups data
+my %groups;
+if (-e $groupsjsonfile) {
+        local $/ = undef;
+        open my $fh, "<", $groupsjsonfile or die "ERROR: Unable to open $groupsjsonfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %groups = %{$decoded};
+}
+
 mainMenu() and exit if ($action =~ /^Menu$/i);
 createGroup(\$group) and exit if ($action =~ /^Create$|^Edit$/i);
 
 sub mainMenu {
-	tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
+	#tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
 	if (!%groups) {
 		print '<font size="4" color="red">You currently have no STB Groups</font>';
 		exit;
@@ -58,22 +72,26 @@ HEAD
 			print '</tr><tr>';
 			$colcount = '1';
 		}
-		my $mems = $groups{$key};
+		my $mems = $groups{$key}{'stbs'};
 		my @members = split(',',$mems);
 		my $memberstring = '';
 		foreach my $item (@members) {
 			my $name = $stbdata{$item}{'Name'} || '';
+			my $errclass = '';
 			if (!$name) {
 				$name = 'Unconfigured STB';
+				$errclass = 'problem';
 			} else {
 				if ($name !~ /\S+/ or $name =~ /^\s*\-\s*$/) {
 					$name = 'Unconfigured STB';
+					$errclass = 'problem';
 				}
 				if ($name =~ /^\s*\-\s*$/) {
 					$name = 'Spacer';
+					$errclass = 'problem';
 				}
 			}
-			$memberstring .= "<div class=\"stbGroupIcon\"><p>$name</p></div>";
+			$memberstring .= "<div class=\"stbGroupIcon $errclass\"><p>$name</p></div>";
 		}
 		$memberstring =~ s/\,$//;
 
@@ -104,8 +122,8 @@ sub createGroup {
 	if ($$group) {
 		$headertext = "STB Group \&\#8594; Edit \&\#8594; <font color\=\"#65a9d7\">\"$$group\"<\/font>";
 		$defname = $$group;
-		tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
-		$members = $groups{$defname};
+		#tie my %groups, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%groups to $groupsfile: $!\n";
+		$members = $groups{$defname}{'stbs'} // '';
 		$buttontext = "Update!";
 		print "<input type=\"hidden\" name=\"originalName\" value=\"$defname\"\/>";
 		$onclick = "groupValidate(\'$defname\')";
@@ -241,3 +259,39 @@ LAST
 		print "<font size=\"5\" color=\"red\">No STB Database found. Configure a STB on the \"STB Data\" page first<\/font>";
 	}
 } # End of sub 'createGroup'
+
+sub checkLegacy {
+	if (!-e $groupsjsonfile and !-e $groupsfile) {
+                ##### If no command sequence files exist, we can start off with JSON straight away
+                $groupsfile = $groupsjsonfile;
+                return;
+        } elsif (-e $groupsjsonfile) {
+                ##### If the new file format already exists, update the $seqfile variable to use
+                $groupsfile = $groupsjsonfile;
+                return;
+        }
+
+        ##### If the checks get this far, we need to convert old sequence files to the new JSON format
+        if (-e $groupsfile) {
+                my %newjson;
+                tie my %temp, 'Tie::File::AsHash', $groupsfile, split => ':' or die "Problem tying \%temp to $groupsfile for conversion in " . __FILE__ . ": $!\n";
+                if (%temp) {
+                        foreach my $old (sort keys %temp) {
+                                $newjson{$old}{'stbs'} = $temp{$old};
+                        }
+
+                        if (%newjson) {
+                                my $json = JSON->new->allow_nonref;
+                                $json = $json->canonical('1');
+                                my $encoded = $json->pretty->encode(\%newjson);
+                                if (open my $newfh, '+>', $groupsjsonfile) {
+                                        print $newfh $encoded;
+                                        close $newfh;
+                                } else {
+                                        die "Failed to open file $groupsjsonfile for writing in conversion in file " . __FILE__ . " :$!\n";
+                                }
+                        }
+                }
+        	untie %temp;
+	}
+}

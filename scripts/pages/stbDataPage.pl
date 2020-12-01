@@ -24,8 +24,12 @@ stbSelect() if ($option =~ /chooseSTB/i);
 stbConfig(\$box) if ($option =~ /configSTB/i);
 stbConfig(\$box,\'printDuskyTable') and exit if ($option =~ /printDusky/i);
 stbConfig(\$box,\'printBluetoothTable') and exit if ($option =~ /printBluetooth/i);
+stbConfig(\$box,\'printNowTVNetworkTable') and exit if ($option =~ /printNetwork/i and $option =~ /NowTV/i);
 stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
-stbConfig(\$box,\'printIRTable') and exit if ($option =~ /printIR/i);
+stbConfig(\$box,\'printIRNetBoxIVNowTV') and exit if ($option =~ /printInfraRed IRNetBoxIV/i and $option =~ /NowTV/i);
+stbConfig(\$box,\'printIRNetBoxIV') and exit if ($option =~ /printInfraRed IRNetBoxIV/i);
+stbConfig(\$box,\'printGlobalCacheIRNowTV') and exit if ($option =~ /printInfraRed GlobalCache/i and $option =~ /NowTV/i);
+stbConfig(\$box,\'printGlobalCacheIR') and exit if ($option =~ /printInfraRed GlobalCache/i and $option =~ /SkyQ/i);
 
 sub stbSelect {
 	my %stbdata;
@@ -194,10 +198,13 @@ HEAD
 	my $duskyport = $stbdata{$$stb}{'DuskyPort'} || '';
 	my $btcontip = $stbdata{$$stb}{'BTContIP'} || '';
 	my $btcontport = $stbdata{$$stb}{'BTContPort'} || '';
-	my $irip = $stbdata{$$stb}{'IRIP'} || '';
-	my $irport = $stbdata{$$stb}{'IRPort'} || '';
-	my $irout = $stbdata{$$stb}{'IROutput'} || '';
+	my $irnb4ip = $stbdata{$$stb}{'IRNetBoxIVIP'} || '';
+	my $irnb4out = $stbdata{$$stb}{'IRNetBoxIVOutput'} || '';
+	my $nowtvmodel = $stbdata{$$stb}{'IRNetBoxIVNowTVModel'} || '';
 	my $networkip = $stbdata{$$stb}{'VNCIP'} || '';
+	my $nowtvip = $stbdata{$$stb}{'NOWTVIP'} || '';
+	my $gcirip = $stbdata{$$stb}{'GlobalCacheIP'} || '';
+	my $gcirport = $stbdata{$$stb}{'GlobalCachePort'} || '';
 	my $btnclr = $stbdata{$$stb}{'ButtonColour'} || '';
 	my $btntextclr = $stbdata{$$stb}{'ButtonTextColour'} || '';
 	##### STB Control and Video Data
@@ -227,7 +234,18 @@ HEAD
 	#### STB Details Table stuff	
 
 	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9,-class=>'stbDataTextField');
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
+	my @controltypes = (	'Bluetooth (SkyQ)',
+				'Network (SkyQ)',
+				'InfraRed IRNetBoxIV (SkyQ)',
+				'Dusky (Sky+)',
+				'Network (Sky+)',
+				'InfraRed IRNetBoxIV (NowTV)',
+				'Network (NowTV)',
+				'InfraRed GlobalCache (NowTV)',
+				'InfraRed GlobalCache (SkyQ)'
+				);
+	#my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>[@controltypes],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
 	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15,-class=>'stbDataTextField');
 	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5,-class=>'stbDataTextField');
 	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1",-class=>'stbDataSelect');
@@ -265,13 +283,33 @@ HEAD
 			exit;
 		}
 		if ($$option =~ /Network/i) {
+			if ($$option =~ /NowTV/i) {
+				printNowTVNetworkTable($nowtvip);
+				exit;
+			}
 			printNetworkTable($networkip);
 			exit;
 		}
-		if ($$option =~ /IR/i) {
-			printIRTable($irip,$irport,$irout);
+		if ($$option =~ /IRNetBoxIV/i) {
+			if ($$option =~ /NowTV/i) {
+				printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel);
+				exit;
+			}
+			printIRNetBoxIV($irnb4ip,$irnb4out);
 			exit;
 		}
+		if ($$option =~ /GlobalCache/i) {
+			if ($$option =~ /NowTV/i) {
+				printGlobalCacheIRNowTV($gcirip,$gcirport);#,$nowtvmodel);
+				exit;
+			}
+			printGlobalCacheIR($gcirip,$gcirport);
+			exit;
+		}
+		#if ($$option =~ /IR/i) {
+		#	printIRTable($irip,$irport,$irout);
+		#	exit;
+		#}
 	}
 	# End of $option actions
 
@@ -303,10 +341,14 @@ DATARIGHT
 	if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
-		printNetworkTable($networkip) if ($type =~ /Network/i);
-		printIRTable($irip,$irport,$irout) if ($type =~ /IR/i);
+		printNetworkTable($networkip) if ($type =~ /Network \(Sky/i);
+		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i);
+		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
+		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);
+		printGlobalCacheIRNowTV($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(NowTV\)/);
+		printGlobalCacheIR($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(SkyQ\)/);
 	} else {
-		printDuskyTable('','','');
+		printBluetoothTable('','');
 	}
 
 	print '</div>';	# End of 'typeChange' div
@@ -394,17 +436,83 @@ print <<NETWORK;
 NETWORK
 }
 
-sub printIRTable {
-	my ($irip,$irport,$irout) = @_;
-	my $iriptext = $query->textfield(-id=>'irip',-name=>'IRIP',-size=>'15',-default=>$irip,-maxlength=>15,-class=>'stbDataTextField');
-	my $irporttext = $query->textfield(-id=>'irport',-name=>'IRPort',-size=>'15',-default=>$irport,-class=>'stbDataTextField');
-	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IROutput',-values=>['01'..'05'],-default=>$irout,-class=>'stbDataSelect');
+sub printNowTVNetworkTable {
+	my ($ip) = @_;
+	my $iptext = $query->textfield(-id=>'netip',-name=>'NOWTVIP',-size=>'15',-default=>$ip,-maxlength=>15,-class=>'stbDataTextField');
+
+print <<NETWORK;
+<p class="narrow" style="font-size:1.8vh;">Network Control</p>
+<table class="stbDataFormTable ctrltype">
+<tr><td style="text-align:right;font-size:1.4vh;">NOW TV IP Address:</td><td style="float:right;">$iptext</td></tr>
+</table>
+<div id="stbDataNoteDiv">
+	<p>For network control to work, the computer hosting this control system needs to have access to the NOW TV units network</p>
+</div>
+NETWORK
+}
+
+sub printIRNetBoxIV {
+	my ($irnb4ip,$irnb4out) = @_;
+	my $iriptext = $query->textfield(-id=>'irnb4ip',-name=>'IRNetBoxIVIP',-size=>'15',-default=>$irnb4ip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IRNetBoxIVOutput',-values=>['01'..'16'],-default=>$irnb4out,-class=>'stbDataSelect');
 print <<IR;
 <p class="narrow" style="font-size:1.8vh;">IR Control</p>
 <table class="stbDataFormTable ctrltype">
-<tr><td>IR Blaster IP:</td><td>$iriptext</td></tr>
-<tr><td>IR Blaster Port:</td><td>$irporttext</td></tr>
-<tr><td>IR Blaster Output:</td><td>$irouttext</td></tr>
+<tr><td>IRNetBoxIV IP:</td><td>$iriptext</td></tr>
+<tr><td>IRNetBoxIV Output:</td><td>$irouttext</td></tr>
 </table>
+IR
+}
+
+sub printIRNetBoxIVNowTV {
+	my ($irnb4ip,$irnb4out,$nowtvmodel) = @_;
+	my @models = ('Please Choose...','Smart Box 4631UK');
+	my $nowtvtext = $query->popup_menu(-id=>'irnowtvmodel',-name=>'IRNetBoxIVNowTVModel',-values=>[@models],-default=>$nowtvmodel,-class=>'stbDataSelect nowtvmodel');
+	my $iriptext = $query->textfield(-id=>'irnb4ip',-name=>'IRNetBoxIVIP',-size=>'15',-default=>$irnb4ip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'irout',-name=>'IRNetBoxIVOutput',-values=>['01'..'16'],-default=>$irnb4out,-class=>'stbDataSelect');
+print <<IR;
+<p class="narrow" style="font-size:1.8vh;">IR Control</p>
+<table class="stbDataFormTable ctrltype">
+<tr><td>IRNetBoxIV IP:</td><td>$iriptext</td></tr>
+<tr><td>IRNetBoxIV Output:</td><td>$irouttext</td></tr>
+<tr><td>NowTV Model:</td><td>$nowtvtext</td></tr>
+</table>
+<div id="stbDataNoteDivNowTV">
+	<p>Please specify a NOWTV Model for better control accuracy. If left blank, generic NOWTV signals will be used which may not be compatible with your device</p>
+</div>
+IR
+}
+
+sub printGlobalCacheIRNowTV {
+	my ($gcirip,$gcirport) = @_;
+	#my @models = ('Please Choose...','Smart Box 4631UK');
+	#my $nowtvtext = $query->popup_menu(-id=>'irnowtvmodel',-name=>'IRNetBoxIVNowTVModel',-values=>[@models],-default=>$nowtvmodel,-class=>'stbDataSelect nowtvmodel');
+	my $iriptext = $query->textfield(-id=>'gcirip',-name=>'GlobalCacheIP',-size=>'15',-default=>$gcirip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'gcirport',-name=>'GlobalCachePort',-values=>['1'..'3'],-default=>$gcirport,-class=>'stbDataSelect');
+print <<IR;
+<p class="narrow" style="font-size:1.8vh;">IR Control</p>
+<table class="stbDataFormTable ctrltype">
+<tr><td>GlobalCache iTach IP:</td><td>$iriptext</td></tr>
+<tr><td>GlobalCache iTach Output:</td><td>$irouttext</td></tr>
+</table>
+<div id="stbDataNoteDivNowTVGC">
+</div>
+IR
+}
+
+sub printGlobalCacheIR {
+	my ($gcirip,$gcirport) = @_;
+	#my @models = ('Please Choose...','Smart Box 4631UK');
+	#my $nowtvtext = $query->popup_menu(-id=>'irnowtvmodel',-name=>'IRNetBoxIVNowTVModel',-values=>[@models],-default=>$nowtvmodel,-class=>'stbDataSelect nowtvmodel');
+	my $iriptext = $query->textfield(-id=>'gcirip',-name=>'GlobalCacheIP',-size=>'15',-default=>$gcirip,-maxlength=>15,-class=>'stbDataTextField');
+	my $irouttext = $query->popup_menu(-id=>'gcirport',-name=>'GlobalCachePort',-values=>['1'..'3'],-default=>$gcirport,-class=>'stbDataSelect');
+print <<IR;
+<p class="narrow" style="font-size:1.8vh;">IR Control</p>
+<table class="stbDataFormTable ctrltype">
+<tr><td>GlobalCache iTach IP:</td><td>$iriptext</td></tr>
+<tr><td>GlobalCache iTach Output:</td><td>$irouttext</td></tr>
+</table>
+<div id="stbDataNoteDivNowTVGC">
+</div>
 IR
 }

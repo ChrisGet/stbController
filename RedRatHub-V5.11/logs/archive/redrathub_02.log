@@ -1,0 +1,19 @@
+[2020-11-17 11:08:23] Info 
+=== Starting RedRatHub (V5.11) ===
+ 
+[2020-11-17 11:08:24] Info Loaded signal data from file: DeviceDB.xml 
+[2020-11-17 11:08:24] Info Searching for RedRat devices...  
+[2020-11-17 11:08:27] Info Found the following RedRat devices: 
+[2020-11-17 11:08:27] Info  >> [irNetBox-IV] NowTV irNetBox-IV (70-B3-D5-FD-16-01) at 192.168.10.17 [DISCONNECTED] 
+[2020-11-17 11:08:27] Info  
+[2020-11-17 11:08:27] Info Socket server started on port 40000. Can accept 20 connections. 
+[2020-11-17 11:08:28] Info HTTP server started at http://[::]:5248 
+[2020-11-17 11:08:30] Debug Connection accepted from client '192.168.10.16'. There are 1 connection(s). 
+[2020-11-17 11:08:30] Debug A client has disconnected from the server. There are 0 client(s) still connected. 
+[2020-11-17 11:08:35] Debug GET http://192.168.10.16:5248/settings 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/Content/js/bundle.js 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/Content/js/app-settings.js 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/api/admin/logsettings 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/api/admin/settings 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/api/admin/version 
+[2020-11-17 11:08:36] Debug GET http://192.168.10.16:5248/api/irdata 
