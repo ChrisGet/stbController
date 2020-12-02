@@ -1,8 +1,0 @@
-[2020-11-17 10:10:35] Info 
-=== Starting RedRatHub (V5.11) ===
- 
-[2020-11-17 10:10:35] Error File DeviceDB.xml doesn't exist. 
-[2020-11-17 10:10:35] Warn WARNING: No IR signal data has been loaded. 
-[2020-11-17 10:10:35] Fatal Signal DB data has not been set. 
-[2020-11-17 10:10:35] Info    at RedRat.RedRatHub.Core.RrHubController.Start(String configFile, Boolean noRedRatScan)
-   at RedRat.RedRatHub.RedRatHub.Startup() 
