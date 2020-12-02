@@ -545,7 +545,7 @@ button:hover {
 #sequencesHead p {
 	display:inline-block;
 	font-size:1.5vh;
-	margin:0;
+	margin:0 3%;
 	color:#333333;
 	position:relative;
 }
@@ -2946,7 +2946,7 @@ input[type='file'] {
 	background-color:green;
 }
 .seqSwitchModeBtn p {
-	font-size:1.2vh;
+	font-size:1.5vh;
 	color:green;
 	margin:0;
 	position:relative;
