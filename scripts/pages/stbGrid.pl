@@ -317,6 +317,7 @@ sub loadSequences {
 	##### Sort the sequences by their categories
 	my %seqsbycat;
 	foreach my $seq (keys %sequences) {
+		next if ($sequences{$seq}{'active'} eq 'no');
 		my $cat = $sequences{$seq}{'category'} // '';
 		if ($cat) {
 			$seqsbycat{$cat}{$seq} = 1;
