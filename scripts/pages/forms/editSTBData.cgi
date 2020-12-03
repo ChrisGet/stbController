@@ -32,6 +32,7 @@ foreach my $param (@params) {
 	my $value = $query->param($param);
 	$value =~ s/^\s+//g;
 	$value =~ s/\s+$//g;
+	$value = '' if ($value =~ /Please Choose/i);
 	if (exists $stbdata{$stbname}{$param}) {
 		if ($stbdata{$stbname}{$param} ne $value) {
 			$stbdata{$stbname}{$param} = $value;
