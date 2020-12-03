@@ -110,75 +110,77 @@ print <<HEAD;
 <div id="evSchedList">
 HEAD
 
-	my @times;
+	my %times;
 	foreach my $key (sort keys %events) {
 		my @sections = split(/\s+/,$events{$key}{'schedule'});
-		my $mins = $sections[1];
-		my $hour = $sections[2];
-		push (@times,"$key-$hour:$mins");
+		my $mins = $sections[0];
+		my $hour = $sections[1];
+		$times{$hour}{$mins}{$key} = '1';
 	}
 
-	my @sorted = sort {($a =~ /-(\d+):/)[0] <=> ($b =~ /-(\d+):/)[0] or ($a =~ /:(\d+)$/)[0] <=> ($b =~ /:(\d+)$/)[0]} @times;	# Sorted the list by hour and then minute
-
-	foreach my $thing (@sorted) {
-		my ($id) = $thing =~ /^(\d+)-/;
-		my @info = split(/\s+/,$events{$id}{'schedule'});
-		my %timedata = (
-				'Minute' => $info[0],
-				'Hour' => $info[1],
-				'DOM' => $info[2],
-				'Month' => $info[3],
-				'DOW' => $info[4],
-			);
-		my $time;
-		if ($timedata{'Minute'} =~ /\*\/(\d+)/) {
-			my $mins = $1;
-			if ($timedata{'Hour'} =~ /(\d+)-(\d+)/) {
-				$time = "Every $mins minutes at $1:00 to $2:00"; 
-			} else {
-				$time = "Every $mins minutes at " . $timedata{'Hour'} . ':00';
-			}
-		} else {
-			$time = $timedata{'Hour'} . ':' . $timedata{'Minute'};
-		}
-		my $months = numbersToDays(\$timedata{'Month'},\'month');
-		$$months =~ s/_/ /g;
-		my $days = numbersToDays(\$timedata{'DOW'},\'dow');
-		$$days =~ s/,/, /g;
-		my $dom = $timedata{'DOM'};
-		$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
-		my $togglebtn = "<button class=\"schedToggleBtn active\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Enabled<\/button>";
-		my $editbtn = "<button class=\"schedListBtn edit\" title=\"Edit\" onclick=\"editSchedulePage(\'$id\')\"><\/button>";
-		my $delbtn = "<button class=\"schedListBtn del\" title=\"Delete\" onclick=\"deleteSchedule(\'$id\')\"><\/button>";
-		my $copybtn = "<button class=\"schedListBtn copy\" title=\"Copy\" onclick=\"copySchedule(\'$id\')\"><\/button>";
-		if ($events{$id}{'active'} eq 'n') {
-			$togglebtn = "<button class=\"schedToggleBtn inactive\" onclick=\"scheduleStateChange(\'Enable\',\'$id\')\">Disabled<\/button>";
-		}
-
-		my $stbnames = '';
-		my @stbs = split(',',$events{$id}{'stbs'});
-		foreach my $box (@stbs) {
-			if (exists $stbdata{$box}) {
-				my $name = $stbdata{$box}{'Name'} || '';
-				if ($name) {
-					if ($name =~ /^\s*\-\s*$/) {
-						$stbnames .= " Unconfigured STB ,";
+	foreach my $hour (sort keys %times) {
+                my %mins = %{$times{$hour}};
+                foreach my $min (sort keys %mins) {
+                        my %evs = %{$mins{$min}};
+                        foreach my $id (sort keys %evs) {
+				my ($id) = $thing =~ /^(\d+)-/;
+				my @info = split(/\s+/,$events{$id}{'schedule'});
+				my %timedata = (
+						'Minute' => $info[0],
+						'Hour' => $info[1],
+						'DOM' => $info[2],
+						'Month' => $info[3],
+						'DOW' => $info[4],
+					);
+				my $time;
+				if ($timedata{'Minute'} =~ /\*\/(\d+)/) {
+					my $mins = $1;
+					if ($timedata{'Hour'} =~ /(\d+)-(\d+)/) {
+						$time = "Every $mins minutes at $1:00 to $2:00"; 
 					} else {
-						$stbnames .= " $name ,";
+						$time = "Every $mins minutes at " . $timedata{'Hour'} . ':00';
 					}
 				} else {
-					$stbnames .= " Unconfigured STB ,";
+					$time = $timedata{'Hour'} . ':' . $timedata{'Minute'};
 				}
-			} else {
-				$stbnames .= " $box ,";
-			}
-		}
+				my $months = numbersToDays(\$timedata{'Month'},\'month');
+				$$months =~ s/_/ /g;
+				my $days = numbersToDays(\$timedata{'DOW'},\'dow');
+				$$days =~ s/,/, /g;
+				my $dom = $timedata{'DOM'};
+				$dom = 'Every Day Of The Month' if ($dom =~ /\*/);
+				my $togglebtn = "<button class=\"schedToggleBtn active\" onclick=\"scheduleStateChange(\'Disable\',\'$id\')\">Enabled<\/button>";
+				my $editbtn = "<button class=\"schedListBtn edit\" title=\"Edit\" onclick=\"editSchedulePage(\'$id\')\"><\/button>";
+				my $delbtn = "<button class=\"schedListBtn del\" title=\"Delete\" onclick=\"deleteSchedule(\'$id\')\"><\/button>";
+				my $copybtn = "<button class=\"schedListBtn copy\" title=\"Copy\" onclick=\"copySchedule(\'$id\')\"><\/button>";
+				if ($events{$id}{'active'} eq 'n') {
+					$togglebtn = "<button class=\"schedToggleBtn inactive\" onclick=\"scheduleStateChange(\'Enable\',\'$id\')\">Disabled<\/button>";
+				}
 
-		$stbnames =~ s/\,$//;
-		$stbnames =~ s/^ //;
+				my $stbnames = '';
+				my @stbs = split(',',$events{$id}{'stbs'});
+				foreach my $box (@stbs) {
+					if (exists $stbdata{$box}) {
+						my $name = $stbdata{$box}{'Name'} || '';
+						if ($name) {
+							if ($name =~ /^\s*\-\s*$/) {
+								$stbnames .= " Unconfigured STB ,";
+							} else {
+								$stbnames .= " $name ,";
+							}
+						} else {
+							$stbnames .= " Unconfigured STB ,";
+						}
+					} else {
+						$stbnames .= " $box ,";
+					}
+				}
 
-		my $eventdata = $events{$id}{'commands'};
-		$eventdata =~ s/,/, /g;
+				$stbnames =~ s/\,$//;
+				$stbnames =~ s/^ //;
+
+				my $eventdata = $events{$id}{'commands'};
+				$eventdata =~ s/,/, /g;
 print <<SCHED;
 	<div class="evSchedRow" onclick="evSchedRowHighlight(this)" title="Click to toggle highlight">
 		<div class="evSchedRowSec"><p>$time</p></div>
@@ -197,6 +199,8 @@ print <<SCHED;
 		</div>
 	</div>
 SCHED
+			}
+		}
 	}
 	print "</div>";
 	untie %events;
