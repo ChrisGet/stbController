@@ -183,7 +183,7 @@ sub control {
 					$hw = 'nowtv';
 					if (exists $boxdata{'IRNetBoxIVNowTVModel'}) {
 						##### If this STB has the NOW TV Model defined, set that as the specific hardware type
-						if ($boxdata{'IRNetBoxIVNowTVModel'}) {
+						if ($boxdata{'IRNetBoxIVNowTVModel'} and $boxdata{'IRNetBoxIVNowTVModel'} !~ /Please Choose/i) {
 							$hw .= $boxdata{'IRNetBoxIVNowTVModel'};
 							##### Format the NOW TV Model text to lower case with no spaces
 							##### "nowtvSmart Box 4631UK" becomes "nowtvsmartbox4631uk" for RedRatHub reference
