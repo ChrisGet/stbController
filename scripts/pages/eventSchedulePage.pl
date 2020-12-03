@@ -123,7 +123,6 @@ HEAD
                 foreach my $min (sort keys %mins) {
                         my %evs = %{$mins{$min}};
                         foreach my $id (sort keys %evs) {
-				my ($id) = $thing =~ /^(\d+)-/;
 				my @info = split(/\s+/,$events{$id}{'schedule'});
 				my %timedata = (
 						'Minute' => $info[0],
