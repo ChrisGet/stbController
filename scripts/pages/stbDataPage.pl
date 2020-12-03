@@ -478,7 +478,7 @@ print <<IR;
 <tr><td>NowTV Model:</td><td>$nowtvtext</td></tr>
 </table>
 <div id="stbDataNoteDivNowTV">
-	<p>Please specify a NOWTV Model for better control accuracy. If left blank, generic NOWTV signals will be used which may not be compatible with your device</p>
+	<p>You do not have to specify a NOW TV model as the generic commands work with most models. It may benefit to select your specific model if you plan to use the shortcut keys like Kids or My TV</p>
 </div>
 IR
 }
