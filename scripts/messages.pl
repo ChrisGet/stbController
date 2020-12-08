@@ -14,7 +14,11 @@ my $statefile = $filedir . 'schedulerState.txt';
 my $runningdir = $filedir . 'pidsRunning/';
 my $pauseddir = $filedir . 'pidsPaused/';
 my $bullet = "&\#8226";
-chomp(my $schedpid = `cat $schedpidfile` || ''); 
+my $schedpid = '';
+
+if (-e $schedpidfile) {
+	chomp($schedpid = `cat $schedpidfile` || ''); 
+}
 
 if ($schedpid) {
 	$schedpid =~ s/\s+//g;
