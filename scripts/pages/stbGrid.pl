@@ -136,14 +136,16 @@ sub loadPage {
 		@order = ('loadSTBSelection','loadControl','loadSequences');	# This is the default order if there are issues with the config file
 	}
 	
-	chomp(my $orderconf = `cat $orderfile` // '');
-	if ($orderconf) {
-		my @bits = split('->',$orderconf);
-		if ($bits[0] and $bits[1] and $bits[2]) {
-			@order = ();
-			foreach my $bit (@bits) {
-				if ($bit =~ /^STBSelection|Control|Sequences$/) {
-					push(@order,'load' . $bit);
+	if (-e $orderfile) {
+		chomp(my $orderconf = `cat $orderfile` // '');
+		if ($orderconf) {
+			my @bits = split('->',$orderconf);
+			if ($bits[0] and $bits[1] and $bits[2]) {
+				@order = ();
+				foreach my $bit (@bits) {
+					if ($bit =~ /^STBSelection|Control|Sequences$/) {
+						push(@order,'load' . $bit);
+					}
 				}
 			}
 		}
