@@ -443,7 +443,10 @@ sub sendIRNetBoxIVComms {
 	if ($rrres) {
 		if ($rrres !~ m/$netboxip/) {
 			$rrres = &readData('hubquery="add redrat" ip="' . $netboxip . '"');
-			warn "Adding RedRat $netboxip to RedRatHub - $rrres\n";
+			$rrres =~ s/\n|\r//g;
+			if ($rrres =~ /Failed/i) {
+				warn "Failed to add RedRat $netboxip to RedRatHub - $rrres\n";
+			}
 		}# else {
 		#	warn "$netboxip already added\n";
 		#}
@@ -471,7 +474,7 @@ sub sendIRNetBoxIVComms {
 			my $sig = $ircoms{$command};
 			#warn "$netboxip - $hwtype - $sig\n";
 			my $res = &readData('ip="' . $netboxip . '" dataset="' . $hwtype . '" signal="' . $sig . '" output="' . $outputs . '"');
-			warn "$res\n";
+			#warn "$res\n";
 			if ($res and $res !~ /OK/) {
 				warn "Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
 			}
