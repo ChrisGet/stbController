@@ -6766,7 +6766,7 @@
         <double>1.79</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwICAgMCAwICAgICAwIDAgICAwICAgICAwIDAgICAgIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgICAwIDAgICAgIDAgMCAwIDAgICAgIDAgMCAgICAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.9835</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6783,7 +6783,7 @@
         <double>1.717</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwIDAgMCAgICAgMCAwICAgICAgICAgMCAwICAgICAwIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgMCAwICAgICAwIDAgICAwICAgICAwIDAgICAgIDAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.983</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6800,7 +6800,7 @@
         <double>1.7855</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwIDAgICAwICAgMCAgIDAgICAgIDAgICAwICAgMCAgIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgMCAgIDAgICAwICAgMCAwICAgMCAgIDAgICAwICAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.961499999999994</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6817,7 +6817,7 @@
         <double>1.7914999999999999</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwIDAgMCAgICAgICAgICAgICAgICAgMCAwIDAgMCAwIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgMCAwICAgICAgICAgICAwICAgICAwIDAgMCAwIDAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.973</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6834,7 +6834,7 @@
         <double>1.73</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwICAgMCAwIDAgMCAgICAgICAwICAgICAgICAgMCAwIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgICAwIDAgMCAwICAgICAwIDAgICAgICAgICAwIDAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.9645</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6868,7 +6868,7 @@
         <double>1.7365</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwICAgMCAgIDAgICAwICAgICAwICAgMCAgIDAgICAwIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgICAwICAgMCAgIDAgICAwIDAgICAwICAgMCAgIDAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.967000000000006</IntraSigPause>
       <ToggleData />
     </IRPacket>
@@ -6953,7 +6953,7 @@
         <double>1.702</double>
       </Lengths>
       <SigData>AAECAgIDAgICAwICAgMCAwIDAgICAwICAgICAgICAgMCAwIDAgICAgIDAgMCAgICAgICAgIDAgMCAgICAgMCAwIDAn8AAQICAgMCAgIDAgICAwIDAgMCAgIDAgICAgICAgICAwIDAgMCAgICAgMCAwICAgICAwICAgMCAwICAgICAwIDAgICfw==</SigData>
-      <NoRepeats>2</NoRepeats>
+      <NoRepeats>1</NoRepeats>
       <IntraSigPause>39.947</IntraSigPause>
       <ToggleData />
     </IRPacket>
