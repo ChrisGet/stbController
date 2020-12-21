@@ -50,9 +50,19 @@ sub stbSelect {
 	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";
 	chomp(my @confdata = <FH>);
 	close FH;
+	if (!@confdata) {
+		print '<div class="errorDiv"><h1>No STB Grid configuration found!<br><br>Select "Controller" from the top menu to get setup</h1></div>';
+		exit;
+	}
+	
 	my $confdata = join("\n", @confdata);
 	my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
 	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
+
+	if (!$columns or !$rows) {
+		print '<div class="errorDiv"><h1>No valid STB Grid configuration found!<br><br>Select "Controller" from the top menu to get setup</h1></div>';
+		exit;
+	}
 
 	my $divwidth = '200';
         my $widcnt = '1';
