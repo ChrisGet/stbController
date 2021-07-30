@@ -27,6 +27,7 @@ stbConfig(\$box,\'printBluetoothTable') and exit if ($option =~ /printBluetooth/
 stbConfig(\$box,\'printNowTVNetworkTable') and exit if ($option =~ /printNetwork/i and $option =~ /NowTV/i);
 stbConfig(\$box,\'printNetworkTable') and exit if ($option =~ /printNetwork/i);
 stbConfig(\$box,\'printIRNetBoxIVNowTV') and exit if ($option =~ /printInfraRed IRNetBoxIV/i and $option =~ /NowTV/i);
+#stbConfig(\$box,\'printIRNetBoxIVQSoip') and exit if ($option =~ /printInfraRed IRNetBoxIV/i and $option =~ /QSoip/i);
 stbConfig(\$box,\'printIRNetBoxIV') and exit if ($option =~ /printInfraRed IRNetBoxIV/i);
 stbConfig(\$box,\'printGlobalCacheIRNowTV') and exit if ($option =~ /printInfraRed GlobalCache/i and $option =~ /NowTV/i);
 stbConfig(\$box,\'printGlobalCacheIR') and exit if ($option =~ /printInfraRed GlobalCache/i and $option =~ /SkyQ/i);
@@ -247,6 +248,7 @@ HEAD
 	my @controltypes = (	'Bluetooth (SkyQ)',
 				'Network (SkyQ)',
 				'InfraRed IRNetBoxIV (SkyQ)',
+				'InfraRed IRNetBoxIV (QSoIP)',
 				'Dusky (Sky+)',
 				'Network (Sky+)',
 				'InfraRed IRNetBoxIV (NowTV)',
@@ -305,6 +307,10 @@ HEAD
 				printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel);
 				exit;
 			}
+			#if ($$option =~ /QSoIP/i) {
+			#	printIRNetBoxIVQSoip($irnb4ip,$irnb4out);
+			#	exit;
+			#}
 			printIRNetBoxIV($irnb4ip,$irnb4out);
 			exit;
 		}
@@ -354,6 +360,7 @@ DATARIGHT
 		printNetworkTable($networkip) if ($type =~ /Network \(Sky/i);
 		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i);
 		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
+		#printIRNetBoxIVQSoip($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(QSoIP\)/i);
 		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);
 		printGlobalCacheIRNowTV($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(NowTV\)/);
 		printGlobalCacheIR($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(SkyQ\)/);
