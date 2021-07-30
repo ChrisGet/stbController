@@ -358,9 +358,8 @@ DATARIGHT
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
 		printNetworkTable($networkip) if ($type =~ /Network \(Sky/i);
-		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i);
+		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i or $type =~ /InfraRed IRNetBoxIV \(QSoIP\)/i);
 		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
-		#printIRNetBoxIVQSoip($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(QSoIP\)/i);
 		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);
 		printGlobalCacheIRNowTV($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(NowTV\)/);
 		printGlobalCacheIR($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(SkyQ\)/);
