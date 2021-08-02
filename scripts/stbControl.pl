@@ -466,7 +466,14 @@ sub sendIRNetBoxIVComms {
         	} else {
 			$comfile = $filedir . 'nowTVIRNetBoxIVCommands.txt';
 		}
-        }
+        } elsif ($hwtype =~ /qsoip/) {
+		if ($hwtype =~ /uk/) {
+			$comfile = $filedir . 'skySoipUKIRNetBoxIVCommands.txt';
+		} elsif ($hwtype =~ /de_it/) {
+			$comfile = $filedir . 'skySoipDEITIRNetBoxIVCommands.txt';
+		}
+	}
+        
 	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%ircoms: $!\n";
 
         foreach my $command (@commands) {
