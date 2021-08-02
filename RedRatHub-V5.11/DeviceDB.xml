@@ -8328,7 +8328,7 @@
   <KeyboardSignals>false</KeyboardSignals>
   <Xmp1Signals>false</Xmp1Signals>
   <Signals>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>0</Name>
       <UID>cLCu+ukVpUiBwqXCXMNS9A==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8344,7 +8344,7 @@
       <IntraSigPause>116.36399999999999</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>1</Name>
       <UID>IeR2XL56dkmCfDKXVsFOiA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8360,7 +8360,7 @@
       <IntraSigPause>116.77550000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>2</Name>
       <UID>4HzuwiXPA0CWfekjwQjdsw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8376,7 +8376,7 @@
       <IntraSigPause>116.3775</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>3</Name>
       <UID>BZNhOXaBakqBJF6xG0vtpA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8392,7 +8392,7 @@
       <IntraSigPause>116.77550000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>4</Name>
       <UID>oAvXcL1N0E+jcwjTvW2oPQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8408,7 +8408,7 @@
       <IntraSigPause>116.3755</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>5</Name>
       <UID>REHu22jLWUiNyDnfH6WPjw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8424,7 +8424,7 @@
       <IntraSigPause>116.77550000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>6</Name>
       <UID>iLOfp7UosUOPf6YhT6N2Ig==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8440,7 +8440,7 @@
       <IntraSigPause>116.3295</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>7</Name>
       <UID>h8CKrX5ttEeI2w+D7Fd3Yg==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8456,7 +8456,7 @@
       <IntraSigPause>116.812</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>8</Name>
       <UID>RjCF2BWwv0OsHoAwMTnZ4A==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8472,7 +8472,7 @@
       <IntraSigPause>116.368</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>9</Name>
       <UID>ZG1kOx9OIUOjNWROuuHwFw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8488,7 +8488,7 @@
       <IntraSigPause>116.81400000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Apps</Name>
       <UID>/+1bz97iDEiw7Y5x75MH5Q==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8504,7 +8504,7 @@
       <IntraSigPause>116.8185</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Blue</Name>
       <UID>qgOZ7421kkS+d8Yg3RRRFQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8520,7 +8520,7 @@
       <IntraSigPause>116.3715</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Channel Down</Name>
       <UID>B4rn3jrxWEyR/teIWXc3Qw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8536,7 +8536,7 @@
       <IntraSigPause>116.8165</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Channel Up</Name>
       <UID>gRZ13BPFikm9KIaam+iSQw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8552,7 +8552,7 @@
       <IntraSigPause>116.367</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Down</Name>
       <UID>dm4/TxJG+kSWQ60Z5mqBig==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8568,7 +8568,7 @@
       <IntraSigPause>0</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Backup</Name>
       <UID>h9JfT4szdkKs9h9IFJTfZA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8584,7 +8584,7 @@
       <IntraSigPause>116.8125</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Fast-Forward</Name>
       <UID>2XB7Vq+9skyG0Q+FDj1E+A==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8600,7 +8600,7 @@
       <IntraSigPause>116.37450000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Green</Name>
       <UID>4HmV79DJj0ODtmebAqzSvg==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8616,7 +8616,7 @@
       <IntraSigPause>116.368</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Home</Name>
       <UID>PcrK6rcCK0ORuhn+DsRsAQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8632,7 +8632,7 @@
       <IntraSigPause>116.3835</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Left</Name>
       <UID>oW/g+zFG60uI8I+vjs1gGg==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8648,7 +8648,7 @@
       <IntraSigPause>116.369</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Play/Pause</Name>
       <UID>50rZPww8EUCHDXVVZC9veQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8664,7 +8664,7 @@
       <IntraSigPause>116.3295</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Power</Name>
       <UID>x2oZ+cg/3EqvtKMlcpmOjQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8680,7 +8680,7 @@
       <IntraSigPause>116.315</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Record</Name>
       <UID>I2TnfjaGZkmynRZdSQrf5w==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8696,7 +8696,7 @@
       <IntraSigPause>116.373</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Red</Name>
       <UID>fk9TOkmGO0++TFdA1136ZA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8712,7 +8712,7 @@
       <IntraSigPause>116.8105</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Rewind</Name>
       <UID>xkWpkyh+60quGK7XvGi9Eg==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8728,7 +8728,7 @@
       <IntraSigPause>116.7745</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Right</Name>
       <UID>WU6AVozBLUWgMLfdfd2kQQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8744,7 +8744,7 @@
       <IntraSigPause>0</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Search</Name>
       <UID>SJnzkUX/NkeQktVOqQbFDA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8760,7 +8760,7 @@
       <IntraSigPause>116.37400000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Select</Name>
       <UID>AyQVapr3v0qWVEScpfaW/Q==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8776,7 +8776,7 @@
       <IntraSigPause>116.37450000000001</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Up</Name>
       <UID>feNHWwe1x0SaOrq3AcUPZw==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
@@ -8792,7 +8792,7 @@
       <IntraSigPause>0</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="RedRat3ModulatedSignal">
+    <IRPacket xsi:type="ModulatedSignal">
       <Name>Yellow</Name>
       <UID>AkMJP+oPmUGQU921uWzeUA==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
