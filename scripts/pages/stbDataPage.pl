@@ -248,7 +248,8 @@ HEAD
 	my @controltypes = (	'Bluetooth (SkyQ)',
 				'Network (SkyQ)',
 				'InfraRed IRNetBoxIV (SkyQ)',
-				'InfraRed IRNetBoxIV (QSoIP)',
+				'InfraRed IRNetBoxIV (QSoIP UK)',
+				'InfraRed IRNetBoxIV (QSoIP DE/IT)',
 				'Dusky (Sky+)',
 				'Network (Sky+)',
 				'InfraRed IRNetBoxIV (NowTV)',
@@ -358,7 +359,7 @@ DATARIGHT
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
 		printNetworkTable($networkip) if ($type =~ /Network \(Sky/i);
-		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i or $type =~ /InfraRed IRNetBoxIV \(QSoIP\)/i);
+		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i or $type =~ /InfraRed IRNetBoxIV \(QSoIP/i);
 		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
 		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);
 		printGlobalCacheIRNowTV($gcirip,$gcirport) if ($type =~ /InfraRed GlobalCache \(NowTV\)/);

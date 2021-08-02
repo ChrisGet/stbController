@@ -178,8 +178,10 @@ sub control {
 					$hw = 'skyq';
 				} elsif ($type =~ /\(Sky\+\)/i) {
 					$hw = 'sky+';
-				} elsif ($type =~ /\(QSoIP\)/i) {
-					$hw = 'qsoip';
+				} elsif ($type =~ /\(QSoIP UK\)/i) {
+					$hw = 'qsoip_uk';
+				} elsif ($type =~ /\(QSoIP DE\)/i) {
+					$hw = 'qsoip_de_it';
 				} elsif ($type =~ /\(Now\s*TV\)/i) {
 					##### First set the hardware type ($hw) to generic nowtv
 					$hw = 'nowtv';
