@@ -8472,7 +8472,7 @@
       <IntraSigPause>116.37</IntraSigPause>
       <ToggleData />
     </IRPacket>
-    <IRPacket xsi:type="DoubleSignal">
+    <IRPacket xsi:type="RedRat3ModulatedSignal">
       <Name>9</Name>
       <UID>5HvpGrEPuEyfipHlQAOCUQ==</UID>
       <PauseRepeatMode>ConstantGap</PauseRepeatMode>
