@@ -2,7 +2,7 @@ apps:Apps
 backup:Backup
 blue button:Blue
 channel up:Channel Up
-channel down: Channel Down
+channel down:Channel Down
 cursor right:Right
 cursor left:Left
 cursor up:Up
