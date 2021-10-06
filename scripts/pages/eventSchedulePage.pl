@@ -36,8 +36,10 @@ if (-e $stbdatafile) {
 	local $/ = undef;
 	open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
 	my $data = <$fh>;
-	my $decoded = $json->decode($data);
-	%stbdata = %{$decoded};
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
 }
 
 ##### Load the events schedule data
@@ -46,8 +48,10 @@ if (-e $eventsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $eventsjsonfile or die "ERROR: Unable to open $eventsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %events = %{$decoded};
+	if ($data) {
+	        my $decoded = $json->decode($data);
+        	%events = %{$decoded};
+	}
 }
 
 ##### Load the groups data
@@ -56,8 +60,10 @@ if (-e $groupsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $groupsjsonfile or die "ERROR: Unable to open $groupsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %groups = %{$decoded};
+	if ($data) {
+	        my $decoded = $json->decode($data);
+        	%groups = %{$decoded};
+	}
 }
 
 ##### Load the sequences data
@@ -66,8 +72,10 @@ if (-e $seqsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $seqsjsonfile or die "ERROR: Unable to open $seqsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %sequences = %{$decoded};
+	if ($data) {
+	        my $decoded = $json->decode($data);
+        	%sequences = %{$decoded};
+	}
 }
 
 mainMenu() and exit if ($action =~ /^Menu$/i);

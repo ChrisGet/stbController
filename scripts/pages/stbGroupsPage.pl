@@ -34,8 +34,10 @@ if (-e $stbdatafile) {
         local $/ = undef;
         open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %stbdata = %{$decoded};
+	if ($data) {
+	        my $decoded = $json->decode($data);
+        	%stbdata = %{$decoded};
+	}
 }
 
 ##### Load the groups data
@@ -44,8 +46,10 @@ if (-e $groupsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $groupsjsonfile or die "ERROR: Unable to open $groupsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %groups = %{$decoded};
+        if ($data) {
+        	my $decoded = $json->decode($data);
+	        %groups = %{$decoded};
+	}
 }
 
 mainMenu() and exit if ($action =~ /^Menu$/i);

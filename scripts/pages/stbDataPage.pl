@@ -44,8 +44,10 @@ sub stbSelect {
 	        local $/ = undef;
 		open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
 		my $data = <$fh>;
-		my $decoded = $json->decode($data);
-		%stbdata = %{$decoded};
+		if ($data) {
+			my $decoded = $json->decode($data);
+			%stbdata = %{$decoded};
+		}
 	}
 	
 	open FH,"<",$conffile or die "Couldn't open $conffile for reading: $!\n";

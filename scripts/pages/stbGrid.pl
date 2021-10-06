@@ -45,8 +45,10 @@ if (-e $stbdatafile) {
 	local $/ = undef;
 	open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
 	my $data = <$fh>;
-	my $decoded = $json->decode($data);
-	%stbdata = %{$decoded};
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
 }
 
 ##### Load the sequences data
@@ -55,8 +57,10 @@ if (-e $seqjsonfile) {
 	local $/ = undef;
 	open my $fh, "<", $seqjsonfile or die "ERROR: Unable to open $seqjsonfile: $!\n";
 	my $data = <$fh>;
-	my $decoded = $json->decode($data);
-	%sequences = %{$decoded};
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%sequences = %{$decoded};
+	}
 }
 
 ##### Load the sequence categories data
@@ -65,8 +69,10 @@ if (-e $catlistfile) {
 	local $/ = undef;
 	open my $fh, "<", $catlistfile or die "ERROR: Unable to open $catlistfile: $!\n";
 	my $data = <$fh>;
-	my $decoded = $json->decode($data);
-	%categories = %{$decoded};
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%categories = %{$decoded};
+	}
 }
                                         
 ##### Load the STB Groups data
@@ -75,8 +81,10 @@ if (-e $groupsfile) {
 	local $/ = undef;
 	open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
 	my $data = <$fh>;
-	my $decoded = $json->decode($data);
-	%groups = %{$decoded};
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%groups = %{$decoded};
+	}
 }
 
 if (!-e $conffile) {
