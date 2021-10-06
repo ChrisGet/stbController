@@ -73,15 +73,15 @@ button:hover {
 .menuBtn {
 	display:inline-block;
 	height:50%;
-	width:auto;
-	margin:0 4%;
+	width:16%;
+	margin:0;
 	position:relative;
 	top:50%;
 	transform:translateY(-50%);
 	vertical-align:top;
 	background:none;
 	border:none;
-	font-size:1.5vh;
+	font-size:1vw;
 	color:#c4dfe6;
 	padding:0;
 }
@@ -124,12 +124,55 @@ button:hover {
 	transform:translateY(-50%);
 	color:#aebd38;
 }
-#topDivEmpty {
+#seqRunInfoDiv {
 	display:inline-block;
         height:100%;
         width:15%;
 	vertical-align:top;
 	text-align:center;
+	background-color:#003b46;
+	overflow:visible;
+	position:relative;
+}
+#seqRunInfoHead {
+	display:inline-block;
+        height:20%;
+        width:100%;
+	text-align:center;
+}
+#seqRunInfoHead p {
+	display:inline-block;
+	margin:0;
+	font-size:0.7vw;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:#aebd38;
+	text-decoration:underline;
+}
+#seqRunInfoMain {
+	display:inline-block;
+        height:80%;
+        width:100%;
+	vertical-align:top;
+	text-align:center;
+	overflow:hidden;
+	position:relative;
+	background-color:#003b46;
+}
+#seqRunInfoMain:hover {
+	overflow:visible;
+	z-index:2;
+}
+#seqRunInfoMain h2 {
+	display:inline-block;
+	margin:0;
+	font-size:0.7vw;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:orange;
+	font-weight:normal;
 }
 
 #dynamicPage {
@@ -1739,7 +1782,7 @@ p.narrow {
 
 .masterTooltip .tooltip {
 	position:relative;
-	z-index:10;
+	z-index:20;
 }
 #remoteSelectorDiv {
 	position:absolute;
@@ -4263,3 +4306,62 @@ input[type='file'] {
 }
 /** STB Control - STB Groups **/
 
+/** Running Sequences Stuff **/
+.runningSeqInfoHolder {
+	display:inline-block;
+	width:100%;
+	height:35%;	
+	text-align:center;
+	vertical-align:top;
+	margin:0;
+	background-color:#003b46;
+}
+.runningSeqInfoHolder:nth-of-type(even) {
+	background-color:#333333;
+}
+.runningSeqInfoHolder:hover {
+	background-color: #7e8929;
+}
+.runningSeqInfoSection {
+	display:inline-block;
+	width:33%;
+	height:100%;	
+	text-align:center;
+	vertical-align:top;
+	position:relative;
+}
+.runningSeqInfoSection.time {
+	width:15%;
+}
+.runningSeqInfoSection.info {
+	width:70%;
+}
+.runningSeqInfoSection.btn {
+	width:15%;
+}
+.runningSeqInfoSection p {
+	display:inline-block;
+	width:100%;
+	margin:0;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	color:white;
+	font-size:1vh;
+}
+
+.stopSeqBtn {
+	display:inline-block;
+	width:80%;
+	height:85%;
+	font-size:0.6vw;
+	border:none;
+	background-color:red;
+	color:white;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+	z-index:5;
+}
+
+/** Running Sequences Stuff **/

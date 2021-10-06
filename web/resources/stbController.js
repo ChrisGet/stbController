@@ -19,6 +19,7 @@ window.onload = function () {	// Run these functions when the page first loads
 	announcements();
 	dynamicTitle('get');
 	legacyCheck();
+	sequenceUpdates();
 
 	// Bind the tooltip function
         $(document).ready(function() {
@@ -2297,4 +2298,45 @@ function editSeqCategory($cat) {	// This function handles deletion of an existin
 }
 // ############### End of editSeqCategory function
 
+function sequenceUpdates() {
+	setInterval(function() {
+		var div = $('#seqRunInfoMain');
+		if (div) {
+			$.ajax({
+				type : 'GET',
+				url : 'cgi-bin/scripts/runningSequences.pl',
+				data : {
+					'option' : 'getinfo'
+				},
+				success : function(result) {
+					div.html(result);
+					var count = (result.match(/runningSeqInfoHolder/g) || []).length;
+					if (count) {
+						$('#seqRunInfoHead').html('<p>Active Sequences&nbsp&nbsp&nbsp&nbsp<span style="background-color:red;color:white;padding:5px;border-radius:100%;text-decoration:none;">' + count + '</span>');
+					} else {
+						$('#seqRunInfoHead').html('<p>Active Sequences</p>');
+					}
+				}
+			});
+		}
+	},2000);
+}
+
+function stopSequence($id) {
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/runningSequences.pl',
+		data : {
+			'option' : 'stop',
+			'id' : $id
+		},
+		success : function(result) {
+			if (result) {
+				alert(result);
+			}
+		}
+	});
+
+	alert('Stop request sent. Please allow a few seconds for all processes to be stopped, especially if a lot of STBs were targetted for the sequence');
+}
 // end hiding script from old browsers -->

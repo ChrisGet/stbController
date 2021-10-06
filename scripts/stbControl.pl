@@ -7,6 +7,7 @@ use CGI;
 use Tie::File::AsHash;
 use Time::HiRes qw (sleep);
 use FindBin qw($Bin);
+use Digest::MD5 qw(md5 md5_hex md5_base64);
 
 chomp(my $fullpath = $ARGV[3] || '');
 my $maindir;
@@ -37,6 +38,7 @@ print $query->header();
 my $filedir = $maindir . '/files/';
 my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
+my $seqrundir = $filedir . '/sequencesRunning/';
 my $groupsfile = $filedir . 'stbGroups.json';
 my $seqfile = $filedir . 'commandSequences.json';
 my $pidfile = $filedir . 'scheduler.pid';
@@ -137,7 +139,7 @@ if ($action =~ m/^Event$/i) {
 		$seqcoms .= ',';
 	}
 
-	control(\$seqcoms,\$targetstring);
+	control(\$seqcoms,\$targetstring,\$command);
 }
 
 if ($action =~ m/^Control$/i) {
@@ -150,10 +152,32 @@ if ($logging) {
 }
 
 sub control {
-	my ($commands,$boxes) = @_;	# All input args are scalar references at this point
+	my ($commands,$boxes,$sequence) = @_;	# All input args are scalar references at this point
 	my @stbs = split (',', $$boxes);			
 	my %duskydata;
 	my %irnetboxiv;
+
+	# Create the md5 string of this control request for later use
+	chomp(my $ts = `date "+%H:%M:%S"` // 'Unknown');
+	my $procstring = "$commands" . $$boxes . "$ts";
+	my $md5 = md5_hex($procstring);
+	my $boxnamestring = '';
+	foreach my $stb (@stbs) {
+		if (exists $stbdata{$stb}{'Name'}) {
+			$boxnamestring .= $stbdata{$stb}{'Name'} . ',';
+		}
+	}
+	$boxnamestring =~ s/,$//;
+	my $numstbs = scalar @stbs;
+
+	# Log this sequence run details
+	my $seqlogfile = $seqrundir . $md5;
+	if ($sequence and $$sequence and !$logging) {			# If $sequence is defined and $logging is not (so has not been run from the scheduler), log the sequence control md5
+		if (open my $fh, '+>', $seqlogfile) {
+			print $fh "$ts >> " . $$sequence . " >> $numstbs >> $boxnamestring";
+			close $fh;
+		}
+	}
 
 	foreach my $stb (@stbs) {
 		my %boxdata = %{ $stbdata{$stb}};		# Get the box details from the main %stbData hash 
@@ -205,7 +229,7 @@ sub control {
 				if ($logging) {
                         	        $0 = "stbControl(Scheduler-$schedpid) - $stb - $type";
 	                        } else {
-        	                        $0 = "stbControl - $stb - $type";
+        	                        $0 = "stbControl - $stb - $type - master ID $md5";
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
@@ -227,7 +251,7 @@ sub control {
 				if ($logging) {
 					$0 = "stbControl(Scheduler-$schedpid) - $duskycount Dusky STBs on Moxa $dusky";
 				} else {
-					$0 = "stbControl - $duskycount Dusky STBs on Moxa $dusky";
+					$0 = "stbControl - $duskycount Dusky STBs on Moxa $dusky - master ID $md5";
 				}
 				sendDuskyCommsNew(\$dusky,$commands,$duskydata{$dusky},\$logging,\$runningpids);
 				exit;
@@ -247,13 +271,19 @@ sub control {
 					if ($logging) {
 						$0 = "stbControl(Scheduler-$schedpid) - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
 					} else {
-						$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+						$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs - master ID $md5";
 					}
 					sendIRNetBoxIVComms($nbiv,$commands,$hwtype,$outs,$logging,$runningpids);
 					exit;
 				}
 			}
 		}
+	}
+
+	##### Wait for all child processes to complete
+	while (wait() != -1) {}
+	if (-e $seqlogfile) {
+		unlink $seqlogfile;
 	}
 } ## End of sub 'control'
 

@@ -22,7 +22,10 @@
 		<div id="titleDiv">
 			<button class="topBarTextDynamic masterTooltip" id="dynamicTitle" onclick="dynamicTitle('set')" value="Click on this title to customise it!"></button>
 		</div>
-		<div id="topDivEmpty"></div>
+		<div id="seqRunInfoDiv">
+			<div id="seqRunInfoHead"><p>Active Sequences</p></div>
+			<div id="seqRunInfoMain"></div>
+		</div>
 		<div id="menuButtonDiv">
 			<button id="menuController" class="menuBtn" value="STB Controller Grid" onclick="controllerPage()">Controller</button>
 			<button id="menuSTBData" class="menuBtn" value="STB Data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','chooseSTB');logLastBoxes()">STB Data</button>
