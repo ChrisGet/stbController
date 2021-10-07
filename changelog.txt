@@ -2,6 +2,19 @@ Multi format STB/Device Controlller
 Author: Christopher Get
 GitHub: https://github.com/ChrisGet/stbController
 
+#v2.3.1
+Added:
+- Live sequence updates and cancellation. For times when you need to cancel a sequence triggered from the control interface.
+
+Changed:
+- Welcome page revamp. New background image and text layout.
+- Disabled the old "Universal" remote as it was outdated and hardly used. New device specific remotes superseded it's need.
+- Tweaked controller page section sizes to allow maximum space for larger grids.
+
+Fixed:
+- Updated css for various element text sizes to better fit on to smaller sized screens.
+- For some scripts within the "scripts/pages" directory, better handling of empty config files has been added. Previously empty config files would cause a fatal script error due to invalid JSON format.
+
 #v2.3
 Added:
 - Disabling/Enabling of sequences. Disabled sequences are not shown on the main controller page list.

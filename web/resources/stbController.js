@@ -327,6 +327,11 @@ function stbControl($action,$commands) {	// This function handles the control of
 			}
                 }
         });
+
+	// If a sequence was run, start the sequence update process
+	if ($action.match(/event/i)) {
+		sequenceUpdates();
+	}
 }
 // ############### End of stbControl function
 
@@ -2298,8 +2303,12 @@ function editSeqCategory($cat) {	// This function handles deletion of an existin
 }
 // ############### End of editSeqCategory function
 
+var sequpdateinterval;
 function sequenceUpdates() {
-	setInterval(function() {
+	if (sequpdateinterval) {
+		clearInterval(sequpdateinterval);
+	}
+	sequpdateinterval = setInterval(function() {
 		var div = $('#seqRunInfoMain');
 		if (div) {
 			$.ajax({
@@ -2315,6 +2324,7 @@ function sequenceUpdates() {
 						$('#seqRunInfoHead').html('<p>Active Sequences&nbsp&nbsp&nbsp&nbsp<span style="background-color:red;color:white;padding:5px;border-radius:100%;text-decoration:none;">' + count + '</span>');
 					} else {
 						$('#seqRunInfoHead').html('<p>Active Sequences</p>');
+						clearInterval(sequpdateinterval);
 					}
 				}
 			});

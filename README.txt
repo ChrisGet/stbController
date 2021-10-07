@@ -20,9 +20,11 @@
 	- Time::HiRes
 	- FindBin
 	- JSON
+	- Proc::ProcessTable
+	- Digest::MD5
 
 - Handy cpan command for installing these modules (While in the cpan shell)
-install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Schedule::Cron Time::HiRes FindBin JSON
+install IO::Socket::INET CGI LWP::UserAgent HTTP::Request Tie::File::AsHash Schedule::Cron Time::HiRes FindBin JSON Proc::ProcessTable Digest::MD5
 
 - Install the package libusb-1.0-0-dev via your package manager.
 

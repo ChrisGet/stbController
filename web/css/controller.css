@@ -81,7 +81,7 @@ button:hover {
 	vertical-align:top;
 	background:none;
 	border:none;
-	font-size:1vw;
+	font-size:0.9vw;
 	color:#c4dfe6;
 	padding:0;
 }
@@ -184,40 +184,84 @@ button:hover {
 
 #welcomeDiv {
 	display:inline-block;
-	width:70%;
-	height:80%;
+	width:100%;
+	height:100%;
 	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png"),url("../images/now-tv-smart-box.png");
 	background-size:30% auto, 30% auto, 30% auto;
 	background-position:bottom left, bottom center, bottom right;
 	background-repeat:no-repeat, no-repeat, no-repeat;
-	margin-top:40px;
+	/*margin-top:40px;*/
 	text-align:center;
+
+	background:url("../images/britannia.jpg");
+	background-size:100% auto;
+	background-position:top center;
+	background-repeat:no-repeat;
+	position:relative;
 }
-#welcomeDiv h1 {
+#welcomeBanner {
+	display:inline-block;
+	width:100%;
+	height:100%;
+	background-color:rgba(255,255,255,0.3);
+	position:absolute;
+	left:0;
+	bottom:0;
+}
+#welcomeUnderlineDiv {
+	display:inline-block;
+	width:100%;
+	height:5%;	
+	position:absolute;
+	top:0;
+	left:0;
+}
+.welcomeUnderlineSection {
+	display:inline-block;
+	width:15%;
+	height:100%;	
+	background: -moz-linear-gradient(top,  rgba(7,87,91,1) 0%, rgba(7,87,91,0) 83%, rgba(7,87,91,0) 84%);
+	background: -webkit-linear-gradient(top,  rgba(7,87,91,1) 0%,rgba(7,87,91,0) 83%,rgba(7,87,91,0) 84%);
+	background: linear-gradient(to bottom,  rgba(7,87,91,1) 0%,rgba(7,87,91,0) 83%,rgba(7,87,91,0) 84%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#07575b', endColorstr='#0007575b',GradientType=0 );
+	
+}
+.welcomeUnderlineSection.menu {
+	width:40%;
+}
+.welcomeUnderlineSection.dark {
+	background: -moz-linear-gradient(top,  rgba(0,59,70,1) 0%, rgba(0,59,70,0) 83%, rgba(0,59,70,0) 84%);
+	background: -webkit-linear-gradient(top,  rgba(0,59,70,1) 0%,rgba(0,59,70,0) 83%,rgba(0,59,70,0) 84%);
+	background: linear-gradient(to bottom,  rgba(0,59,70,1) 0%,rgba(0,59,70,0) 83%,rgba(0,59,70,0) 84%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#003b46', endColorstr='#00003b46',GradientType=0 );
+}
+#welcomeTextHolder {
+	display:inline-block;
+	width:65%;
+	height:auto;
+	position:relative;
+	top:80%;
+	background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 65%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0) 100%);
+	background: -webkit-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.8) 30%,rgba(0,0,0,1) 35%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 65%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0) 100%);
+	background: linear-gradient(to right,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.8) 30%,rgba(0,0,0,1) 35%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 65%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00000000',GradientType=1 );
+	padding:1% 0;
+}
+#welcomeTextHolder h1 {
 	margin:0;
 	font-size:2.5vh;
         color:#003b46;
-        position:relative;
-        top:10%;
-        transform:translateY(-10%);
+        color:white;
 }
-#welcomeDiv h2 {
+#welcomeTextHolder h2 {
 	margin:0;
 	font-size:2vh;
         color:#598234;
         color:#003b46;
-        position:relative;
-        top:20%;
-        transform:translateY(-20%);
+        color:white;
 }
 
 .controllerPageSection {
-	margin:0 0.5%;
-}
-.controllerPageSection:first-of-type {
-	margin:0;
-}
-.controllerPageSection:last-of-type {
 	margin:0;
 }
 
@@ -444,16 +488,16 @@ button:hover {
 #stbGrid {
 	position:relative;
 	display:inline-block;
+	margin:0;
 	margin-top:0.3%;
 	height:auto;
 	width:auto;
 	min-width:25%;
-	padding:2px;
 	overflow:auto;
 	vertical-align:top;
 	padding-top:1.4%;
 	height:96%;
-	max-width:65%;
+	max-width:70%;
 }
 #gridTitle {
 	position:absolute;
@@ -526,7 +570,7 @@ button:hover {
 #controllerSection {
 	display:inline-block;
 	position:relative;
-	width:21.5%;
+	width:20%;
 	height:96%;
 	vertical-align:top;
 	border-radius:5px;
@@ -990,13 +1034,12 @@ table.stbConfigGrid {
 }
 #stbDataTextDiv {
 	display:inline-block;
-	position:absolute;
-	left:1%;
-	top:0;
 	width:20%;
 	height:10%;
 	text-align:left;
 	border-bottom:1px solid #cccccc;
+	float:left;
+	margin-left:1%;
 }
 #stbDataTextDiv h1 {
 	display:inline-block;
@@ -1023,13 +1066,11 @@ table.stbConfigGrid {
 }
 #stbDataGridDiv {
 	display:inline-block;
-	position:absolute;
-	right:1%;
-	top:0;
-	width:76%;
-	height:98.5%;
+	width:98%;
+	height:88%;
 	text-align:left;
 	overflow:auto;
+	margin-top:1%;
 }
 .configButton {
 	border: 1px solid #96d1f8;
