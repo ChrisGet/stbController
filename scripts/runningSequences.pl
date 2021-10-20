@@ -90,16 +90,20 @@ sub stop {
 		exit;
 	}
 
-	#my $tokill = '';
-	#my $cnt = '0';
+	my $found;
 	my $pt = Proc::ProcessTable->new();
 	foreach my $proc (@{$pt->table}) {
 		if ($proc->cmndline =~ /$id/) {
 			my $pid = $proc->pid;
 			kill 9, $pid;
-			#$tokill .= "$pid,";
-			#$cnt++;
+			$found = 1;
 		}
 	}
-	#print "Found $cnt processes to kill - $tokill";
+
+	if (!$found) {
+		my $f = $seqrundir . $id;
+		if (-e $f) {
+			unlink $f;
+		}
+	}
 }
