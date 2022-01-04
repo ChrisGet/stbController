@@ -173,22 +173,33 @@ MAIN
 	        my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
 		my $divwidth = '200';
-        	my $widcnt = '1';
-        	until ($widcnt == $columns or $divwidth >= 1350) {
-                	$divwidth = $divwidth + 110;
-                	$widcnt++;
-        	}
-        	if ($divwidth > 1350) {
-                	$divwidth = '1400';
-        	} else {
-                	$divwidth = $divwidth + 50;
-        	}
+        	#my $widcnt = '1';
+        	#until ($widcnt == $columns or $divwidth >= 1350) {
+                #	$divwidth = $divwidth + 110;
+                #	$widcnt++;
+        	#}
+        	#if ($divwidth > 1350) {
+                #	$divwidth = '1400';
+        	#} else {
+                #	$divwidth = $divwidth + 50;
+        	#}
 	
-        	my $fullcoll = $columns+42;
-        	my $btnwidth = ($divwidth-$fullcoll)/$columns;
-        	my $btnstyle = 'width:' . $btnwidth . 'px;';
-        	$divwidth .= 'px';
+        	#my $fullcoll = $columns+42;
+        	#my $btnwidth = ($divwidth-$fullcoll)/$columns;
+        	#my $btnstyle = 'width:' . $btnwidth . 'px;';
+        	#$divwidth .= 'px';
 
+		my $btnwidth = 98/$columns;     ###
+	        if ($btnwidth > 49) {
+	                $btnwidth = 50;
+	        } elsif ($btnwidth > 48) {
+	                $btnwidth = 40;
+	        }
+	        my $btnstyle = 'width:' . $btnwidth . '%;';     ###
+	        if ($columns > 25) {
+	                $btnstyle .= 'font-size:1.1vh;';
+	        }
+	        $divwidth = '100%';
 print <<HEAD;
 	<div id="stbGridTable" style="width:$divwidth;">
 		<div class="stbGridRow">

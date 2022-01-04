@@ -488,10 +488,10 @@ button:hover {
 #stbGrid {
 	position:relative;
 	display:inline-block;
-	margin:0;
+	margin:0 0.2%;
 	margin-top:0.3%;
 	height:auto;
-	width:auto;
+	width:67%;
 	min-width:25%;
 	overflow:auto;
 	vertical-align:top;
@@ -902,7 +902,7 @@ button.highlighted {
 }
 .stbGridRow {
 	display:inline-block;
-	width:auto;
+	width:100%;
 	height:20px;
 	margin:1px 0;
 }
@@ -917,8 +917,10 @@ button.highlighted {
 	border:none;
    	white-space:nowrap;
 	overflow:hidden;
-	margin:0 0.5px;
+	margin:0;
 	padding:0;
+	box-shadow: inset 1px 0px 0px 0 #f2f2f2;
+	box-sizing: border-box;
 }
 .gridButton:hover {
 	cursor:default;
@@ -926,6 +928,7 @@ button.highlighted {
 .gridButton.clear {
    	background-color:red;
    	width:40px;
+   	width:2%;
    	font-size: 1vh;
 }
 .gridButton.clear:hover {
@@ -936,6 +939,7 @@ button.highlighted {
 .gridButton.row {
    	background-color:orange;
    	width:40px;
+   	width:2%;
 }
 .gridButton.row:hover {
    	background: #B24700;
@@ -960,21 +964,35 @@ button.highlighted {
    	width:100px;
    	height:100%;
    	white-space:nowrap;
-	margin:0 0.5px;
+	margin:0;
 	padding:0;
+	box-shadow: inset 1px 0px 0px 0 #f2f2f2;
+	box-sizing: border-box;
+	position:relative;
+}
+.stbButton p {
+	font-size:1.3vh;
+	margin:0;
+	width:100%;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
 }
 .stbButton.deselect {
    	background-color:white;
    	border:1px;
+	border:none;
 }
 .stbButton.selected {
    	background-color:#FF6600 !important;
 	color:white;
    	border:1px;
+	border:none;
 }
 .stbButton.highlighted {
    	background-color:#95958d !important;
    	border:1px;
+	border:none;
 }
 .stbButton.data {
 	background-color:#267A94;
@@ -1019,7 +1037,7 @@ button.highlighted {
 }
 #stbGridTable {
 	display:inline-block;
-	width:auto;
+	width:100%;
 	height:100%;
 }
 #stbGridTable tr {

@@ -178,21 +178,30 @@ sub loadSTBSelection {
 	my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 	
 	my $divwidth = '200';
-	my $widcnt = '1';
-	until ($widcnt == $columns or $divwidth >= 1200) {
-		$divwidth = $divwidth + 110;
-		$widcnt++;
-	}
-	if ($divwidth > 1200) {
-		$divwidth = '1250';
-	} else {
-		$divwidth = $divwidth + 50;
-	}
+	#my $widcnt = '1';
+	#until ($widcnt == $columns or $divwidth >= 1200) {
+	#	$divwidth = $divwidth + 110;
+	#	$widcnt++;
+	#}
+	#if ($divwidth > 1200) {
+	#	$divwidth = '1250';
+	#} else {
+	#	$divwidth = $divwidth + 50;
+	#}
 	
 	my $fullcoll = $columns+42;
-	my $btnwidth = ($divwidth-$fullcoll)/$columns;
-	my $btnstyle = 'width:' . $btnwidth . 'px;';
-	$divwidth .= 'px';
+	#my $btnwidth = ($divwidth-$fullcoll)/$columns;
+	my $btnwidth = 98/$columns;	###
+	if ($btnwidth > 49) {
+		$btnwidth = 50;
+	} elsif ($btnwidth > 48) { 
+		$btnwidth = 40;
+	}
+	my $btnstyle = 'width:' . $btnwidth . '%;';	###
+	if ($columns > 25) {
+		$btnstyle .= 'font-size:1.1vh;';
+	}
+	$divwidth = '100%';
 
 	##### Load the STB grid
 print <<TOP;
@@ -217,7 +226,7 @@ COL
 	}
 
 print <<CLEAR;
-<button class="gridButton clear" onclick="deselect()">CLEAR</button></div>
+<button class="gridButton clear" onclick="deselect()" title="Clear grid selection">CLR</button></div>
 CLEAR
 
 my $r = '1';		# Set the Row count to 1

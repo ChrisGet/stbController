@@ -68,21 +68,33 @@ sub stbSelect {
 	}
 
 	my $divwidth = '200';
-        my $widcnt = '1';
-        until ($widcnt == $columns or $divwidth >= 1400) {
-                $divwidth = $divwidth + 110;
-                $widcnt++;
-        }
-        if ($divwidth > 1400) {
-                $divwidth = '1450';
-        } else {
-                $divwidth = $divwidth + 50;
-        }
+        #my $widcnt = '1';
+        #until ($widcnt == $columns or $divwidth >= 1400) {
+        #        $divwidth = $divwidth + 110;
+        #        $widcnt++;
+        #}
+        #if ($divwidth > 1400) {
+        #        $divwidth = '1450';
+        #} else {
+        #        $divwidth = $divwidth + 50;
+        #}
 
-        my $fullcoll = $columns+42;
-        my $btnwidth = ($divwidth-$fullcoll)/$columns;
-        my $btnstyle = 'width:' . $btnwidth . 'px;';
-        $divwidth .= 'px';
+        #my $fullcoll = $columns+42;
+        #my $btnwidth = ($divwidth-$fullcoll)/$columns;
+        #my $btnstyle = 'width:' . $btnwidth . 'px;';
+        #$divwidth .= 'px';
+
+	my $btnwidth = 98/$columns;     ###
+        if ($btnwidth > 49) {
+                $btnwidth = 50;
+        } elsif ($btnwidth > 48) {
+                $btnwidth = 40;
+        }
+        my $btnstyle = 'width:' . $btnwidth . '%;';     ###
+        if ($columns > 25) {
+                $btnstyle .= 'font-size:1.1vh;';
+        }
+        $divwidth = '100%';
 
 print <<HEAD;
 <div id="stbSelect">
@@ -159,8 +171,10 @@ sub stbConfig {
         	local $/ = undef;
                 open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
 		my $data = <$fh>;
-		my $decoded = $json->decode($data);
-		%stbdata = %{$decoded};
+		if ($data) {
+			my $decoded = $json->decode($data);
+			%stbdata = %{$decoded};
+		}
 	}
 
 	my ($num) = $$stb =~ /STB(\d+)/i;
