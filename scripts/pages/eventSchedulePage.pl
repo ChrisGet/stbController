@@ -531,34 +531,24 @@ GROUPS
                 my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
                 my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
-		my $divwidth = '200';
-        	#my $widcnt = '1';
-        	#until ($widcnt == $columns or $divwidth >= 1150) {
-                #	$divwidth = $divwidth + 110;
-                #	$widcnt++;
-        	#}
-        	#if ($divwidth > 1100) {
-                #	$divwidth = '1150';
-        	#} else {
-                #	$divwidth = $divwidth + 50;
-        	#}
-	
-        	#my $fullcoll = $columns+42;
-        	#my $btnwidth = ($divwidth-$fullcoll)/$columns;
-        	#my $btnstyle = 'width:' . $btnwidth . 'px;';
-        	#$divwidth .= 'px';
-
-		my $btnwidth = 98/$columns;     ###
+		my $btnwidth = 98/$columns;
 	        if ($btnwidth > 49) {
 	                $btnwidth = 50;
 	        } elsif ($btnwidth > 48) {
 	                $btnwidth = 40;
 	        }
-	        my $btnstyle = 'width:' . $btnwidth . '%;';     ###
+	        my $btnstyle = 'width:' . $btnwidth . '%;';
 	        if ($columns > 25) {
 	                $btnstyle .= 'font-size:1.1vh;';
 	        }
-        	$divwidth = '100%';
+        	my $divwidth = '100%';
+
+		my $grheight = 90/$rows;
+	        if ($grheight > 18) {
+        	        $grheight = 20;
+        	}
+        	my $grstyle = 'height:' . $grheight . '%;';
+
 print <<HEAD;
 <div id="eventScheduleGridArea">
 	<div id="stbSelect" style="margin-top:0;">
@@ -583,7 +573,7 @@ EN
 
           	while ($r <= $rows) {
                 	$c = '1';               # Reset the Column count to 1
-			print "<div id=\"Row$r\" class=\"stbGridRow\">";
+			print "<div id=\"Row$r\" class=\"stbGridRow\" style=\"$grstyle\">";
                 	while ($c <= $columns) {
                 		my $id = "STB$stbno";
                         	my $name = "col$c"."stb$stbno";
