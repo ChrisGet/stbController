@@ -35,6 +35,8 @@ $|++;
 my $query = CGI->new;
 print $query->header();
 
+fork and exit;
+
 my $filedir = $maindir . '/files/';
 my $confdir = $maindir . '/config/';
 my $runningpids = $filedir . '/pidsRunning/';
@@ -261,20 +263,22 @@ sub control {
 
 	### Now deal with IRNetBoxIV controlled STBs
 	if (%irnetboxiv) {
-		checkRedRatHub();
-		foreach my $nbiv (keys %irnetboxiv) {
-			my %hwdata = %{$irnetboxiv{$nbiv}};
-			foreach my $hwtype (keys %hwdata) {
-				my $outs = $hwdata{$hwtype}{'outputs'};
-				my $pid = fork;
-				if ($pid==0) {
-					if ($logging) {
-						$0 = "stbControl(Scheduler-$schedpid) - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
-					} else {
-						$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs - master ID $md5";
+		my $rres = checkRedRatHub();
+		if (!$rres) {
+			foreach my $nbiv (keys %irnetboxiv) {
+				my %hwdata = %{$irnetboxiv{$nbiv}};
+				foreach my $hwtype (keys %hwdata) {
+					my $outs = $hwdata{$hwtype}{'outputs'};
+					my $pid = fork;
+					if ($pid==0) {
+						if ($logging) {
+							$0 = "stbControl(Scheduler-$schedpid) - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs";
+						} else {
+							$0 = "stbControl - IRNetBoxIV at $nbiv for hardware $hwtype to outputs $outs - master ID $md5";
+						}
+						sendIRNetBoxIVComms($nbiv,$commands,$hwtype,$outs,$logging,$runningpids);
+						exit;
 					}
-					sendIRNetBoxIVComms($nbiv,$commands,$hwtype,$outs,$logging,$runningpids);
-					exit;
 				}
 			}
 		}
@@ -652,23 +656,11 @@ sub checkRedRatHub {
                 $sysip =~ s/\r|\n//g;
                 if ($sysip) {
 			system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
-			#system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan > $redrathubdebug 2>&1 \&\" \&");
-                        #sleep 10;
-			exit;
+			return \"fail";
                 } else {
                         die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
                 }
-                #chomp($running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
-                #if ($running) {
-                #        if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
-                #                $redrathubip = $1;
-                #                return;
-                #        }
-                #} else {
-                #        die "ERROR: RedRatHub was not running and I was unable to start it.\n";
-                #}
         } else {
-                #print "Hub is running - $running\n";
                 if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
                         $redrathubip = $1;
                         return;
