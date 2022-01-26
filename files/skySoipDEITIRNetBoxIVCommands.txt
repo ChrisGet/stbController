@@ -7,14 +7,14 @@ cursor right:Right
 cursor left:Left
 cursor up:Up
 cursor down:Down
-fast forward:Fast-Forward
+fast forward:FFwd
 green button:Green
-pause:Play/Pause
-play:Play/Pause
+pause:Pause
+play:Play
 power:Power
 red button:Red
 record:Record
-rewind:Rewind
+rewind:Rew
 search:Search
 select:Select
 tv guide:Home

@@ -1,18 +1,18 @@
 apps:Apps
 backup:Backup
-blue button:Colours
+blue button:Blue
 cursor right:Right
 cursor left:Left
 cursor up:Up
 cursor down:Down
-green button:Colours
-pause:Play/Pause
-play:Play/Pause
+green button:Green
+pause:Pause
+play:Play
 power:Power
-red button:Colours
+red button:Red
 select:Select
 tv guide:Home
-yellow button:Colours
+yellow button:Yellow
 0:0
 1:1
 2:2

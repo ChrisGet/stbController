@@ -205,9 +205,11 @@ sub control {
 				} elsif ($type =~ /\(Sky\+\)/i) {
 					$hw = 'sky+';
 				} elsif ($type =~ /\(QSoIP UK\)/i) {
-					$hw = 'qsoip_uk';
+					#$hw = 'qsoip_uk';
+					$hw = 'qsoip_all';
 				} elsif ($type =~ /\(QSoIP DE\/IT\)/i) {
-					$hw = 'qsoip_de_it';
+					#$hw = 'qsoip_de_it';
+					$hw = 'qsoip_all';
 				} elsif ($type =~ /\(Now\s*TV\)/i) {
 					##### First set the hardware type ($hw) to generic nowtv
 					$hw = 'nowtv';
@@ -285,10 +287,11 @@ sub control {
 	}
 
 	##### Wait for all child processes to complete
-	while (wait() != -1) {}
+	while (wait() != -1) { print "\0";}
 	if (-e $seqlogfile) {
 		unlink $seqlogfile;
 	}
+	warn "STB Control Finished!\n";
 } ## End of sub 'control'
 
 sub sendDuskyCommsNew {
