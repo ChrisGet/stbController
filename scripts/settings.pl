@@ -22,6 +22,10 @@ if ($option eq 'rowrestrict') {
 	rowRestrict();
 	exit;
 }
+if ($option eq 'gridfullsize') {
+	gridFullSize();
+	exit;
+}
 
 sub saveLayout {
 	my $orderfile = $confdir . 'controllerPageOrder.conf';
@@ -43,6 +47,20 @@ sub rowRestrict {
 			print $fh $option;
 			close $fh;
 			print "SUCCESS: Row restriction was updated successfully.";
+		}
+	} else {
+		print "ERROR: No option detected.";
+	}
+}
+
+sub gridFullSize {
+	my $gridfsfile = $confdir . 'gridFullSize.conf';
+	my $option = $query->param('state');
+	if ($option) {
+		if (open my $fh, '+>', $gridfsfile) {
+			print $fh $option;
+			close $fh;
+			print "SUCCESS: STB Grid sizing was updated successfully.";
 		}
 	} else {
 		print "ERROR: No option detected.";

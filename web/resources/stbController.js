@@ -1886,6 +1886,35 @@ function rowRestrictionToggle($this) {
 	});
 }
 
+function gridFullSizeToggle($this) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	var switc = 'on';
+	if (classa.match(/on/)) {
+		clicked.attr('class','rowRestrictSlider off');
+		switc = 'off';
+	} else {
+		clicked.attr('class','rowRestrictSlider on');
+	}
+
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'gridfullsize',
+			'state' : switc,
+		},
+		success : function(result) {
+			if (result) {
+				if (result.match(/^ERROR/)) {
+					alert(result);
+					perlCall('dynamicPage','scripts/pages/settingsPage.pl');
+				}
+			}
+		},
+	});
+}
+
 function importStressScript() {
 	var file = $('#real-input').val();
 	var name = $('#importStressName').val();

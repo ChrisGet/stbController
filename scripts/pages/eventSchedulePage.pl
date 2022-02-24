@@ -25,8 +25,19 @@ my $groupsjsonfile = $filedir . 'stbGroups.json';
 my $seqsjsonfile = $filedir . 'commandSequences.json';
 my $htmldir = $maindir . '/scripts/pages/';
 my $stbdatafile = $confdir . 'stbData.json';
+my $fullsizefile = $confdir . 'gridFullSize.conf';
 
 checkLegacy(); # Initial check to see if any old STB group files have been converted to the new JSON format
+
+##### Get the grid size option
+my $fullsize = 'off';
+if (open my $fsfh, '<', $fullsizefile) {
+        local $/;
+        my $fs = <$fsfh>;
+        if ($fs and $fs =~ /on/i) {
+                $fullsize = 'on';
+        }
+}
 
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
@@ -531,26 +542,50 @@ GROUPS
                 my ($columns) = $confdata =~ m/columns\s*\=\s*(\d+)/;
                 my ($rows) = $confdata =~ m/rows\s*\=\s*(\d+)/;
 
-		my $btnwidth = 98/$columns;
-	        if ($btnwidth > 49) {
-	                $btnwidth = 50;
-	        } elsif ($btnwidth > 48) {
-	                $btnwidth = 40;
-	        }
-	        my $btnstyle = 'width:' . $btnwidth . '%;';
-	        if ($columns > 25) {
-	                $btnstyle .= 'font-size:1.1vh;';
-	        }
-        	my $divwidth = '100%';
+		my $divwidth = '200';
+        my $fullcoll = $columns+42;
+        my $btnwidth = 98/$columns;
+        my $grstyle = '';
+        my $btnstyle = '';
+        my $gridstylemanual = '';
+        if ($fullsize eq 'on') {
+                if ($btnwidth > 49) {
+                        $btnwidth = 50;
+                } elsif ($btnwidth > 48) {
+                        $btnwidth = 40;
+                }
+                $btnstyle = 'width:' . $btnwidth . '%;';
+                if ($columns > 25) {
+                        $btnstyle .= 'font-size:1.1vh;';
+                }
+                $divwidth = '100%';
 
-		my $grheight = 90/$rows;
-	        if ($grheight > 18) {
-        	        $grheight = 20;
-        	}
-        	my $grstyle = 'height:' . $grheight . '%;';
+                my $grheight = 90/$rows;
+                if ($grheight > 18) {
+                        $grheight = 20;
+                }
+                $grstyle = 'height:' . $grheight . '%;';
+        } else {
+                my $widcnt = '1';
+                until ($widcnt == $columns or $divwidth >= 1200) {
+                        $divwidth = $divwidth + 110;
+                        $widcnt++;
+                }
+                if ($divwidth > 1200) {
+                        $divwidth = '1250';
+                } else {
+                        $divwidth = $divwidth + 50;
+                }
+
+                my $fullcoll = $columns+42;
+                my $btnwidth = ($divwidth-$fullcoll)/$columns;
+                $btnstyle = 'width:' . $btnwidth . 'px;';
+                $divwidth .= 'px';
+                $gridstylemanual = 'style="width:auto;"';
+        }
 
 print <<HEAD;
-<div id="eventScheduleGridArea">
+<div id="eventScheduleGridArea" $gridstylemanual>
 	<div id="stbSelect" style="margin-top:0;">
 		<div id="stbGridTable" style="width:$divwidth;">
                         <div class="stbGridRow">

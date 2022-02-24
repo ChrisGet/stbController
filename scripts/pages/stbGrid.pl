@@ -21,6 +21,7 @@ my $seqjsonfile = $filedir . 'commandSequences.json';
 my $groupsfile = $filedir . 'stbGroups.json';
 my $orderfile = $confdir . 'controllerPageOrder.conf';
 my $remfile = $confdir . 'controllerRemote.txt';
+my $fullsizefile = $confdir . 'gridFullSize.conf';
 my $catlistfile = $filedir . 'sequenceCategories.json';
 my $confs = `ls -1 $confdir`;
 my %laststbs;
@@ -34,6 +35,16 @@ chomp(my $wholepage = $query->param('wholepage') // $ARGV[0] // ''); # A param p
 chomp(my $mode = $query->param('mode') // $ARGV[1] // '');
 
 checkLegacy();  # Initial check to see if any old sequence files have been converted to the new JSON format
+
+##### Get the grid size option
+my $fullsize = 'off';
+if (open my $fsfh, '<', $fullsizefile) {
+	local $/;
+	my $fs = <$fsfh>;
+	if ($fs and $fs =~ /on/i) {
+		$fullsize = 'on';
+	}
+}
 
 ##### Create new JSON object for later use
 my $json = JSON->new->allow_nonref;
@@ -180,26 +191,48 @@ sub loadSTBSelection {
 	my $divwidth = '200';
 	my $fullcoll = $columns+42;
 	my $btnwidth = 98/$columns;
-	if ($btnwidth > 49) {
-		$btnwidth = 50;
-	} elsif ($btnwidth > 48) { 
-		$btnwidth = 40;
-	}
-	my $btnstyle = 'width:' . $btnwidth . '%;';
-	if ($columns > 25) {
-		$btnstyle .= 'font-size:1.1vh;';
-	}
-	$divwidth = '100%';
+	my $grstyle = '';
+	my $btnstyle = '';
+	my $gridstylemanual = '';
+	if ($fullsize eq 'on') {
+		if ($btnwidth > 49) {
+			$btnwidth = 50;
+		} elsif ($btnwidth > 48) { 
+			$btnwidth = 40;
+		}
+		$btnstyle = 'width:' . $btnwidth . '%;';
+		if ($columns > 25) {
+			$btnstyle .= 'font-size:1.1vh;';
+		}
+		$divwidth = '100%';
 
-	my $grheight = 90/$rows;
-	if ($grheight > 18) {
-		$grheight = 20;
+		my $grheight = 90/$rows;
+		if ($grheight > 18) {
+			$grheight = 20;
+		}
+		$grstyle = 'height:' . $grheight . '%;';
+	} else {
+		my $widcnt = '1';
+		until ($widcnt == $columns or $divwidth >= 1200) {
+			$divwidth = $divwidth + 110;
+			$widcnt++;
+		}
+		if ($divwidth > 1200) {
+			$divwidth = '1250';
+		} else {
+			$divwidth = $divwidth + 50;
+		}
+
+		my $fullcoll = $columns+42;
+		my $btnwidth = ($divwidth-$fullcoll)/$columns;
+		$btnstyle = 'width:' . $btnwidth . 'px;';
+		$divwidth .= 'px';
+		$gridstylemanual = 'style="width:auto;"';
 	}
-	my $grstyle = 'height:' . $grheight . '%;';
 
 	##### Load the STB grid
 print <<TOP;
-<div id="stbGrid" class="controllerPageSection">
+<div id="stbGrid" class="controllerPageSection" $gridstylemanual>
 	<div id="gridTitle">
 		<p>STB Selection</p>
 	</div>

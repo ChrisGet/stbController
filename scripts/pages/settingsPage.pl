@@ -23,6 +23,7 @@ my $htmldir = $maindir . '/scripts/pages/';
 my $stbdatafile = $confdir . 'stbData.json';
 my $orderfile = $confdir . 'controllerPageOrder.conf';
 my $rowresfile = $confdir . 'gridRowRestriction.conf';
+my $gridsizefile = $confdir . 'gridFullSize.conf';
 
 my %orders = (	'STBSelection->Control->Sequences' => '1',
 		'STBSelection->Sequences->Control' => '1',
@@ -62,6 +63,17 @@ if ($rowresopt) {
 	}
 }
 
+##### Get the STB grid full size option
+my $fullsizeclass = 'off';
+if (open my $fsfh, '<', $gridsizefile) {
+	local $/;
+	my $d = <$fsfh>;
+	if ($d =~ /on/i) {
+		$fullsizeclass = 'on';
+	}
+	close $fsfh;
+}
+
 print <<DATA;
 <div id="settingsPageHolder">
 	<div id="settingsPageHeader">
@@ -92,6 +104,19 @@ print <<DATA;
 				<p style="width:95%;text-align:left;margin-left:2%;">This restriction is in place so that you only ever send control commands to STBs that you are currently viewing the output of (if you have video switching setup for the STBs)</p>
 				<p style="width:95%;text-align:left;margin-left:2%;">Disabling this feature can cause odd behaviour with row highlighting and the Row Up/Down buttons on the 3 remote control panels</p>
 				<div id="rowRestrictionSlider" class="rowRestrictSlider $rowresclass" onclick="rowRestrictionToggle(this)">
+					<div class="rowResInnerSlide"></div>
+				</div>
+			</div>
+		</div>
+		<div class="settingSection">
+			<div class="setSecHead">
+				<h2>STB Grid Button Sizing</h2>
+				<h3>By default the STB grid and button size is restricted.</h3>
+			</div>
+			<div class="setSecDetail">
+				<p style="width:95%;text-align:left;margin-left:2%;">Enabling this setting will make the STB controller grid fill all available space on the page<br>(This may look odd if you only have a small number of STBs in the grid)</p>
+				<p style="width:95%;text-align:left;margin-left:2%;">This will affect the grid size on ALL pages where the STB grid appears</p>
+				<div id="gridFullSizeSlider" class="rowRestrictSlider $fullsizeclass" onclick="gridFullSizeToggle(this)">
 					<div class="rowResInnerSlide"></div>
 				</div>
 			</div>
