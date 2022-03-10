@@ -651,6 +651,19 @@ sub checkRedRatHub {
 	} else {
 		die "CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
 	}
+
+	#my $processidfile = $filedir . 'redRadHubID.txt';
+	#my $redrathubid = '';
+	#if (-e $processidfile) {
+	#	if (open my $fh, '<', $processidfile) {
+	#		local $/;
+	#		my $info = <$fh>;
+	#		if () {
+
+	#		}
+	#	}
+	#}
+
 	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
         if (!$running) {
                 print "RedRatHub which controls IRNetBoxIV communication is NOT running. I have tried to start it for you. Please wait 10 seconds and then try to control IRNetBoxIV devices again\n\nIf the problem persists, check your webserver error log for details or contact your system administrator.";
@@ -664,10 +677,41 @@ sub checkRedRatHub {
                         die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
                 }
         } else {
-                if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
-                        $redrathubip = $1;
-                        return;
-                }
+        	my ($runpid) = $running =~ /^\s*(\d+)/;
+        	return if (!$runpid);
+        	##### If the RedRatHub is running, check to see if there are errors in the log file which suggest a restart would help
+		my $errors = `grep -i "exception\\\|canceled" $redrathubdebug` // '';
+		if ($errors) {
+			if (!$logpid) {
+				print "Multiple errors have been detected with the RedRatHub process that supports RedRat IR. I have restarted the process for you. If this problem persists, please contact your system administrator for assistance.";
+			}
+			##### Kill the current RedRatHub process
+			system("kill $runpid");
+
+			##### Clear out the current debug log file
+			if (open my $fh, '+>',$redrathubdebug) {
+				close $fh;
+			} else {
+				warn "Unable to overwrite the file $redrathubdebug for error reset. $!\n";
+			}
+			
+			##### Start the new RedRatHub process
+	                chomp(my $sysip = `hostname -I | awk \'\{print \$1\}\'` // '');	# Get the systems IP address
+	                $sysip =~ s/\s+//g;
+	                $sysip =~ s/\r|\n//g;
+	                if ($sysip) {
+				system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
+	                } else {
+	                        die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+	                }
+	                
+			if ($logpid) {	# If this script has been run from the event scheduler, wait for it to restart before carrying on
+				sleep 5;
+				return;
+			} else {	# Otherwise this has come from the front end control so just stop and return a fail status
+				return \"fail";
+			}
+		}
         }
 }
 
