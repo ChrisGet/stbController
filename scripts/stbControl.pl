@@ -473,7 +473,10 @@ sub sendIRNetBoxIVComms {
 
 	$outputs =~ s/,$//;
 
-	#warn "Connecting to RedRatHub at $redrathubip\n";
+	if (!$redrathubip) {	# Check that the IP address for the RedRatHub process has been found, die if it hasn't
+		die "ERROR: RedRatHub IP was not defined!\n";
+	}
+	
 	&openSocket($redrathubip, 40000);
 
 	my @commands = split(',',$$commands);
@@ -707,11 +710,15 @@ sub checkRedRatHub {
 	                
 			if ($logpid) {	# If this script has been run from the event scheduler, wait for it to restart before carrying on
 				sleep 5;
-				return;
 			} else {	# Otherwise this has come from the front end control so just stop and return a fail status
 				return \"fail";
 			}
 		}
+		
+		if ($running =~ /(\d+\.\d+\.\d+\.\d+)/) {
+                        $redrathubip = $1;
+                        return;
+                }
         }
 }
 
