@@ -2378,4 +2378,13 @@ function stopSequence($id) {
 
 	alert('Stop request sent. Please allow a few seconds for all processes to be stopped, especially if a lot of STBs were targetted for the sequence');
 }
+
+// Function to clear the video switch data for one switch on the STB data page
+function clearSTBVideoData($vid) {
+	$('#hdmitype'+$vid).val('Kramer');
+	$('#hdmiip'+$vid).val('');
+	$('#hdmiport'+$vid).val('');
+	$('#hdmiinput'+$vid).val('01');
+	$('#hdmioutput'+$vid).val('01');
+}
 // end hiding script from old browsers -->

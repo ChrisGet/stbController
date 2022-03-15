@@ -227,24 +227,9 @@ print <<HEAD;
 HEAD
 	}
 
-	##### STB Control and Video Data
+	##### STB Control Data
 	my $type = $stbdata{$$stb}{'Type'} || '';
-	my $hdmiip1 = $stbdata{$$stb}{'HDMIIP1'} || '';
-	my $hdmiport1 = $stbdata{$$stb}{'HDMIPort1'} || '';
-	my $hdmiinput1 = $stbdata{$$stb}{'HDMIInput1'} || '';
-	my $hdmioutput1 = $stbdata{$$stb}{'HDMIOutput1'} || '';
-	my $hdmiip2 = $stbdata{$$stb}{'HDMIIP2'} || '';
-	my $hdmiport2 = $stbdata{$$stb}{'HDMIPort2'} || '';
-	my $hdmiinput2 = $stbdata{$$stb}{'HDMIInput2'} || '';
-	my $hdmioutput2 = $stbdata{$$stb}{'HDMIOutput2'} || '';
-	my $hdmiip3 = $stbdata{$$stb}{'HDMIIP3'} || '';
-	my $hdmiport3 = $stbdata{$$stb}{'HDMIPort3'} || '';
-	my $hdmiinput3 = $stbdata{$$stb}{'HDMIInput3'} || '';
-	my $hdmioutput3 = $stbdata{$$stb}{'HDMIOutput3'} || '';
-	my $sdip = $stbdata{$$stb}{'SDIP'} || '';
-	my $sdport = $stbdata{$$stb}{'SDPort'} || '';
-	my $sdinput = $stbdata{$$stb}{'SDInput'} || '';
-	my $sdoutput = $stbdata{$$stb}{'SDOutput'} || '';
+
 	my $duskymoxaip = $stbdata{$$stb}{'MoxaIP'} || '';
 	my $duskymoxaport = $stbdata{$$stb}{'MoxaPort'} || '';
 	my $duskyport = $stbdata{$$stb}{'DuskyPort'} || '';
@@ -259,7 +244,7 @@ HEAD
 	my $gcirport = $stbdata{$$stb}{'GlobalCachePort'} || '';
 	my $btnclr = $stbdata{$$stb}{'ButtonColour'} || '';
 	my $btntextclr = $stbdata{$$stb}{'ButtonTextColour'} || '';
-	##### STB Control and Video Data
+	##### STB Control Data
 
 	##### STB Information Data
 	my $serial = $stbdata{$$stb}{'Serial'} || '';
@@ -285,7 +270,7 @@ HEAD
 	my $mactext = $query->textfield(-id=>'mac',-name=>'MAC',-size=>'15',-default=>"$mac",-maxlength=>17,-class=>'stbDataTextField');
 	#### STB Details Table stuff	
 
-	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9,-class=>'stbDataTextField');
+	my $nametext = $query->textfield(-id=>'name',-name=>'Name',-size=>'16',-default=>"$name",-maxlength=>9,-class=>'stbDataTextField new');
 	my @controltypes = (	'Bluetooth (SkyQ)',
 				'Network (SkyQ)',
 				'InfraRed IRNetBoxIV (SkyQ)',
@@ -298,27 +283,8 @@ HEAD
 				'InfraRed GlobalCache (NowTV)',
 				'InfraRed GlobalCache (SkyQ)'
 				);
-	#my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>['Dusky (Sky+)','Bluetooth (SkyQ)','Network (Sky+)','Network (SkyQ)'],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
-	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>[@controltypes],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect');
-	my $hdmiip1text = $query->textfield(-id=>'hdmiip1',-name=>'HDMIIP1',-size=>'15',-default=>"$hdmiip1",-maxlength=>15,-class=>'stbDataTextField');
-	my $hdmiport1text = $query->textfield(-id=>'hdmiport1',-name=>'HDMIPort1',-size=>'10',-default=>"$hdmiport1",-maxlength=>5,-class=>'stbDataTextField');
-	my $hdmiinput1text = $query->popup_menu(-id=>'hdmiinput1',-name=>'HDMIInput1',-values=>[@hdmiins],-default=>"$hdmiinput1",-class=>'stbDataSelect');
-	my $hdmioutput1text = $query->popup_menu(-id=>'hdmioutput1',-name=>'HDMIOutput1',-values=>[@hdmiouts],-default=>"$hdmioutput1",-class=>'stbDataSelect');
 
-	my $hdmiip2text = $query->textfield(-id=>'hdmiip2',-name=>'HDMIIP2',-size=>'15',-default=>"$hdmiip2",-maxlength=>15,-class=>'stbDataTextField');
-	my $hdmiport2text = $query->textfield(-id=>'hdmiport2',-name=>'HDMIPort2',-size=>'10',-default=>"$hdmiport2",-maxlength=>5,-class=>'stbDataTextField');
-	my $hdmiinput2text = $query->popup_menu(-id=>'hdmiinput2',-name=>'HDMIInput2',-values=>[@hdmiins],-default=>"$hdmiinput2",-class=>'stbDataSelect');
-	my $hdmioutput2text = $query->popup_menu(-id=>'hdmioutput2',-name=>'HDMIOutput2',-values=>[@hdmiouts],-default=>"$hdmioutput2",-class=>'stbDataSelect');
-
-	my $hdmiip3text = $query->textfield(-id=>'hdmiip3',-name=>'HDMIIP3',-size=>'15',-default=>"$hdmiip3",-maxlength=>15,-class=>'stbDataTextField');
-	my $hdmiport3text = $query->textfield(-id=>'hdmiport3',-name=>'HDMIPort3',-size=>'10',-default=>"$hdmiport3",-maxlength=>5,-class=>'stbDataTextField');
-	my $hdmiinput3text = $query->popup_menu(-id=>'hdmiinput3',-name=>'HDMIInput3',-values=>[@hdmiins],-default=>"$hdmiinput3",-class=>'stbDataSelect');
-	my $hdmioutput3text = $query->popup_menu(-id=>'hdmioutput3',-name=>'HDMIOutput3',-values=>[@hdmiouts],-default=>"$hdmioutput3",-class=>'stbDataSelect');
-
-	my $sdiptext = $query->textfield(-id=>'sdip',-name=>'SDIP',-size=>'15',-default=>"$sdip",-maxlength=>15,-class=>'stbDataTextField');
-	my $sdporttext = $query->textfield(-id=>'sdport',-name=>'SDPort',-size=>'10',-default=>"$sdport",-maxlength=>5,-class=>'stbDataTextField');
-	my $sdinputtext = $query->popup_menu(-id=>'sdinput',-name=>'SDInput',-values=>['01'..'50'],-default=>"$sdinput",-class=>'stbDataSelect');
-	my $sdoutputtext = $query->popup_menu(-id=>'sdoutput',-name=>'SDOutput',-values=>['01','02','Both'],-default=>"$sdoutput",-class=>'stbDataSelect');
+	my $typechoice = $query->popup_menu(-id=>'type',-name=>'Type',-values=>[@controltypes],-default=>"$type",-onchange=>"stbTypeChoice(this.value)",-class=>'stbDataSelect new');
 
 	my $btnclrtext = $query->textfield(-id=>'buttoncolour',-name=>'ButtonColour',-size=>'10',-default=>"$btnclr",-maxlength=>15,-class=>'stbDataTextField centered');
 	my $btntextclrtext = $query->textfield(-id=>'buttontextcolour',-name=>'ButtonTextColour',-size=>'10',-default=>"$btntextclr",-maxlength=>15,-class=>'stbDataTextField centered');
@@ -349,10 +315,6 @@ HEAD
 				printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel);
 				exit;
 			}
-			#if ($$option =~ /QSoIP/i) {
-			#	printIRNetBoxIVQSoip($irnb4ip,$irnb4out);
-			#	exit;
-			#}
 			printIRNetBoxIV($irnb4ip,$irnb4out);
 			exit;
 		}
@@ -364,10 +326,6 @@ HEAD
 			printGlobalCacheIR($gcirip,$gcirport);
 			exit;
 		}
-		#if ($$option =~ /IR/i) {
-		#	printIRTable($irip,$irport,$irout);
-		#	exit;
-		#}
 	}
 	# End of $option actions
 
@@ -375,7 +333,7 @@ HEAD
 
 print <<DUTTABLE;
 <table class="stbDataFormTable DUT">
-<th colspan="2" style="font-size:1.8vh;">STB DUT Details</th>
+<th colspan="2" style="font-size:1.8vh;">STB Details</th>
 <tr><td style="font-size:1.4vh;">Serial Number:</td><td>$serialtext</td></tr>
 <tr><td style="font-size:1.4vh;">Version Number:</td><td>$versiontext</td></tr>
 <tr><td style="font-size:1.4vh;">Card Number:</td><td>$cardtext</td></tr>
@@ -392,9 +350,37 @@ print <<DUTTABLE;
 </div>
 DUTTABLE
 
-print <<DATARIGHT;
-<div id="typeChange">
-DATARIGHT
+	print '</div>';	# End of 'wrapRight' div
+
+print <<DATA;
+<div class="stbDataWrapLeft">
+	<div class="stbDataInfoSectionHead">
+		<div class="stbDataHeadTitle">
+			<p>STB Name</p>
+		</div>
+		<div class="stbDataHeadDesc">
+			<p>Give your STB a name to identify it on the grid</p>
+		</div>
+	</div>
+	<div class="stbDataInfoSection name">
+		$nametext
+	</div>
+
+	<div class="stbDataInfoSectionHead">
+		<div class="stbDataHeadTitle">
+			<p>Control</p>
+		</div>
+		<div class="stbDataHeadDesc">
+			<p>Select which type of control method will be used for this STB</p>
+		</div>
+	</div>
+	<div class="stbDataInfoSection control">
+		<div class="stbDataControlSelectSection">
+			$typechoice
+		</div>
+		<div id="typeChange">
+	
+DATA
 
 	if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
@@ -409,37 +395,129 @@ DATARIGHT
 		printBluetoothTable('','');
 	}
 
-	print '</div>';	# End of 'typeChange' div
 
-	print '</div>';	# End of 'wrapRight' div
 
-print <<DATA;
-<div class="stbDataWrapLeft">
-<table class="stbDataFormTable First">
-<tr><td style="font-size:1.7vh;font-weight:normal;">STB Name</td><td style="font-size:1.7vh;font-weight:normal;text-align:right;">STB Control Type</td></tr>
-<tr><td>$nametext</td><td style="text-align:right;">$typechoice</td></tr>
-</table>
-<table class="stbDataFormTable">
-<th colspan="4"><b>HDMI Switch 1</b></th>
-<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
-<tr><td>$hdmiip1text</td><td>$hdmiport1text</td><td>$hdmiinput1text</td><td>$hdmioutput1text</td></tr>
-</table>
-<table class="stbDataFormTable">
-<th colspan="4"><b>HDMI Switch 2</b></th>
-<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
-<tr><td>$hdmiip2text</td><td>$hdmiport2text</td><td>$hdmiinput2text</td><td>$hdmioutput2text</td></tr>
-</table>
-<table class="stbDataFormTable">
-<th colspan="4"><b>HDMI Switch 3</b></th>
-<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
-<tr><td>$hdmiip3text</td><td>$hdmiport3text</td><td>$hdmiinput3text</td><td>$hdmioutput3text</td></tr>
-</table>
-<table class="stbDataFormTable">
-<th colspan="4"><b>SD Video Switch</b></th>
-<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
-<tr><td>$sdiptext</td><td>$sdporttext</td><td>$sdinputtext</td><td>$sdoutputtext</td></tr>
-</table>
-DATA
+
+print <<DATA2;
+
+		</div>
+	</div>
+	<div class="stbDataInfoSectionHead">
+		<div class="stbDataHeadTitle">
+			<p>Video</p>
+		</div>
+		<div class="stbDataHeadDesc">
+			<p>Configure up to 3 video switches for viewing this STB</p>
+		</div>
+	</div>
+	<div class="stbDataInfoSection video">
+		<div id="stbDataVideoInfoHolder">
+			<h1>Video Info:</h1>
+			<h2>WyreStorm and BluStream:</h2>
+			<p>Control for both of these hardware types is done over Telnet. The default port for this is 23.</p>
+		</div>
+
+
+
+DATA2
+
+	##### List of the available video switch types stored in @videotypes
+	my @videotypes = (	'Kramer',
+				'WyreStorm',
+				'BluStream'
+				);
+
+	##### Foreach loop to print each of the 3 video switch details
+	foreach my $vid (1..3) {
+		my $hdmitype = $stbdata{$$stb}{"HDMIType$vid"} // '';
+		my $hdmiip = $stbdata{$$stb}{"HDMIIP$vid"} // '';
+		my $hdmiport = $stbdata{$$stb}{"HDMIPort$vid"} // '';
+		my $hdmiinput = $stbdata{$$stb}{"HDMIInput$vid"} // '';
+		my $hdmioutput = $stbdata{$$stb}{"HDMIOutput$vid"} // '';
+
+		my $hdmitypetext = $query->popup_menu(-id=>"hdmitype$vid",-name=>"HDMIType$vid",-values=>[@videotypes],-default=>"$hdmitype",-class=>'stbDataSelect');
+		my $hdmiiptext = $query->textfield(-id=>"hdmiip$vid",-name=>"HDMIIP$vid",-size=>'15',-default=>"$hdmiip",-maxlength=>15,-class=>'stbDataTextField');
+		my $hdmiporttext = $query->textfield(-id=>"hdmiport$vid",-name=>"HDMIPort$vid",-size=>'10',-default=>"$hdmiport",-maxlength=>5,-class=>'stbDataTextField');
+		my $hdmiinputtext = $query->popup_menu(-id=>"hdmiinput$vid",-name=>"HDMIInput$vid",-values=>[@hdmiins],-default=>"$hdmiinput",-class=>'stbDataSelect');
+		my $hdmioutputtext = $query->popup_menu(-id=>"hdmioutput$vid",-name=>"HDMIOutput$vid",-values=>[@hdmiouts],-default=>"$hdmioutput",-class=>'stbDataSelect');
+
+print <<HDMI;
+		<div class=stbDataVideoSection>
+			<button class="clearSTBVideoDataBtn" onclick="clearSTBVideoData('$vid')" title="Clear this video switch data" type="button"></button>
+			<div class="videoHorizontalHalf">
+				<div class="videoVerticalHalf">
+					<div class="videoHorizontalHalf">
+						<p class="videoDataTitle">Make/Model</p>
+					</div>
+					<div class="videoHorizontalHalf">
+						$hdmitypetext
+					</div>
+				</div>
+				<div class="videoVerticalHalf">
+					<div class="videoHorizontalHalf">
+						<p class="videoDataTitle">IP Address</p>
+					</div>
+					<div class="videoHorizontalHalf">
+						$hdmiiptext
+					</div>				
+				</div>
+			</div>
+			<div class="videoHorizontalHalf">
+				<div class="videoVerticalThird">
+					<div class="videoHorizontalHalf">
+						<p class="videoDataTitle">Port</p>
+					</div>
+					<div class="videoHorizontalHalf">
+						$hdmiporttext
+					</div>
+				</div>
+				<div class="videoVerticalThird">
+					<div class="videoHorizontalHalf">
+						<p class="videoDataTitle">Input</p>
+					</div>
+					<div class="videoHorizontalHalf">
+						$hdmiinputtext
+					</div>
+				</div>
+				<div class="videoVerticalThird">
+					<div class="videoHorizontalHalf">
+						<p class="videoDataTitle">Output</p>
+					</div>
+					<div class="videoHorizontalHalf">
+						$hdmioutputtext
+					</div>
+				</div>
+			</div>
+		</div>
+HDMI
+	}
+
+	print '</div>';
+
+
+#<table class="stbDataFormTable First">
+#<tr><td style="font-size:1.7vh;font-weight:normal;">STB Name</td><td style="font-size:1.7vh;font-weight:normal;text-align:right;">STB Control Type</td></tr>
+#<tr><td>$nametext</td><td style="text-align:right;">$typechoice</td></tr>
+#</table>
+#<div class="stbDataHeadDiv">
+#	<p>Video Switch Settings</p>
+#</div>
+#<table class="stbDataFormTable">
+#<th colspan="4"><b>Video Switch 1</b></th>
+#<tr style="font-size:1.4vh;"><td align="center">Type</td><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
+#<tr><td></td><td>$hdmiip1text</td><td>$hdmiport1text</td><td>$hdmiinput1text</td><td>$hdmioutput1text</td></tr>
+#</table>
+#<table class="stbDataFormTable">
+#<th colspan="4"><b>Video Switch 2</b></th>
+#<tr><td style="font-size:1.4vh;">Type</td><td></td><td></td><td></td></tr>
+#<tr style="font-size:1.4vh;"><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
+#<tr><td>$hdmiip2text</td><td>$hdmiport2text</td><td>$hdmiinput2text</td><td>$hdmioutput2text</td></tr>
+#</table>
+#<table class="stbDataFormTable">
+#<th colspan="4"><b>Video Switch 3</b></th>
+#<tr style="font-size:1.4vh;"><td align="center">Type</td><td align="center">IP</td><td align="center">Control Port</td><td align="center">Input</td><td align="center">Output</td></tr>
+#<tr><td></td><td>$hdmiip3text</td><td>$hdmiport3text</td><td>$hdmiinput3text</td><td>$hdmioutput3text</td></tr>
+#</table>
 
 print <<LASTBIT;
 			</div>

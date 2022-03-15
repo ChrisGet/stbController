@@ -1109,9 +1109,10 @@ table.stbConfigGrid {
 .stbDataBtnClrDiv {
 	display:inline-block;
 	width:100%;
-	height:39%;
+	height:30%;
 	margin-top:0.5%;
 	border-bottom:2px solid #cccccc;
+	padding-top:5%;
 }
 .stbDataBtnClrDiv h2 {
 	display:inline-block;
@@ -1134,7 +1135,7 @@ table.stbConfigGrid {
 .bottomHalf {
 	display:inline-block;
 	width:100%;
-	height:34%;
+	height:40%;
 }
 .bottomHalf p {
 	width:auto;
@@ -1734,7 +1735,8 @@ select:hover {
 .stbDataFormTable.DUT {
 	border:none;
 	border-bottom:2px solid #cccccc;
-	height:50%;
+	height:35%;
+	padding-bottom:2%;
 }
 .stbDataFormTable.DUT td {
 	display:inline-block;
@@ -1771,7 +1773,7 @@ p.narrow {
 	display:inline-block;
 	text-align:left;
 	width:100%;
-	height:40%;
+	height:70%;
 	margin-top:2%;
 	position:relative;
 }
@@ -2601,8 +2603,7 @@ p.narrow {
 #stbDataDivHolder {
 	display:inline-block;
 	width:40%;
-	height:70%;
-	margin-top:0.5%;
+	height:100%;
 }
 #stbDataDivHead {
 	display:inline-block;
@@ -2626,6 +2627,12 @@ p.narrow {
 	width:100%;
 	height:90%;
 	position:relative;
+}
+.stbDataHeadDiv {
+	display:inline-block;
+	width:100%;
+	height:10%;
+	border-bottom:3px solid grey;
 }
 .stbDataTextField {
 	display:inline-block;
@@ -2651,6 +2658,7 @@ p.narrow {
 	color:white;
 	background-color:#333333;
 	text-align:center;
+	width:71%;
 }
 .stbDataSelect.nowtvmodel {
 	width:80%;
@@ -2670,8 +2678,8 @@ p.narrow {
 .stbDataBtn.submit {
 	background-color:#009900;
 	position:absolute;
-	bottom:2%;
-	right:2%;
+	bottom:40%;
+	right:12%;
 }
 .stbDataBtn.submit:hover {
 	background-color:#006600;
@@ -2709,7 +2717,7 @@ p.narrow {
 #stbDataNoteDiv {
 	display:inline-block;
 	position:absolute;
-	left:105%;
+	left:-65%;
 	top:50%;
 	transform:translateY(-60%);
 	width:55%;
@@ -2731,7 +2739,7 @@ p.narrow {
 #stbDataNoteDivNowTV {
 	display:inline-block;
 	position:absolute;
-	left:105%;
+	left:-65%;
 	top:50%;
 	transform:translateY(-60%);
 	width:55%;
@@ -2754,7 +2762,7 @@ p.narrow {
 #stbDataNoteDivNowTVGC {
 	display:inline-block;
 	position:absolute;
-	left:105%;
+	left:-65%;
 	top:50%;
 	transform:translateY(-60%);
 	width:65%;
@@ -4422,3 +4430,178 @@ input[type='file'] {
 }
 
 /** Running Sequences Stuff **/
+
+/** New STB Data Page Stuff **/
+.stbDataInfoSection {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:50%;
+	border:1px solid grey;
+	border-top:none;
+}
+.stbDataInfoSection.name {
+	height:8%;
+}
+.stbDataInfoSection.control {
+	height:22%;
+}
+.stbDataInfoSection.video {
+	height:47%;
+}
+.stbDataInfoSectionHead {
+	display:inline-block;
+	width:100%;
+	height:6%;
+	border-radius:10px 10px 0 0;
+	border:1px solid grey;
+	border-bottom:1px solid grey;
+	margin-top:1.5%;
+}
+.stbDataHeadTitle {
+	display:inline-block;
+	position:relative;
+	width:30%;
+	height:100%;
+	vertical-align:top;
+	text-align:center;
+	background-color:#07575b;
+	border-radius:10px 0 0 0;
+}
+.stbDataHeadTitle p {
+	display:inline-block;
+	position:relative;
+	font-size:1.5vh;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
+	color:white;
+}
+.stbDataHeadDesc {
+	display:inline-block;
+	width:70%;
+	height:100%;
+	vertical-align:top;
+	text-align:center;
+}
+.stbDataHeadDesc p {
+	display:inline-block;
+	position:relative;
+	font-size:1.3vh;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
+	color:black;
+}
+.stbDataControlSelectSection {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:30%;
+}
+.stbDataTextField.new {
+	height:60%;
+	width:30%;
+	font-size:1.5vh;
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+
+.stbDataSelect.new {
+	display:inline-block;
+	position:relative;
+	font-size:1.3vh;
+	top:50%;
+	transform:translateY(-50%);
+	height:60%;
+}
+
+.stbDataVideoSection {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:33%;
+	border-bottom:1px solid grey;
+}
+.stbDataVideoSection:last-of-type {
+	border-bottom:none;
+}
+.stbDataVideoSection:nth-of-type(even) {
+	background-color:#e6e6e6;
+}
+.videoHorizontalHalf {
+	display:inline-block;
+	position:relative;
+	width:100%;
+	height:50%;
+	vertical-align:top;
+}
+.videoVerticalHalf {
+	display:inline-block;
+	position:relative;
+	width:50%;
+	height:100%;
+}
+.videoVerticalThird {
+	display:inline-block;
+	position:relative;
+	width:33%;
+	height:100%;
+}
+.videoDataTitle {
+	display:inline-block;
+	position:relative;
+	font-size:1.3vh;
+	top:50%;
+	transform:translateY(-50%);
+	margin:0;
+	color:black;
+}
+.clearSTBVideoDataBtn {
+	position:absolute;
+	top:1%;
+	right:1%;
+	width:5%;
+	height:15%;
+	background-color:pink;
+   	border:none;
+   	border-radius:2px;
+	background:url("../images/delSeq.png");
+	background-size:90% 90%;
+	background-position:center center;
+	background-repeat:no-repeat;
+	z-index:5;
+}
+.clearSTBVideoDataBtn:hover {
+	cursor:pointer;
+}
+
+#stbDataVideoInfoHolder {
+	display:inline-block;
+	position:absolute;
+	left:-60%;
+	top:0;
+	width:55%;
+	height:35%;
+	border-radius:5px;
+	background-color:#07575b;
+	text-align:center;
+	padding:2%;
+	color:white;
+	text-align:left;
+}
+#stbDataVideoInfoHolder h1 {
+	font-size:1.6vh;
+	color:#bfff00;
+}
+#stbDataVideoInfoHolder h2 {
+	font-size:1.4vh;
+	margin:1%
+}
+#stbDataVideoInfoHolder p {
+	font-size:1.3vh;
+	margin:0.5%
+}
+/** New STB Data Page Stuff **/
+
