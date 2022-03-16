@@ -927,8 +927,7 @@ button.highlighted {
 }
 .gridButton.clear {
    	background-color:red;
-   	width:40px;
-   	width:2%;
+   	width:30px;
    	font-size: 1vh;
 }
 .gridButton.clear:hover {
@@ -938,7 +937,7 @@ button.highlighted {
 
 .gridButton.row {
    	background-color:orange;
-   	width:2%;
+   	width:30px;
 	box-shadow: inset 1px 1px 0px 0 #f2f2f2;
 }
 .gridButton.row:hover {
