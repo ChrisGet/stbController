@@ -2172,7 +2172,8 @@ function gridModeSwitch($this) {
 		},
 		success : function(result) {
 			if (result) {
-				result = result.replace(/<div id=\"stbGrid\" class=\"controllerPageSection\">/,'');
+				result = result.replace(/\<div id=\"stbGrid\" class=\"controllerPageSection\"\s*\>/,'');
+				result = result.replace(/^\<div id=\"stbGrid\" class=\"controllerPageSection\" style=\"width:auto;\"\>/,'');
 				result = result.replace(/\<\/div\>$/,'');
 				$('#stbGrid').html(result);
 				if (gridcontmode.match(/stbgroups/)) {
