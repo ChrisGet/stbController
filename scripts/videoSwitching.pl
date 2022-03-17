@@ -88,6 +88,8 @@ sub video {
 				wyrestorm($ip,$port,$input,$output);
 			} elsif ($type eq 'BluStream') {
 				blustream($ip,$port,$input,$output);
+			} else {
+				kramer($ip,$port,$input,$output); # Default to Kramer if this is not specified
 			}
 		}
 		######## Switch up to 3 video switches per STB
