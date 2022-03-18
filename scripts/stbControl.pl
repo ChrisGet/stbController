@@ -511,6 +511,8 @@ sub sendIRNetBoxIVComms {
 			$comfile = $filedir . 'skySoipUKIRNetBoxIVCommands.txt';
 		} elsif ($hwtype =~ /de_it/) {
 			$comfile = $filedir . 'skySoipDEITIRNetBoxIVCommands.txt';
+		} elsif ($hwtype =~ /all/) {
+			$comfile = $filedir . 'skySoipAllIRNetBoxIVCommands.txt';
 		}
 	}
         

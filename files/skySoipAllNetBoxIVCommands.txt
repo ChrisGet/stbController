@@ -1,0 +1,33 @@
+apps:Apps
+backup:Backup
+blue button:Blue
+channel up:Channel+
+channel down:Channel-
+colours:Colours
+cursor right:Right
+cursor left:Left
+cursor up:Up
+cursor down:Down
+fast forward:FFwd
+green button:Green
+pause:Pause
+play:Play
+plus:Plus
+power:Power
+record:Record
+red button:Red
+rewind:Rew
+select:Select
+search:Search
+tv guide:Home
+yellow button:Yellow
+0:0
+1:1
+2:2
+3:3
+4:4
+5:5
+6:6
+7:7
+8:8
+9:9
