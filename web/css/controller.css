@@ -2123,6 +2123,38 @@ p.narrow {
 	width:10%;
 	height:5%;
 }
+
+.qRemBtn.soiptitle {
+	top:27%;
+	left:4.5%;
+	width:15%;
+	height:3%;
+	font-size:1.5vh;
+	border-radius:0;
+	border-bottom:1px solid black;
+}
+.qRemBtn.colours {
+	top:30%;
+	left:7.5%;
+	width:10%;
+	height:5%;
+	background:url("../images/soipColours.ico");
+	background-size:100% auto;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+.qRemBtn.plus {
+	top:35%;
+	left:7.5%;
+	width:10%;
+	height:5%;
+	background-color:red;
+	background:url("../images/addToPlaylist.ico");
+	background-size:100% auto;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+
 /*------ Sky Q Remote Buttons ------*/
 
 /*------ Sky Plus Remote Buttons ------*/
