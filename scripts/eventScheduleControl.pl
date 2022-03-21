@@ -43,8 +43,10 @@ if (-e $stbdatafile) {
         local $/ = undef;
         open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %stbdata = %{$decoded};
+        if ($data) {
+		my $decoded = $json->decode($data);
+        	%stbdata = %{$decoded};
+	}
 }
 
 ##### Load the events schedule data
@@ -53,8 +55,10 @@ if (-e $eventsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $eventsjsonfile or die "ERROR: Unable to open $eventsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %events = %{$decoded};
+	if ($data) {
+        	my $decoded = $json->decode($data);
+        	%events = %{$decoded};
+	}
 }
 
 ##### Load the sequences data
@@ -63,8 +67,10 @@ if (-e $seqsjsonfile) {
         local $/ = undef;
         open my $fh, "<", $seqsjsonfile or die "ERROR: Unable to open $seqsjsonfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %sequences = %{$decoded};
+        if ($data) {
+		my $decoded = $json->decode($data);
+        	%sequences = %{$decoded};
+	}
 }
 
 ##### Load the STB groups data
@@ -73,8 +79,10 @@ if (-e $groupsfile) {
         local $/ = undef;
         open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
         my $data = <$fh>;
-        my $decoded = $json->decode($data);
-        %groups = %{$decoded};
+        if ($data) {
+		my $decoded = $json->decode($data);
+        	%groups = %{$decoded};
+	}
 }
 
 #tie my %events, 'Tie::File::AsHash', $schedfile, split => ':' or die "Problem tying \%events to $schedfile: $!\n"; 
@@ -95,7 +103,7 @@ killAll() and exit if ($action =~ m/^KillAll$/i);
 pauseAll() and exit if ($action =~ m/^PauseAll$/i);
 resumeAll() and exit if ($action =~ m/^ResumeAll$/i);
 
-untie %events;
+#untie %events;
 
 #################### Sub Routines Below ####################
 
