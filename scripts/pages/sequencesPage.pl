@@ -210,7 +210,7 @@ SEQ
 
 sub createSeq {
 	my ($seq) = @_;
-	my $choice = 'universalSeqRemote';
+	my $choice = 'skyQSeqRemote';
 	my @controller;
 	if (open my $fh, '<', $remfile) {
 		local $/;
