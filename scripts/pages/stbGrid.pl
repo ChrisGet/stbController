@@ -327,7 +327,7 @@ LAST
 } ########## End of sub loadGrid ##########
 
 sub loadControl {
-	my $choice = 'universalRemote';
+	my $choice = 'skyQRemote';
 	if (open my $fh, '<', $remfile) {
 		local $/;
 		$choice = <$fh>;
