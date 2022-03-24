@@ -2388,4 +2388,25 @@ function clearSTBVideoData($vid) {
 	$('#hdmiinput'+$vid).val('01');
 	$('#hdmioutput'+$vid).val('01');
 }
+
+// Function to manually restart the RedRatHub software
+function restartRedRatHub() {
+	$('#restartRedRatHubBtn').attr('disabled','true');
+	$('#restartRedRatHubBtn').text("Processing...");
+	$.ajax({
+		type : 'GET',
+		url : 'cgi-bin/scripts/settings.pl',
+		data : {
+			'option' : 'restartredrathub'
+		},
+		success : function(result) {
+			if (result) {
+				alert(result);
+			}
+			$('#restartRedRatHubBtn').removeAttr('disabled');
+			$('#restartRedRatHubBtn').text("RESTART");
+		}
+	});
+}
+
 // end hiding script from old browsers -->

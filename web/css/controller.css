@@ -360,6 +360,9 @@ button:hover {
 	margin:1% 2%;
 	font-weight:normal;
 }
+.setSecHead.debug h2 {
+	color:orange;
+}
 .setSecHead h3 {
 	color:white !important;
 	font-size:1.3vh !important;
@@ -412,6 +415,28 @@ button:hover {
 }
 .rowRestrictSlider.on .rowResInnerSlide {
 	left:51%;
+}
+
+.settingsBtn {
+	display:inline-block;
+	width:20%;
+	height:15%;
+	border-radius:5px;
+	font-size:1.5vh;
+	background-color:#ffa600;
+	color:white;
+	border:2px solid #cc8500;
+}
+.settingsBtn:hover {
+	cursor:pointer;
+}
+.settingsBtn:disabled {
+	background-color:#cccccc;
+	border-color:#333333;
+	color:#333333;
+}
+.settingsBtn:disabled:hover {
+	cursor:default;
 }
 /* Settings Page Stuff */
 

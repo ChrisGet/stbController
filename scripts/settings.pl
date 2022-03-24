@@ -2,6 +2,7 @@
 use strict;
 
 use CGI;
+use Fcntl ':flock';
 
 my $query = CGI->new;
 print $query->header();
@@ -24,6 +25,10 @@ if ($option eq 'rowrestrict') {
 }
 if ($option eq 'gridfullsize') {
 	gridFullSize();
+	exit;
+}
+if ($option eq 'restartredrathub') {
+	restartRedRatHub();
 	exit;
 }
 
@@ -66,3 +71,58 @@ sub gridFullSize {
 		print "ERROR: No option detected.";
 	}
 }
+
+sub restartRedRatHub {
+	my $archfile = $filedir . 'hostArchitecture.txt';
+	my $redrathubdir = $maindir . '/RedRatHub-V5.11/';
+	my $redrathubdll = $redrathubdir . 'RedRatHub.dll';
+        my $dotnetbin = 'dotnet';
+        my $redrathubdebug = $filedir . '/RedRatHubDebug.txt';
+        chomp(my $arch = `cat $archfile` // '');
+        if ($arch) {
+                $dotnetbin = $maindir . "/dotnet$arch" . '/dotnet';
+        } else {
+                die "CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
+        }
+
+	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
+        if (!$running) {
+		print "ERROR: The RedRatHub process is not currently running. If you have STBs that are controlled by RedRat hardware, try selecting and controlling them from the STB control grid to start the RedRatHub software";
+		return;
+        }
+
+	my ($runpid) = $running =~ /^\s*(\d+)/;
+	print "ERROR: Unable to stop the current running RedRatHub process. Please try again later or contact your system admin for assistance" and return if (!$runpid);
+
+	my $lfh;
+	my $lockfile = $filedir . 'redRatHub.lock';
+	open $lfh, '+>', $lockfile or print "ERROR: Unable to open $lockfile for writing and locking: $!\n" and return;
+	if (flock($lfh, LOCK_EX | LOCK_NB)) {
+		##### Kill the current RedRatHub process
+	        system("kill $runpid");
+
+	        ##### Clear out the current debug log file
+	        if (open my $fh, '+>',$redrathubdebug) {
+	                close $fh;
+	        } else {
+	                warn "Unable to overwrite the file $redrathubdebug for manual restart. $!\n";
+	        }
+
+	        ##### Start the new RedRatHub process
+	        chomp(my $sysip = `hostname -I | awk \'\{print \$1\}\'` // ''); # Get the systems IP address
+	        $sysip =~ s/\s+//g;
+	        $sysip =~ s/\r|\n//g;
+	        if ($sysip) {
+	                system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
+			print "SUCCESS: RedRatHub process has been restarted!";
+			return;
+	        } else {
+	                print "ERROR: Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+			return;
+	        }
+	} else {
+		print "ERROR: It looks like another process is handling the restart of the RedRatHub process. Aborting";
+		return;
+	}
+}
+

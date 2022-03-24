@@ -121,6 +121,17 @@ print <<DATA;
 				</div>
 			</div>
 		</div>
+		<div class="settingSection">
+			<div class="setSecHead debug">
+				<h2>Debug - RedRatHub Manual Restart</h2>
+				<h3>Manually restart the RedRatHub process</h3>
+			</div>
+			<div class="setSecDetail">
+				<p style="width:95%;text-align:left;margin-left:2%;">The RedRatHub software runs in the background to assist with control using IRNetBoxIV and other RedRat IR hardware</br>Sometimes the software can get in to a state where it no longer communicates with RedRat hardware</p>
+				<p style="width:95%;text-align:left;margin-left:2%;">Use the button below to manually restart the software if you are having STB control issues using RedRat IRNetBoxIV hardware</p>
+				<button id="restartRedRatHubBtn" class="settingsBtn" onclick="restartRedRatHub()">RESTART</button>
+			</div>
+		</div>
 	</div>
 </div>
 DATA
