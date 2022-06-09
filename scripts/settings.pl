@@ -91,15 +91,25 @@ sub restartRedRatHub {
 		return;
         }
 
-	my ($runpid) = $running =~ /^\s*(\d+)/;
-	print "ERROR: Unable to stop the current running RedRatHub process. Please try again later or contact your system admin for assistance" and return if (!$runpid);
+	my @runningpids;
+        my @runningraw = split("\n",$running);
+        foreach my $runraw (@runningraw) {
+                my ($runpid) = $runraw =~ /^\s*(\d+)/;
+                if ($runpid) {
+                        push(@runningpids,$runpid);
+                }
+        }
+
+	print "ERROR: Unable to stop the current running RedRatHub process. Please try again later or contact your system admin for assistance" and return if (!@runningpids);
 
 	my $lfh;
 	my $lockfile = $filedir . 'redRatHub.lock';
 	open $lfh, '+>', $lockfile or print "ERROR: Unable to open $lockfile for writing and locking: $!\n" and return;
 	if (flock($lfh, LOCK_EX | LOCK_NB)) {
-		##### Kill the current RedRatHub process
-	        system("kill $runpid");
+		foreach my $runpid (@runningpids) {
+                        ##### Kill the current RedRatHub process
+                        system("kill $runpid");
+                }
 
 	        ##### Clear out the current debug log file
 	        if (open my $fh, '+>',$redrathubdebug) {

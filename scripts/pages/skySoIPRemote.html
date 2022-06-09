@@ -1,0 +1,57 @@
+<div id="remoteSelectorDiv">
+	<select id="remoteSelector">
+		<option value="skySoIPRemote" selected disabled>Sky SoIP</option>
+		<option value="skyQRemote">Sky Q</option>
+		<option value="skyPlusRemote">Sky Plus</option>
+		<option value="nowTVRemote">Now TV</option>
+	</select>
+</div>
+<img src="web/images/skyGlassRemote.jpeg" alt="Sky Glass Remote" usemap="#skyGlassRemMap" style="border-radius:5px;height:90%;width:60%;position:absolute;top:4%;right:10%;">
+<button class="glassRemBtn power" onclick="stbControl('control', 'power')" title="Power"></button>
+<button class="glassRemBtn colours" onclick="stbControl('control', 'colours')" title="Colour Buttons"></button>
+<button class="glassRemBtn apps" onclick="stbControl('control', 'apps')" title="Apps"></button>
+<button class="glassRemBtn play" onclick="stbControl('control', 'play')" title="Pause/Play"></button>
+<button class="glassRemBtn mute" onclick="stbControl('control', 'mute')" title="Mute"></button>
+<button class="glassRemBtn up" onclick="stbControl('control', 'cursor up')" title="Up"></button>
+<button class="glassRemBtn left" onclick="stbControl('control', 'cursor left')" title="Left"></button>
+<button class="glassRemBtn select2" onclick="stbControl('control', 'select')" title="Select"></button>
+<button class="glassRemBtn right" onclick="stbControl('control', 'cursor right')" title="Right"></button>
+<button class="glassRemBtn down" onclick="stbControl('control', 'cursor down')" title="Down"></button>
+<button class="glassRemBtn backup" onclick="stbControl('control', 'backup')" title="Back"></button>
+<button class="glassRemBtn home" onclick="stbControl('control', 'tv guide')" title="Home"></button>
+<button class="glassRemBtn volup" onclick="stbControl('control', 'volup')" title="Volume Up"></button>
+<button class="glassRemBtn plus" onclick="stbControl('control', 'record')" title="Add to Playlist"></button>
+<button class="glassRemBtn voldown" onclick="stbControl('control', 'voldown')" title="Volume Down"></button>
+<button class="glassRemBtn num1" onclick="stbControl('control', '1')" title="1"></button>
+<button class="glassRemBtn num2" onclick="stbControl('control', '2')" title="2"></button>
+<button class="glassRemBtn num3" onclick="stbControl('control', '3')" title="3"></button>
+<button class="glassRemBtn num4" onclick="stbControl('control', '4')" title="4"></button>
+<button class="glassRemBtn num5" onclick="stbControl('control', '5')" title="5"></button>
+<button class="glassRemBtn num6" onclick="stbControl('control', '6')" title="6"></button>
+<button class="glassRemBtn num7" onclick="stbControl('control', '7')" title="7"></button>
+<button class="glassRemBtn num8" onclick="stbControl('control', '8')" title="8"></button>
+<button class="glassRemBtn num9" onclick="stbControl('control', '9')" title="9"></button>
+<button class="glassRemBtn num0" onclick="stbControl('control', '0')" title="0"></button>
+
+<button id="wakeOnLanBtn" class="masterTooltip" value="Only available on Network control and requires 'MAC' field to be set in STB Data" onclick="stbControl('control', 'wakeonlan')" title="Network Control - Wake On LAN">Wake On LAN</button>
+
+<div id="glassExtraBtnsDiv">
+	<p class="masterTooltip" value="These are the extra buttons found on the Germany and Italy puck remote">DE/IT Buttons</p>
+	<button class="glassRemBtn record" onclick="stbControl('control', 'record')" title="Record"></button>
+	<button class="glassRemBtn rewind" onclick="stbControl('control', 'rewind')" title="Rewind"></button>
+	<button class="glassRemBtn ffwd" onclick="stbControl('control', 'fast forward')" title="FFWD"></button>
+	<button class="glassRemBtn help" onclick="stbControl('control', 'help')" title="Help"></button>
+	<button class="glassRemBtn search" onclick="stbControl('control', 'services')" title="Search"></button>
+	<button class="glassRemBtn chanup" onclick="stbControl('control', 'channel up')" title="Channel Up"></button>
+	<button class="glassRemBtn chandown" onclick="stbControl('control', 'channel down')" title="Channel Down"></button>
+	<button class="glassRemBtn red" onclick="stbControl('control', 'red button')" title="Red Button"></button>
+	<button class="glassRemBtn green" onclick="stbControl('control', 'green button')" title="Green Button"></button>
+	<button class="glassRemBtn yellow" onclick="stbControl('control', 'yellow button')" title="Yellow Button"></button>
+	<button class="glassRemBtn blue" onclick="stbControl('control', 'blue button')" title="Blue Button"></button>
+</div>
+
+<div id="rowControlBtnDiv">
+        <button class="remoteRowBtn up" onclick="arrowDir('DEC')" title="Row Up"></button>
+        <div id="rowCtrlTextDiv"><p>ROW</p></div>
+        <button class="remoteRowBtn down" onclick="arrowDir('INC')" title="Row Down"></button>
+</div>

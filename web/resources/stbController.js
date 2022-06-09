@@ -803,11 +803,22 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 		$area = 'sequenceArea';
 	}
 
+	// If this is being used to add STBs to a group, check to see if the STB is already in the group (the name will already be in the group list)
 	if ($id.match(/^STB\d+$/)) {
 		var exists = $('#' + $area).find("[name='" + $id + "']")[0];
 		if (exists) {
 			var text = $(exists).attr("value");
 			alert('This STB is already selected');
+			return;
+		}
+	}
+
+	// If this is being used to add the "wakeonlan" command to a sequence, check to see if the command is already in the sequence
+	if ($id.match(/wakeonlan/)) {
+		var exists = $('#' + $area).find("[name='" + $id + "']")[0];
+		if (exists) {
+			var text = $(exists).attr("value");
+			alert('The Wake On LAN command is already in this sequence');
 			return;
 		}
 	}
@@ -975,12 +986,23 @@ function seqValidate($origname) {	// This function handles validation and submit
 			}
 			var elements = document.getElementById('sequenceArea').getElementsByTagName('input');
 			var commands = [];
+			var wol = '';	// If the sequence contains the "wakeonlan" command, record it's position in the sequence in the variable "wol"
 			for (var i = 0; i < elements.length; i++) {
+				if (elements[i].name.match(/wakeonlan/)) {	// Check to see if the command is the wakeonlan command
+					wol = i;				// If it is the wakeonlan command, record its position number (i)
+				}
 				commands.push(elements[i].name);
 			}
 			if (!commands[0]) {
 				alert('Your command sequence has nothing in it!');
 			} else {
+				// If wol is true and the position number is higher than 0 (so it's not the first command in the sequence), warn the user.
+				if (wol && wol > 0) {
+					var conf = confirm('Your Wake On LAN command should be the very first command of the sequence. If the device is not active on the network, any commands sent before waking it will fail. Are you sure you want to continue?');
+					if (conf == false) {
+						return;
+					}
+				}
 				if ($origname) {
 					var string = commands.join(',');
 					var text = '';

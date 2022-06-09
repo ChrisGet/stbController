@@ -10,6 +10,7 @@
 9:E309
 A:0xEFB0
 apps:E00F
+colours:E200
 cursor down:E101
 cursor left:E102
 cursor right:E103
@@ -39,6 +40,7 @@ info:E00E
 information:E00E
 INSERT:0xEF87
 interactive:E008
+mute:E005
 J:0xEFB9
 K:0xEFBA
 L:0xEFBB
@@ -53,7 +55,7 @@ play:E400
 power:E000
 Q:0xEFC0
 R:0xEFC1
-record:0xE403
+record:E403
 red button:E200
 RETURN:0xEF8F
 rewind:E407
@@ -68,6 +70,8 @@ TAB:0xEF8E
 text:E00F
 tv guide:E00B
 U:0xEFC4
+volup:E003
+voldown:E004
 V:0xEFC5
 W:0xEFC6
 X:0xEFC7

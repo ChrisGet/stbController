@@ -243,7 +243,7 @@ sub control {
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
-				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky/);
+				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky|Network \(QSoIP/);
 				sendNowTVNetwork(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(NowTV/);
 				sendGlobalCacheIRNowTV(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(NowTV/);
 				sendGlobalCacheIRSkyQ(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(SkyQ/);
@@ -297,7 +297,7 @@ sub control {
 	if (-e $seqlogfile) {
 		unlink $seqlogfile;
 	}
-	warn "STB Control Finished!\n";
+	#warn "STB Control Finished!\n";	# Enable for debug!
 } ## End of sub 'control'
 
 sub sendDuskyCommsNew {
@@ -560,6 +560,13 @@ sub sendVNCComms {
         }
 
 	my $ip = $$boxdata{'VNCIP'};
+	my $mac = $$boxdata{'MAC'} // '';	# This will be used for WakeOnLAN
+
+	if ($$commands =~ /wakeonlan/) {
+		wakeonlan($$stb,$mac,$ip,'9');
+		sleep 2;
+	}
+
 	my $port = '49160';
 	my $string = "SKY 000.001\n";
 	my $keytype = '4';
@@ -610,6 +617,9 @@ sub sendVNCComms {
 						if ($com =~ /passive/i) {
 							$ds = 1;
 							$com = 'power';
+						}
+						if ($com eq 'wakeonlan') {
+							next;
 						}
 						if (exists $vnckeys{$com}) {
 							my ($first,$last) = process(\$vnckeys{$com});
@@ -865,4 +875,30 @@ sub sendGlobalCacheIRSkyQ {
                 my $logpid = $$runningpids . $$;
                 system("rm $logpid");
         }
+}
+
+sub wakeonlan {
+	use IO::Socket;
+
+	my ($stb,$mac,$ip,$port) = @_;
+	if (!$mac) {
+		warn "ERROR: No MAC address data for $stb! Unable to use WakeOnLAN\n";
+		return;
+	}
+
+	# use the discard service if $port not passed in
+	if (! defined $ip) { $ip = '255.255.255.255' }
+	if (! defined $port || $port !~ /^\d+$/ ) { $port = 9 }
+
+	warn "Sending WOL to $ip - $mac - $port\n";
+	my $sock = new IO::Socket::INET(Proto=>'udp') || return undef;
+
+	my $ip_addr = inet_aton($ip);
+	my $sock_addr = sockaddr_in($port, $ip_addr);
+	$mac =~ s/://g;
+	my $packet = pack('C6H*', 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, $mac x 16);
+
+	setsockopt($sock, SOL_SOCKET, SO_BROADCAST, 1);
+	send($sock, $packet, 0, $sock_addr);
+	close ($sock);
 }

@@ -215,6 +215,9 @@ sub createSeq {
 	if (open my $fh, '<', $remfile) {
 		local $/;
 		$choice = <$fh>;
+		if (!$choice) {
+			$choice = 'skyQSeqRemote';
+		}
 		close $fh;
 	}
 	

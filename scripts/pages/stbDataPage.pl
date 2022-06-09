@@ -274,6 +274,7 @@ HEAD
 	my @controltypes = (	'Bluetooth (SkyQ)',
 				'Network (SkyQ)',
 				'InfraRed IRNetBoxIV (SkyQ)',
+				'Network (QSoIP)',
 				'InfraRed IRNetBoxIV (QSoIP UK)',
 				'InfraRed IRNetBoxIV (QSoIP DE/IT)',
 				'Dusky (Sky+)',

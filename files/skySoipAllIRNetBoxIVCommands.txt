@@ -10,6 +10,9 @@ cursor up:Up
 cursor down:Down
 fast forward:FFwd
 green button:Green
+help:Help
+info:Info
+mute:Mute
 pause:Pause
 play:Play
 plus:Plus
@@ -20,6 +23,8 @@ rewind:Rew
 select:Select
 search:Search
 tv guide:Home
+volup:Vol+
+voldown:Vol-
 yellow button:Yellow
 0:0
 1:1

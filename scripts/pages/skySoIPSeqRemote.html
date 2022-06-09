@@ -1,0 +1,51 @@
+<div id="remoteSelectorDiv">
+	<select id="remoteSelector">
+		<option value="skySoIPSeqRemote" selected disabled>Sky SoIP</option>
+		<option value="skyQSeqRemote">Sky Q</option>
+		<option value="skyPlusSeqRemote">Sky Plus</option>
+		<option value="nowTVSeqRemote">Now TV</option>
+	</select>
+</div>
+<img src="web/images/skyGlassRemote.jpeg" alt="Sky Glass Remote" usemap="#skyGlassRemMap" style="border-radius:5px;height:90%;width:60%;position:absolute;top:4%;right:10%;">
+<button class="glassRemBtn power" onclick="seqTextUpdate('power', 'Power')" title="Power"></button>
+<button class="glassRemBtn colours" onclick="seqTextUpdate('colours','Colours')" title="Colour Buttons"></button>
+<button class="glassRemBtn apps" onclick="seqTextUpdate('apps','Apps')" title="Apps"></button>
+<button class="glassRemBtn play" onclick="seqTextUpdate('play','Play')" title="Pause/Play"></button>
+<button class="glassRemBtn mute" onclick="seqTextUpdate('mute','Mute')" title="Mute"></button>
+<button class="glassRemBtn up" onclick="seqTextUpdate('cursor up','Cursor Up')" title="Up"></button>
+<button class="glassRemBtn left" onclick="seqTextUpdate('cursor left','Cursor Left')" title="Left"></button>
+<button class="glassRemBtn select2" onclick="seqTextUpdate('select','Select')" title="Select"></button>
+<button class="glassRemBtn right" onclick="seqTextUpdate('cursor right','Cursor Right')" title="Right"></button>
+<button class="glassRemBtn down" onclick="seqTextUpdate('cursor down','Cursor Down')" title="Down"></button>
+<button class="glassRemBtn backup" onclick="seqTextUpdate('backup','Backup')" title="Back"></button>
+<button class="glassRemBtn home" onclick="seqTextUpdate('tv guide','Home')" title="Home"></button>
+<button class="glassRemBtn volup" onclick="seqTextUpdate('volup','Volume Up')" title="Volume Up"></button>
+<button class="glassRemBtn plus" onclick="seqTextUpdate('record','Add To Playlist')" title="Add to Playlist"></button>
+<button class="glassRemBtn voldown" onclick="seqTextUpdate('voldown','Volume Down')" title="Volume Down"></button>
+<button class="glassRemBtn num1" onclick="seqTextUpdate('1','1')" title="1"></button>
+<button class="glassRemBtn num2" onclick="seqTextUpdate('2','2')" title="2"></button>
+<button class="glassRemBtn num3" onclick="seqTextUpdate('3','3')" title="3"></button>
+<button class="glassRemBtn num4" onclick="seqTextUpdate('4','4')" title="4"></button>
+<button class="glassRemBtn num5" onclick="seqTextUpdate('5','5')" title="5"></button>
+<button class="glassRemBtn num6" onclick="seqTextUpdate('6','6')" title="6"></button>
+<button class="glassRemBtn num7" onclick="seqTextUpdate('7','7')" title="7"></button>
+<button class="glassRemBtn num8" onclick="seqTextUpdate('8','8')" title="8"></button>
+<button class="glassRemBtn num9" onclick="seqTextUpdate('9','9')" title="9"></button>
+<button class="glassRemBtn num0" onclick="seqTextUpdate('0','0')" title="0"></button>
+
+<button id="wakeOnLanBtn" class="masterTooltip" value="Only available on Network control and requires 'MAC' field to be set in STB Data" onclick="seqTextUpdate('wakeonlan','Wake On LAN')" title="Network Control - Wake On LAN">Wake On LAN</button>
+
+<div id="glassExtraBtnsDiv">
+        <p class="masterTooltip" value="These are the extra buttons found on the Germany and Italy puck remote">DE/IT Buttons</p>
+        <button class="glassRemBtn record" onclick="seqTextUpdate('record','Record')" title="Record"></button>
+        <button class="glassRemBtn rewind" onclick="seqTextUpdate('rewind','Rewind')" title="Rewind"></button>
+        <button class="glassRemBtn ffwd" onclick="seqTextUpdate('fast forward','FFWD')" title="FFWD"></button>
+        <button class="glassRemBtn help" onclick="seqTextUpdate('help','Help')" title="Help"></button>
+        <button class="glassRemBtn search" onclick="seqTextUpdate('services','Search')" title="Search"></button>
+        <button class="glassRemBtn chanup" onclick="seqTextUpdate('channel up','Channel Up')" title="Channel Up"></button>
+        <button class="glassRemBtn chandown" onclick="seqTextUpdate('channel down','Channel Down')" title="Channel Down"></button>
+        <button class="glassRemBtn red" onclick="seqTextUpdate('red button','Red Button')" title="Red Button"></button>
+        <button class="glassRemBtn green" onclick="seqTextUpdate('green button','Green Button')" title="Green Button"></button>
+        <button class="glassRemBtn yellow" onclick="seqTextUpdate('yellow button','Yellow Button')" title="Yellow Button"></button>
+        <button class="glassRemBtn blue" onclick="seqTextUpdate('blue button','Blue Button')" title="Blue Button"></button>
+</div>

@@ -194,6 +194,7 @@ sub loadSTBSelection {
 	my $grstyle = '';
 	my $btnstyle = '';
 	my $gridstylemanual = '';
+	my $clrandrow = '';	# This will be used to decide if the "CLR" and Row buttons need to be wider or not. The value will be changed to "wide" if so
 	if ($fullsize eq 'on') {
 		if ($btnwidth > 49) {
 			$btnwidth = 50;
@@ -228,6 +229,7 @@ sub loadSTBSelection {
 		$btnstyle = 'width:' . $btnwidth . 'px;';
 		$divwidth .= 'px';
 		$gridstylemanual = 'style="width:auto;"';
+		$clrandrow = 'wide';
 	}
 
 	##### Load the STB grid
@@ -253,7 +255,7 @@ COL
 	}
 
 print <<CLEAR;
-<button class="gridButton clear" onclick="deselect()" title="Clear grid selection">CLR</button></div>
+<button class="gridButton clear $clrandrow" onclick="deselect()" title="Clear grid selection">CLR</button></div>
 CLEAR
 
 my $r = '1';		# Set the Row count to 1
@@ -301,7 +303,7 @@ BOX
 	}
 
 print <<ROWEND;
-<button id="Row $r" class="gridButton row" onclick="rows('Row$r')">$r</button></div>
+<button id="Row $r" class="gridButton row $clrandrow" onclick="rows('Row$r')">$r</button></div>
 ROWEND
 
 $r++;
