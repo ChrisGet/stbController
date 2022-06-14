@@ -386,7 +386,7 @@ DATA
 	if ($type) {	# If the stb Type is already been selected from previous editing, load that type table
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
-		printNetworkTable($networkip) if ($type =~ /Network \(Sky/i);
+		printNetworkTable($networkip) if ($type =~ /Network \(Sky|Network \(Q/i);
 		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i or $type =~ /InfraRed IRNetBoxIV \(QSoIP/i);
 		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
 		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);
