@@ -563,8 +563,14 @@ sub sendVNCComms {
 	my $mac = $$boxdata{'MAC'} // '';	# This will be used for WakeOnLAN
 
 	if ($$commands =~ /wakeonlan/) {
+		## Send 2 wakeonlan packets
+		# First to the recorded IP of the box
 		wakeonlan($$stb,$mac,$ip,'9');
-		sleep 2;
+		sleep 1;
+		# Second WOL packet to the broadcast address of the recorded IP
+		(my $bcast = $ip) =~ s/\.\d{1,3}$/\.255/;	# Substitute the last octect of the STB IP with 255
+		wakeonlan($$stb,$mac,$bcast,'9');
+		sleep 1;
 	}
 
 	my $port = '49160';
