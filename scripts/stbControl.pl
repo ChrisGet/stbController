@@ -49,13 +49,17 @@ my $archfile = $filedir . 'hostArchitecture.txt';
 my $redrathubdir = $maindir . '/RedRatHub-V5.11/';
 my $redrathubip = '';
 
+my ($dayname,$mon,$daynum,$time,$year) = split(/\s+/,localtime(time));
+my $ts = "$time";
+my $logts = "$daynum-$mon-$year $time";
+
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
 
 my %stbdata;
 if (-e $stbdatafile) {
         local $/ = undef;
-        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+        open my $fh, "<", $stbdatafile or die "$logts - ERROR: Unable to open $stbdatafile: $!\n";
         my $data = <$fh>;
 	if ($data) {
 	        my $decoded = $json->decode($data);
@@ -67,7 +71,7 @@ if (-e $stbdatafile) {
 my %groups;
 if (-e $groupsfile) {
         local $/ = undef;
-        open my $fh, "<", $groupsfile or die "ERROR: Unable to open $groupsfile: $!\n";
+        open my $fh, "<", $groupsfile or die "$logts - ERROR: Unable to open $groupsfile: $!\n";
         my $data = <$fh>;
 	if ($data) {
 	        my $decoded = $json->decode($data);
@@ -79,7 +83,7 @@ if (-e $groupsfile) {
 my %seqs;
 if (-e $seqfile) {
         local $/ = undef;
-        open my $fh, "<", $seqfile or die "ERROR: Unable to open $seqfile: $!\n";
+        open my $fh, "<", $seqfile or die "$logts - ERROR: Unable to open $seqfile: $!\n";
         my $data = <$fh>;
 	if ($data) {
 	        my $decoded = $json->decode($data);
@@ -94,8 +98,8 @@ chomp(my $logpid = $ARGV[4] || '');	# $logpid will only ever be used by the back
 my $logging = '';
 my $schedpid = '';
 
-die "Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
-die "No STBs Selected" if (!$info);
+die "$logts - Error: No action was specified. Options are \"Control\" or \"Event\"\n" if ($action !~ m/^Control$|^Event$/i);
+die "$logts - No STBs Selected" if (!$info);
 
 if ($logpid) {
 	if ($logpid =~ /^logpid$/i) {
@@ -134,7 +138,7 @@ if (!$targetstring or $targetstring !~ /\S+/) {
 		my $pidlog = $runningpids . $$;
 		system("rm $pidlog")
 	}
-	die "No STBs selected for control after processing the input\n";
+	die "$logts - No STBs selected for control after processing the input\n";
 }
 
 if ($action =~ m/^Event$/i) {
@@ -142,7 +146,7 @@ if ($action =~ m/^Event$/i) {
 	my $seqcoms = '';
 	foreach my $seq (@sequences) {
 		$seq = uc($seq);
-		warn "Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
+		warn "$logts - Sequence $seq was not found in the sequences file\n" and next if (!exists $seqs{$seq});
 		$seqcoms .= $seqs{$seq}{'commands'};
 		$seqcoms .= ',';
 	}
@@ -166,7 +170,6 @@ sub control {
 	my %irnetboxiv;
 
 	# Create the md5 string of this control request for later use
-	chomp(my $ts = `date "+%H:%M:%S"` // 'Unknown');
 	my $procstring = "$commands" . $$boxes . "$ts";
 	my $md5 = md5_hex($procstring);
 	my $boxnamestring = '';
@@ -190,7 +193,7 @@ sub control {
 	foreach my $stb (@stbs) {
 		my %boxdata = %{ $stbdata{$stb}};		# Get the box details from the main %stbData hash 
 		my $type = $boxdata{'Type'} || '';		# Get the 'Type' for the STB to know what kind of control it uses (Dusky, Bluetooth, or IR)
-		warn "Error: Could not find control protocol for $stb, has this STB had its control type configured?\n" and next if (!$type);
+		warn "$logts - Error: Could not find control protocol for $stb, has this STB had its control type configured?\n" and next if (!$type);
 
 		if ($type =~ /Dusky/) {		# If the STB is controlled via Dusky and Moxa, add it to the %duskydata hash for separate processing
 			my $moxaip = $boxdata{'MoxaIP'};
@@ -314,9 +317,9 @@ sub sendDuskyCommsNew {
 
 	my ($moxaip,$moxaport) = $$duskydetails =~ /(\S+)\-(\d+)/;
 	if (!$moxaip) {
-		die "ERROR: Moxa IP was not defined!\n";
+		die "$logts - ERROR: Moxa IP was not defined!\n";
 	} elsif (!$moxaport) {
-		die "ERROR: Moxa Port was not defined!\n";
+		die "$logts - ERROR: Moxa Port was not defined!\n";
 	} else {
 
 		my $tries = '1';
@@ -335,7 +338,7 @@ sub sendDuskyCommsNew {
 
                 		my $raw = $duskycoms{$com};
                 		unless(defined $raw) {          # 'defined' needs to be used to handle '0' value for the STB command
-	                        	warn "$com was not found to be a valid command\n" and next;     # If the requested command is not found in the commands database, print a warning and skip to the next command
+	                        	warn "$logts - $com was not found to be a valid command\n" and next;     # If the requested command is not found in the commands database, print a warning and skip to the next command
         	        	}
 
 				foreach my $box (keys %{$boxdata}) {
@@ -348,7 +351,7 @@ sub sendDuskyCommsNew {
 			}
 			$dusky->close;
 		} else {
-			warn "Failed to connect to dusky at IP $moxaip port $moxaport\n";
+			warn "$logts - Failed to connect to dusky at IP $moxaip port $moxaport\n";
 		}
 	}
 
@@ -391,13 +394,13 @@ sub sendDuskyComms {
 		if ($dusky) {
 			my $raw = $duskycoms{$com};
 			unless(defined $raw) {		# 'defined' needs to be used to handle '0' value for the STB command
-				warn "$com was not found to be a valid command\n" and next;	# If the requested command is not found in the commands database, print a warning and skip to the next command
+				warn "$logts - $com was not found to be a valid command\n" and next;	# If the requested command is not found in the commands database, print a warning and skip to the next command
 			}
 			my $fullcom = 'A+' . $duskyport . $raw . 'x';
 			$dusky->send($fullcom);
 			$dusky->close;
 		} else {
-			warn "Dusky connection failed for $$stb\n";
+			warn "$logts - ERROR: Dusky connection failed for $$stb\n";
 		}
 	}
 
@@ -421,7 +424,7 @@ sub sendBTComms {
 	my $btcomfile = $filedir . 'skyBTUSBCommands.txt';
 	my $serverip = $$boxdata{'BTContIP'};
 	my $serverport = $$boxdata{'BTContPort'};
-	tie my %btcoms, 'Tie::File::AsHash', $btcomfile, split => ':' or die "Problem tying \%btcoms to $btcomfile: $!\n";
+	tie my %btcoms, 'Tie::File::AsHash', $btcomfile, split => ':' or die "$logts - ERROR: Problem tying \%btcoms to $btcomfile: $!\n";
         foreach my $command (@commands) {
                 if ($command =~ /^t(\d+)/i) {
                         sleep $1;
@@ -429,7 +432,7 @@ sub sendBTComms {
                 }
 		my $basecom = $btcoms{$command};
 		unless (defined $basecom) {		# 'defined' needs to be used to handle '0' value for the STB command
-			warn "$command is not a valid command for $$stb\n" and next;
+			warn "$logts - ERROR: $command is not a valid command for $$stb\n" and next;
 		}
                 my $json = "\{\"action\"\:\"press\"";
 		my $comtosend;
@@ -480,7 +483,7 @@ sub sendIRNetBoxIVComms {
 	$outputs =~ s/,$//;
 
 	if (!$redrathubip) {	# Check that the IP address for the RedRatHub process has been found, die if it hasn't
-		die "ERROR: RedRatHub IP was not defined!\n";
+		die "$logts - ERROR: RedRatHub IP was not defined!\n";
 	}
 	
 	&openSocket($redrathubip, 40000);
@@ -495,7 +498,7 @@ sub sendIRNetBoxIVComms {
 			$rrres = &readData('hubquery="add redrat" ip="' . $netboxip . '"');
 			$rrres =~ s/\n|\r//g;
 			if ($rrres =~ /Failed/i) {
-				warn "Failed to add RedRat $netboxip to RedRatHub - $rrres\n";
+				warn "$logts - Failed to add RedRat $netboxip to RedRatHub - $rrres\n";
 			}
 		}# else {
 		#	warn "$netboxip already added\n";
@@ -522,7 +525,7 @@ sub sendIRNetBoxIVComms {
 		}
 	}
         
-	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%ircoms: $!\n";
+	tie my %ircoms, 'Tie::File::AsHash', $comfile, split => ':' or die "$logts - ERROR: Problem tying \%ircoms: $!\n";
 
         foreach my $command (@commands) {
                 if ($command =~ /^t(\d+)/i) {
@@ -535,10 +538,10 @@ sub sendIRNetBoxIVComms {
 			my $res = &readData('ip="' . $netboxip . '" dataset="' . $hwtype . '" signal="' . $sig . '" output="' . $outputs . '"');
 			#warn "$res\n";
 			if ($res and $res !~ /OK/) {
-				warn "Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
+				warn "$logts - ERROR: Failed to send command $command to IRNetBoxIV at $netboxip - $res\n";
 			}
 		} else {
-			warn "No entry found for $command\n";
+			warn "$logts - ERROR: No entry found for $command\n";
 		}
 	}
 	# To be determined
@@ -591,10 +594,10 @@ sub sendVNCComms {
                 	my $logpid = $$runningpids . $$;
         	        system("rm $logpid");
 	        }
-		die "Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
+		die "$logts - ERROR: Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
 	}
 
-	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
+	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "$logts - ERROR: Problem tying \%vnckeys: $!\n";
 
 	$socket->autoflush(1);
 	$socket->setsockopt(SOL_SOCKET, SO_RCVTIMEO, pack('l!l!', 2, 0));
@@ -635,18 +638,18 @@ sub sendVNCComms {
 							sleep 10 if ($ds);
 							$socket->send($kup);
 						} else {
-							warn "$com not found in the file $comfile\n";
+							warn "$logts - ERROR: $com not found in the file $comfile\n";
 						}
 					}
 				}
 			} else {
-				warn "No response from STB during VNC handshake (Client/Server Init Exchange).\n";
+				warn "$logts - ERROR: No response from STB during VNC handshake (Client/Server Init Exchange).\n";
 			}
 		} else {
-			warn "No response from STB during VNC handshake (Security Exchange).\n";
+			warn "$logts - ERROR: No response from STB during VNC handshake (Security Exchange).\n";
 		}
 	} else {
-		warn "No response from STB during VNC handshake (Protocol Exchange).\n";
+		warn "$logts - ERROR: No response from STB during VNC handshake (Protocol Exchange).\n";
 	}	
 
 	untie %vnckeys;
@@ -676,7 +679,7 @@ sub checkRedRatHub {
 	if ($arch) {
 		$dotnetbin = $maindir . "/dotnet$arch" . '/dotnet';
 	} else {
-		die "CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
+		die "$logts - CRITICAL ERROR: Unable to identify host architecture for checking RedRatHub process in stbControl.pl\n";
 	}
 
 	chomp(my $running = `ps -ax | grep "stbController-RedRatHubProcess" | grep -v grep` // '');
@@ -696,7 +699,7 @@ sub checkRedRatHub {
 			}
 			return \"fail";
                 } else {
-                        die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+                        die "$logts - ERROR: Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
                 }
         } else {
         	my ($runpid) = $running =~ /^\s*(\d+)/;
@@ -718,7 +721,7 @@ sub checkRedRatHub {
 				if (open my $fh, '+>',$redrathubdebug) {
 					close $fh;
 				} else {
-					warn "Unable to overwrite the file $redrathubdebug for error reset. $!\n";
+					warn "$logts - ERROR: Unable to overwrite the file $redrathubdebug for error reset. $!\n";
 				}
 				
 				##### Start the new RedRatHub process
@@ -728,7 +731,7 @@ sub checkRedRatHub {
 		                if ($sysip) {
 					system("cd $redrathubdir && bash -c \"exec -a stbController-RedRatHubProcess-$sysip $dotnetbin RedRatHub.dll --noscan --nohttp > $redrathubdebug 2>&1 \&\" \&");
 		                } else {
-		                        die "Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
+		                        die "$logts - ERROR: Could not identify the system ip address for the RedRatHub process. STB controller IR requires this.\n";
 		                }
 		                
 				if ($logpid) {	# If this script has been run from the event scheduler, wait for it to restart before carrying on
@@ -761,7 +764,7 @@ sub sendNowTVNetwork {
         my $nowtvip = $$boxdata{'NOWTVIP'};
         my $nowtvport = '8060';
 
-        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "$logts - ERROR: Problem tying \%ntvcoms to $ntvfile: $!\n";
 
         foreach my $command (@commands) {
                 if ($command =~ /^t(\d+)/i) {
@@ -770,7 +773,7 @@ sub sendNowTVNetwork {
                 }
                 my $basecom = $ntvcoms{$command};
                 unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
-                        warn "$command is not a valid command for $$stb\n" and next;
+                        warn "$logts - ERROR: $command is not a valid command for $$stb\n" and next;
                 }
 
                 my $ua = new LWP::UserAgent;
@@ -807,7 +810,7 @@ sub sendGlobalCacheIRNowTV {
         my $gcip = $$boxdata{'GlobalCacheIP'};
         my $gcport = $$boxdata{'GlobalCachePort'};
 
-        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "Problem tying \%ntvcoms to $ntvfile: $!\n";
+        tie my %ntvcoms, 'Tie::File::AsHash', $ntvfile, split => ':' or die "$logts - ERROR: Problem tying \%ntvcoms to $ntvfile: $!\n";
 
 	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
 
@@ -818,7 +821,7 @@ sub sendGlobalCacheIRNowTV {
                 }
                 my $basecom = $ntvcoms{$command};
                 unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
-                        warn "$command is not a valid command for $$stb\n" and next;
+                        warn "$logts - ERROR: $command is not a valid command for $$stb\n" and next;
                 }
 
 		my $EOL = "\015\012";
@@ -851,7 +854,7 @@ sub sendGlobalCacheIRSkyQ {
         my $gcip = $$boxdata{'GlobalCacheIP'};
         my $gcport = $$boxdata{'GlobalCachePort'};
 
-        tie my %coms, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%coms to $comfile: $!\n";
+        tie my %coms, 'Tie::File::AsHash', $comfile, split => ':' or die "$logts - ERROR: Problem tying \%coms to $comfile: $!\n";
 
 	my $sock = new IO::Socket::INET(PeerAddr => $gcip, PeerPort => 4998, Proto => 'tcp');
 
@@ -862,7 +865,7 @@ sub sendGlobalCacheIRSkyQ {
                 }
                 my $basecom = $coms{$command};
                 unless (defined $basecom) {             # 'defined' needs to be used to handle '0' value for the STB command
-                        warn "$command is not a valid command for $$stb\n" and next;
+                        warn "$logts - ERROR: $command is not a valid command for $$stb\n" and next;
                 }
 
 		my $EOL = "\015\012";
@@ -888,7 +891,7 @@ sub wakeonlan {
 
 	my ($stb,$mac,$ip,$port) = @_;
 	if (!$mac) {
-		warn "ERROR: No MAC address data for $stb! Unable to use WakeOnLAN\n";
+		warn "$logts - ERROR: No MAC address data for $stb! Unable to use WakeOnLAN\n";
 		return;
 	}
 
@@ -896,7 +899,7 @@ sub wakeonlan {
 	if (! defined $ip) { $ip = '255.255.255.255' }
 	if (! defined $port || $port !~ /^\d+$/ ) { $port = 9 }
 
-	warn "Sending WOL to $ip - $mac - $port\n";
+	warn "$logts - Sending WOL to $ip - $mac - $port\n";
 	my $sock = new IO::Socket::INET(Proto=>'udp') || return undef;
 
 	my $ip_addr = inet_aton($ip);
