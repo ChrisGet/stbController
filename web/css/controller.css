@@ -2576,7 +2576,7 @@ p.narrow {
 #rowControlBtnDiv {
 	display:block;
 	position:absolute;
-	top:50%;
+	top:60%;
 	left:2%;
 	height:10%;
 	width:10%;
@@ -4873,6 +4873,49 @@ input[type='file'] {
 	margin:0;
 	font-size:1.5vh;
 	color:white;
+}
+
+#glassAppShortcutsDiv {
+        position:absolute;
+        display:block;
+        background:none;
+        border-radius:10px;
+        top:41%;
+        left:1%;
+        width:30%;
+        height:15%;
+	border:1px solid black;
+}
+#glassAppShortcutsDiv p {
+	margin:0;
+	font-size:1.5vh;
+	color:black;
+}
+
+.glassRemBtn.youtube {
+	display:inline-block;
+	position:relative;
+	width:70%;
+	height:25%;
+	margin:2% 0;
+	background:url("../images/youTubeIcon.png");
+	background-size:95% 95%;
+	background-position:center center;
+	background-repeat:no-repeat;
+	border:1px solid black;
+}
+.glassRemBtn.netflix {
+	display:inline-block;
+	position:relative;
+	width:70%;
+	height:25%;
+	background-color:pink;
+	margin:1% 0;
+	background:url("../images/netflixIcon.png");
+	background-size:95% 160%;
+	background-position:center center;
+	background-repeat:no-repeat;
+	border:1px solid black;
 }
 
 .glassRemBtn.record {

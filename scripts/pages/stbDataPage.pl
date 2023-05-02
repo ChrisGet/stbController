@@ -275,6 +275,7 @@ HEAD
 				'Network (SkyQ)',
 				'InfraRed IRNetBoxIV (SkyQ)',
 				'Network (QSoIP)',
+				'Network VNC Port 5900',
 				'InfraRed IRNetBoxIV (QSoIP UK)',
 				'InfraRed IRNetBoxIV (QSoIP DE/IT)',
 				'Dusky (Sky+)',
@@ -387,6 +388,7 @@ DATA
 		printDuskyTable($duskymoxaip,$duskymoxaport,$duskyport) if ($type =~ /Dusky/i);
 		printBluetoothTable($btcontip,$btcontport) if ($type =~ /Bluetooth/i);
 		printNetworkTable($networkip) if ($type =~ /Network \(Sky|Network \(Q/i);
+		printNetworkTable($networkip) if ($type =~ /Network VNC/i);
 		printIRNetBoxIV($irnb4ip,$irnb4out) if ($type =~ /InfraRed IRNetBoxIV \(Sky/i or $type =~ /InfraRed IRNetBoxIV \(QSoIP/i);
 		printIRNetBoxIVNowTV($irnb4ip,$irnb4out,$nowtvmodel) if ($type =~ /InfraRed IRNetBoxIV \(NowTV\)/i);
 		printNowTVNetworkTable($nowtvip) if ($type =~ /Network \(NowTV\)/i);

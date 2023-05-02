@@ -108,7 +108,7 @@ sub restartRedRatHub {
 	if (flock($lfh, LOCK_EX | LOCK_NB)) {
 		foreach my $runpid (@runningpids) {
                         ##### Kill the current RedRatHub process
-                        system("kill $runpid");
+                        system("kill -9 $runpid");
                 }
 
 	        ##### Clear out the current debug log file

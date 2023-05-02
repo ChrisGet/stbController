@@ -1,0 +1,47 @@
+0:0030
+1:0031
+2:0032
+3:0033
+4:0034
+5:0035
+6:0036
+7:0037
+8:0038
+9:0039
+apps:ffc2
+colours:ffc1
+cursor down:ff54
+cursor left:ff51
+cursor right:ff53
+cursor up:ff52
+backup:ff1b
+blue button:ff57
+box office:EF00
+channel down:ff56
+channel up:ff55
+fast forward:ffc9
+green button:ffff
+help:ffbf
+home:ff50
+info:ffc6
+information:ffc6
+interactive:E008
+mute:ffaa
+netflix:0029
+pause:ffc8
+play:ffc8
+power:ffbe
+record:ffc4
+red button:ffc1
+rewind:ffc7
+search:ffc0
+select:ff8d
+services:ffc0
+sky:ffc3
+stop:E402
+text:E00F
+tv guide:FF50
+volup:ffab
+voldown:ffaf
+yellow button:ff63
+youtube:0028

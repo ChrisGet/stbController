@@ -246,7 +246,8 @@ sub control {
                 	        }
 				sendBTComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Bluetooth/);
 				#sendIRNetBoxIVComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /IRNetBoxIV/);
-				sendVNCComms(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky|Network \(QSoIP/);
+				sendVNCCommsLegacy(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(Sky|Network \(QSoIP/);
+				sendVNCCommsNew(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network VNC Port 5900/);
 				sendNowTVNetwork(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /Network \(NowTV/);
 				sendGlobalCacheIRNowTV(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(NowTV/);
 				sendGlobalCacheIRSkyQ(\$stb,$commands,\%boxdata,\$logging,\$runningpids) if ($type =~ /GlobalCache \(SkyQ/);
@@ -554,7 +555,7 @@ sub sendIRNetBoxIVComms {
 	untie %ircoms;
 }
 
-sub sendVNCComms {
+sub sendVNCCommsLegacy {
 	use IO::Socket::INET;
 	my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
         if ($$logging) {
@@ -671,6 +672,108 @@ sub sendVNCComms {
 	}
 }
 
+sub sendVNCCommsNew {
+	my ($stb,$commands,$boxdata,$logging,$runningpids) = @_;
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("touch $logpid");
+        }
+
+        my $ip = $$boxdata{'VNCIP'};
+        my $mac = $$boxdata{'MAC'} // '';       # This will be used for WakeOnLAN
+
+        if ($$commands =~ /wakeonlan/) {
+                ## Send 2 wakeonlan packets
+                # First to the recorded IP of the box
+                wakeonlan($$stb,$mac,$ip,'9');
+                sleep 1;
+                # Second WOL packet to the broadcast address of the recorded IP
+                (my $bcast = $ip) =~ s/\.\d{1,3}$/\.255/;       # Substitute the last octect of the STB IP with 255
+                wakeonlan($$stb,$mac,$bcast,'9');
+                sleep 1;
+        }
+
+        my @commands = split(',', $$commands);
+        my $comfile = $filedir . 'skyVNCCommandsPort5900.txt';
+        my $keytype = '4';
+        my $keydown = '1';
+        my $keyup = '0';
+
+        my $port = '5900';
+        my $socket = new IO::Socket::INET (
+                        PeerHost => $ip,
+                        PeerPort => $port,
+                        Proto => 'tcp',
+                        Timeout => 3,
+#                        ReuseAddr => 1,
+ #                       Type => SOCK_STREAM,
+  #                      ReusePort => 1,
+        );
+        unless ($socket) {
+                if ($$logging) {
+			my $logpid = $$runningpids . $$;
+                        system("rm $logpid");
+                }
+                die "$logts - ERROR: Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
+        }
+
+        $socket->autoflush(1);
+        $socket->setsockopt(SOL_SOCKET, SO_RCVTIMEO, pack('l!l!', 2, 0));
+
+        my $stuff = '';
+        $socket->recv($stuff,12);
+        $socket->send($stuff);
+        $socket->recv($stuff,1);
+        $socket->send(pack "H*", '01');
+        $socket->recv($stuff,12);
+        $socket->send(pack "H*", '01');
+
+        tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
+
+        foreach my $com (@commands) {
+                if ($com =~ /^t(\d+)/i) {
+                        sleep $1;
+                } else {
+                        my $ds = '';
+                        if ($com =~ /passive/i) {
+                                $ds = 1;
+                                $com = 'power';
+                        }
+                        if ($com eq 'wakeonlan') {
+                                next;
+                        }
+                        if (exists $vnckeys{$com}) {
+                                my $k = $vnckeys{$com};
+                                $k = '0x' . $k if ($k !~ /^0x/);
+                                $k =~ s/^0x/0000/;
+                                $k = lc($k);
+
+                                my $kdown = '04010000' . $k;
+                                my $kdown2 = pack "H*", $kdown;
+
+                                my $kup = '04000000' . $k;
+				my $kup2 = pack "H*", $kup;
+
+                                $socket->send($kdown2);
+                                $socket->send($kup2);
+                                sleep(0.5);
+                        } else {
+                                warn "$logts - ERROR: $com not found in the file $comfile\n";
+                        }
+                }
+        }
+
+        $socket->shutdown(2);
+        $socket->close();
+
+        untie %vnckeys;
+
+        if ($$logging) {
+                my $logpid = $$runningpids . $$;
+                system("rm $logpid");
+        }
+}
+
 sub checkRedRatHub {
 	my $redrathubdll = $redrathubdir . 'RedRatHub.dll';
 	my $dotnetbin = 'dotnet';
@@ -705,7 +808,7 @@ sub checkRedRatHub {
         	my ($runpid) = $running =~ /^\s*(\d+)/;
         	return if (!$runpid);
         	##### If the RedRatHub is running, check to see if there are errors in the log file which suggest a restart would help
-		my $errors = `grep -i "exception\\\|canceled" $redrathubdebug` // '';
+		my $errors = `grep -i "exception\\\|cancelled" $redrathubdebug` // '';
 		if ($errors) {
 			my $lfh;
 			my $lockfile = $filedir . 'redRatHub.lock';
@@ -714,9 +817,12 @@ sub checkRedRatHub {
 				if (!$logpid) {
 					print "Multiple errors have been detected with the RedRatHub process that supports RedRat IR. I have restarted the process for you. If this problem persists, please contact your system administrator for assistance.";
 				}
-				##### Kill the current RedRatHub process
-				system("kill $runpid");
-
+				##### Kill all current RedRatHub processes
+				my @runs = split("\n",$running);
+				foreach my $r (@runs) {
+					system("kill -9 $r");
+				}
+				
 				##### Clear out the current debug log file
 				if (open my $fh, '+>',$redrathubdebug) {
 					close $fh;
