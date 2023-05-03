@@ -619,6 +619,7 @@ sub sendVNCCommsLegacy {
 			$socket->send($tosend);	# Send '01' to the STB again for client init message
 			$socket->recv($new,64);	# Receive server init message back from STB in to $new
 			if ($new) {	# If all is good up to here, send the commands!
+				sleep(0.3);	# Wait 0.3 seconds after connection before sending commands
 				foreach my $com (@commands) {
 					if ($com =~ /^t(\d+)/i) {
 						sleep $1;
@@ -653,6 +654,9 @@ sub sendVNCCommsLegacy {
 		warn "$logts - ERROR: No response from STB during VNC handshake (Protocol Exchange).\n";
 	}	
 
+	sleep(0.3);
+        $socket->shutdown(2);
+        $socket->close();
 	untie %vnckeys;
 
 	if ($$logging) {
@@ -704,10 +708,7 @@ sub sendVNCCommsNew {
                         PeerHost => $ip,
                         PeerPort => $port,
                         Proto => 'tcp',
-                        Timeout => 3,
-#                        ReuseAddr => 1,
- #                       Type => SOCK_STREAM,
-  #                      ReusePort => 1,
+                        Timeout => 2,
         );
         unless ($socket) {
                 if ($$logging) {
@@ -727,7 +728,8 @@ sub sendVNCCommsNew {
         $socket->send(pack "H*", '01');
         $socket->recv($stuff,12);
         $socket->send(pack "H*", '01');
-
+	sleep(0.3);	# Wait 0.3 seconds after connection before sending commands
+	
         tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "Problem tying \%vnckeys: $!\n";
 
         foreach my $com (@commands) {
@@ -756,13 +758,13 @@ sub sendVNCCommsNew {
 
                                 $socket->send($kdown2);
                                 $socket->send($kup2);
-                                sleep(0.5);
                         } else {
                                 warn "$logts - ERROR: $com not found in the file $comfile\n";
                         }
                 }
         }
 
+	sleep(0.3);
         $socket->shutdown(2);
         $socket->close();
 
