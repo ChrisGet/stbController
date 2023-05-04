@@ -602,6 +602,10 @@ sub sendVNCCommsLegacy {
 
 	$socket->autoflush(1);
 	$socket->setsockopt(SOL_SOCKET, SO_RCVTIMEO, pack('l!l!', 2, 0));
+	
+	# Add the socket option SO_LINGER so that it sends RST instead of FIN when finished
+	my $linger = pack("ii", 1, 0);
+	$socket->setsockopt(SOL_SOCKET, SO_LINGER, $linger);
 
 	my $stuff = '';
 	$socket->recv($stuff,12);
@@ -708,7 +712,7 @@ sub sendVNCCommsNew {
                         PeerHost => $ip,
                         PeerPort => $port,
                         Proto => 'tcp',
-                        Timeout => 2,
+                        Timeout => 3,
         );
         unless ($socket) {
                 if ($$logging) {
@@ -764,7 +768,7 @@ sub sendVNCCommsNew {
                 }
         }
 
-	sleep(0.3);
+	sleep(0.5);
         $socket->shutdown(2);
         $socket->close();
 
