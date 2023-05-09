@@ -623,7 +623,6 @@ sub sendVNCCommsLegacy {
 			$socket->send($tosend);	# Send '01' to the STB again for client init message
 			$socket->recv($new,64);	# Receive server init message back from STB in to $new
 			if ($new) {	# If all is good up to here, send the commands!
-				sleep(0.3);	# Wait 0.3 seconds after connection before sending commands
 				foreach my $com (@commands) {
 					if ($com =~ /^t(\d+)/i) {
 						sleep $1;
@@ -658,7 +657,7 @@ sub sendVNCCommsLegacy {
 		warn "$logts - ERROR: No response from STB during VNC handshake (Protocol Exchange).\n";
 	}	
 
-	sleep(0.3);
+	sleep(0.1);	# This is VERY IMPORTANT! This timeout makes control MUCH more reliable as it allows the devices to process the key presses before disconnecting
         $socket->shutdown(2);
         $socket->close();
 	untie %vnckeys;
