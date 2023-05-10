@@ -595,7 +595,7 @@ sub sendVNCCommsLegacy {
                 	my $logpid = $$runningpids . $$;
         	        system("rm $logpid");
 	        }
-		die "$logts - ERROR: Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
+		die "$logts - ERROR: Cannot connect to $$stb for Legacy Network control at IP $ip, Port $port: $!\n";
 	}
 
 	tie my %vnckeys, 'Tie::File::AsHash', $comfile, split => ':' or die "$logts - ERROR: Problem tying \%vnckeys: $!\n";
@@ -648,13 +648,13 @@ sub sendVNCCommsLegacy {
 					}
 				}
 			} else {
-				warn "$logts - ERROR: No response from STB during VNC handshake (Client/Server Init Exchange).\n";
+				warn "$logts - ERROR: No response from $$stb during Legacy VNC handshake (Client/Server Init Exchange) at IP $ip, Port $port.\n";
 			}
 		} else {
-			warn "$logts - ERROR: No response from STB during VNC handshake (Security Exchange).\n";
+			warn "$logts - ERROR: No response from $$stb during Legacy VNC handshake (Security Exchange) at IP $ip, Port $port.\n";
 		}
 	} else {
-		warn "$logts - ERROR: No response from STB during VNC handshake (Protocol Exchange).\n";
+		warn "$logts - ERROR: No response from $$stb during Legacy VNC handshake (Protocol Exchange) at IP $ip, Port $port.\n";
 	}	
 
 	sleep(0.1);	# This is VERY IMPORTANT! This timeout makes control MUCH more reliable as it allows the devices to process the key presses before disconnecting
@@ -718,7 +718,7 @@ sub sendVNCCommsNew {
 			my $logpid = $$runningpids . $$;
                         system("rm $logpid");
                 }
-                die "$logts - ERROR: Cannot connect to $$stb for Network control at IP $ip, Port $port: $!\n";
+                die "$logts - ERROR: Cannot connect to $$stb for port 5900 Network control at IP $ip, Port $port: $!\n";
         }
 
         $socket->autoflush(1);
