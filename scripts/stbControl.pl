@@ -657,8 +657,9 @@ sub sendVNCCommsLegacy {
 		warn "$logts - ERROR: No response from $$stb during Legacy VNC handshake (Protocol Exchange) at IP $ip, Port $port.\n";
 	}	
 
-	sleep(0.1);	# This is VERY IMPORTANT! This timeout makes control MUCH more reliable as it allows the devices to process the key presses before disconnecting
+	sleep(0.5);	# This is VERY IMPORTANT! This timeout makes control MUCH more reliable as it allows the devices to process the key presses before disconnecting
         $socket->shutdown(2);
+	sleep(0.5);
         $socket->close();
 	untie %vnckeys;
 
@@ -769,6 +770,7 @@ sub sendVNCCommsNew {
 
 	sleep(0.5);
         $socket->shutdown(2);
+	sleep(0.5);
         $socket->close();
 
         untie %vnckeys;
