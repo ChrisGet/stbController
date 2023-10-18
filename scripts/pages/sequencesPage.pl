@@ -27,6 +27,7 @@ my $htmldir = $maindir . '/scripts/pages/';
 my $conthtml = $htmldir . 'sequenceController.html';
 my $remfile = $confdir . 'sequencesRemote.txt';
 my $catlistfile = $filedir . 'sequenceCategories.json';
+my $soipappsfile = $filedir. 'soipAppShortcuts.json';
 
 checkLegacy();	# Initial check to see if any old sequence files have been converted to the new JSON format
 
@@ -52,6 +53,16 @@ if (-e $catlistfile) {
 	my $data = <$fh>;
 	my $decoded = $json->decode($data);
 	%categories = %{$decoded};
+}
+
+##### Load the soip app shortcuts data
+my %soipapps;
+if (-e $soipappsfile) {
+	local $/ = undef;
+	open my $fh, "<", $soipappsfile or die "ERROR: Unable to open $soipappsfile: $!\n";
+	my $data = <$fh>;
+	my $decoded = $json->decode($data);
+	%soipapps = %{$decoded};
 }
 
 mainMenu() and exit if ($action =~ /^Menu$/i);
@@ -156,6 +167,13 @@ HEAD
 				my $classextra = '';
 				if ($com =~ /^t\d+$/) {
 					$classextra = 'timeout';
+				} elsif ($com =~ /^app/) {
+					my ($c,$opt,$appid) = split(':',$com);
+					if (exists $soipapps{$appid}) {
+						$classextra = 'app' . $opt;
+						$opt = uc($opt);
+						$com = "$opt " . $soipapps{$appid};
+					}
 				}
 				$comstring .= "<div class=\"seqListIconOuter\"><div class=\"seqListIcon $classextra\"><p>$com</p></div><div class=\"seqListArrowDiv $classextra\"></div></div>";
 			}

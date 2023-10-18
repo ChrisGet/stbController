@@ -36,7 +36,7 @@
 <button id="wakeOnLanBtn" class="masterTooltip" value="Only available on Network control and requires 'MAC' field to be set in STB Data" onclick="stbControl('control', 'wakeonlan')" title="Network Control - Wake On LAN">Wake On LAN</button>
 
 <div id="glassExtraBtnsDiv">
-	<p class="masterTooltip" value="These are the extra buttons found on the Germany and Italy puck remote">DE/IT Buttons</p>
+	<p class="masterTooltip" value="These are the extra buttons found on the Germany and Italy remote">DE/IT Buttons</p>
 	<button class="glassRemBtn record" onclick="stbControl('control', 'record')" title="Record"></button>
 	<button class="glassRemBtn rewind" onclick="stbControl('control', 'rewind')" title="Rewind"></button>
 	<button class="glassRemBtn ffwd" onclick="stbControl('control', 'fast forward')" title="FFWD"></button>
@@ -51,6 +51,12 @@
 </div>
 
 <div id="glassAppShortcutsDiv">
+	<p class="masterTooltip" value="These are app shortcut buttons which use the AS API">App shortcuts<br><font style="font-size:1.1vh;">(Network control and Dev builds only!)</font></p>
+	<div id="glassAppListDiv">
+		<p>Fetching app data, please wait...</p>
+	</div>
+</div>
+<!--<div id="glassAppShortcutsDiv">
 	<p class="masterTooltip" value="These are app shortcut buttons for network VNC control on port 5900 only">App shortcuts<br><font style="font-size:1.1vh;">(Port 5900 network control only)</font></p>
 	<button class="glassRemBtn youtube" onclick="stbControl('control', 'youtube')" title="YouTube"></button>
 	<button class="glassRemBtn netflix" onclick="stbControl('control', 'netflix')" title="Netflix"></button>
@@ -60,4 +66,4 @@
         <button class="remoteRowBtn up" onclick="arrowDir('DEC')" title="Row Up"></button>
         <div id="rowCtrlTextDiv"><p>ROW</p></div>
         <button class="remoteRowBtn down" onclick="arrowDir('INC')" title="Row Down"></button>
-</div>
+</div>-->

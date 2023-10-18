@@ -20,6 +20,7 @@ window.onload = function () {	// Run these functions when the page first loads
 	dynamicTitle('get');
 	legacyCheck();
 	sequenceUpdates();
+	glassAppListChecker();
 
 	// Bind the tooltip function
         $(document).ready(function() {
@@ -833,6 +834,10 @@ function seqTextUpdate($id,$text,$area) {	// This function handles the first par
 	var newonclick = "removeFromSeq('" + newid + "','" + $area + "')";
 	if ($text.match(/Timeout/i)) {
 		btn.setAttribute("class", "seqAreaBtn timeout");
+	} else if ($text.match(/Launch/i)) {
+		btn.setAttribute("class", "seqAreaBtn applaunch");
+	} else if ($text.match(/Close/i)) {
+		btn.setAttribute("class", "seqAreaBtn appclose");
 	} else {
 		btn.setAttribute("class", "seqAreaBtn");
 	}
@@ -1247,6 +1252,11 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 						var chunk = bits[o];
 						newtext += chunk[0].toUpperCase() + chunk.slice(1);
 						newtext += ' ';
+					}
+					if (id.match(/^app/)) {
+						var bits = id.split(':');
+						id = bits[2];
+						newtext = bits[3];
 					}
 					seqTextUpdate(id,newtext);
 				}
@@ -2429,6 +2439,36 @@ function restartRedRatHub() {
 			$('#restartRedRatHubBtn').text("RESTART");
 		}
 	});
+}
+
+function glassAppListChecker() {
+	setInterval(function() {
+		if ( $('#glassAppListDiv').length ) {
+			if ( !$('.glassAppListRow').length ) {
+				// Check to see if this is the sequences page or the controller page
+				var flag = '';
+				if ($('#sequencesPageHolder').length) {
+					flag = 'sequences';
+				}
+				$.ajax({
+					type : 'GET',
+					url : 'cgi-bin/scripts/pages/glassAppsList.pl',
+					data : {
+						'option' : 'show',
+						'flag' : flag
+					},
+					success : function(result) {
+						if (result) {
+							$('#glassAppListDiv').html(result);
+							//alert(result);
+						}
+					}
+				});
+
+			}
+
+		}
+	}, 2000);
 }
 
 // end hiding script from old browsers -->

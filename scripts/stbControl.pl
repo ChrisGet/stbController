@@ -626,7 +626,9 @@ sub sendVNCCommsLegacy {
 				foreach my $com (@commands) {
 					if ($com =~ /^t(\d+)/i) {
 						sleep $1;
-					} else {
+					} elsif ($com =~ /^app/) {
+						soipAppCall($ip,$com); 
+					}else {
 						my $ds = '';
 						if ($com =~ /passive/i) {
 							$ds = 1;
@@ -739,6 +741,8 @@ sub sendVNCCommsNew {
         foreach my $com (@commands) {
                 if ($com =~ /^t(\d+)/i) {
                         sleep $1;
+		} elsif ($com =~ /^app/) {
+			soipAppCall($ip,$com); 
                 } else {
                         my $ds = '';
                         if ($com =~ /passive/i) {
@@ -1023,4 +1027,17 @@ sub wakeonlan {
 	setsockopt($sock, SOL_SOCKET, SO_BROADCAST, 1);
 	send($sock, $packet, 0, $sock_addr);
 	close ($sock);
+}
+
+sub soipAppCall {
+	use LWP::UserAgent;
+	
+	my ($ip,$callstring) = @_;
+	my ($a,$opt,$appid) = split(':',$callstring);
+
+	my $url = 'http://' . $ip . ':9005/as/apps/action/' . $opt . '?appId=' . $appid;
+	my $ua = LWP::UserAgent->new();
+	$ua->timeout(5);
+	my $req = $ua->post($url);
+	return;
 }

@@ -186,15 +186,9 @@ button:hover {
 	display:inline-block;
 	width:100%;
 	height:100%;
-	background:url("../images/qBoxAndMini.png"),url("../images/skyPlus.png"),url("../images/now-tv-smart-box.png");
-	background-size:30% auto, 30% auto, 30% auto;
-	background-position:bottom left, bottom center, bottom right;
-	background-repeat:no-repeat, no-repeat, no-repeat;
-	/*margin-top:40px;*/
 	text-align:center;
-
-	background:url("../images/britannia.jpg");
-	background-size:100% auto;
+	background:url("../images/controlCenter.jpg");
+	background-size:100% 100%;
 	background-position:top center;
 	background-repeat:no-repeat;
 	position:relative;
@@ -1403,6 +1397,14 @@ table.stbConfigGrid {
 .seqAreaBtn.timeout {
 	background-color:#999966;
 	border:1px solid #999966;
+}
+.seqAreaBtn.applaunch {
+	background-color:green;
+	border:1px solid green;
+}
+.seqAreaBtn.appclose {
+	background-color:red;
+	border:1px solid red;
 }
 .seqAreaBtn:hover {
 	background-color:#ff6600;
@@ -3351,16 +3353,28 @@ input[type='file'] {
 	width:auto;
 	height:100%;
 	padding:0 4px;
-	border-radius:3px 2px 2px 3px;
+	border-radius:3px;
 	background-color:#008000;
+	background-color:#003b46;
+	margin-right:5px;
 }
 .seqListIcon.timeout {
 	background-color:#999966;
 	margin-right:5px;
 	border-radius:50%;
 }
+.seqListIcon.applaunch {
+	background-color:green;
+	margin-right:5px;
+	border-radius:10px;
+}
+.seqListIcon.appclose {
+	background-color:red;
+	margin-right:5px;
+	border-radius:10px;
+}
 .seqListArrowDiv {
-	display:inline-block;
+	display:none;
 	width:10px;
 	height:100%;
 	vertical-align:top;
@@ -3370,6 +3384,9 @@ input[type='file'] {
 	background-repeat:no-repeat;
 }
 .seqListArrowDiv.timeout {
+	display:none;
+}
+.seqListArrowDiv.appcontrol {
 	display:none;
 }
 .seqListIcon p {
@@ -4883,13 +4900,75 @@ input[type='file'] {
         top:41%;
         left:1%;
         width:30%;
-        height:15%;
-	border:1px solid black;
+        height:58%;
+	border:1px solid #cccccc;
 }
 #glassAppShortcutsDiv p {
 	margin:0;
 	font-size:1.5vh;
 	color:black;
+}
+#glassAppListDiv {
+        position:relative;
+        display:inline-block;
+        width:99%;
+        height:90%;
+	overflow:auto;
+        border-radius:0 0 10px 10px;
+}
+.glassAppListRow {
+        position:relative;
+        display:inline-block;
+        width:100%;
+        height:10%;
+/*        margin-bottom:0.5%;
+	border-top:1px solid #cccccc;*/
+}
+.glassAppListRow:nth-of-type(odd) {
+	background-color:rgba(7,87,91,0.1);
+}
+.glassAppListRowHead {
+        position:relative;
+        display:inline-block;
+        width:100%;
+        height:50%;
+}
+.glassAppListRowHead p {
+	position:relative;
+	margin:0;
+	font-size:1.2vh !important;
+	top:50% !important;
+	transform:translateY(-50%) !important;
+}
+.glassAppListRowOpts {
+        position:relative;
+        display:inline-block;
+        width:100%;
+        height:50%;
+}
+.appBtn {
+        position:relative;
+        display:inline-block;
+        width:30%;
+        height:80%;
+        background:none;
+	margin:0 3% 0 3%; 
+	border:none;
+}
+.appBtn:hover {
+	cursor:pointer;
+}
+.appBtn.launch {
+	background:url("../images/launchAppIcon.png");
+	background-size:auto 100%;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+.appBtn.close {
+	background:url("../images/closeAppIcon.png");
+	background-size:auto 80%;
+	background-position:center center;
+	background-repeat:no-repeat;
 }
 
 .glassRemBtn.youtube {

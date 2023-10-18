@@ -165,7 +165,16 @@ EN
 				$buttontext = "-";
 			}
 
-			my $style = 'style="' . $btnstyle . '"';
+			my $style = 'style="';
+	                if (exists $stbdata{$id}{'ButtonColour'}) {
+	                        $style .= 'background-color:' . $stbdata{$id}{'ButtonColour'} . ';';
+	                }
+	                if (exists $stbdata{$id}{'ButtonTextColour'}) {
+	                        $style .= 'color:' . $stbdata{$id}{'ButtonTextColour'} . ';';
+	                }
+	                $style .= $btnstyle;
+	                $style .= '"';
+
 print <<BOX;
 <button $style name="$name" id="$id" class="stbButton data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button>
 BOX

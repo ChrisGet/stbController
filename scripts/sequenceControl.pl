@@ -29,6 +29,7 @@ my $stresscomsfile = $filedir . 'controllerToStressTable.json';
 my $exportdir = $filedir . '/exports/';
 my $seqfile = ($filedir . 'commandSequences.txt');
 my $jsonfile = $filedir . 'commandSequences.json';
+my $soipappsfile = $filedir . 'soipAppShortcuts.json';
 
 checkLegacy();  # Initial check to see if any old sequence files have been converted to the new JSON format
 
@@ -43,6 +44,16 @@ if (-e $jsonfile) {
         my $data = <$fh>;
         my $decoded = $json->decode($data);
         %sequences = %{$decoded};
+}
+
+##### Load the SoIP App Shortcuts data
+my %soipapps;
+if (-e $soipappsfile) {
+        local $/ = undef;
+        open my $fh, "<", $soipappsfile or die "ERROR: Unable to open $soipappsfile: $!\n";
+        my $data = <$fh>;
+        my $decoded = $json->decode($data);
+        %soipapps = %{$decoded};
 }
 
 #tie my %sequences, 'Tie::File::AsHash', $seqfile, split => ':' or die "Problem tying \%sequences to $seqfile: $!\n"; 
@@ -125,7 +136,21 @@ sub showSequences {
         	$$seq =~ s/\s+$//g;     # Remove trailing whitespace
         	$$seq =~ s/\s+/ /g;     # Find all whitespace within the sequence name and replace it with a single space
 		if (exists $sequences{$$seq}) {
-			print $sequences{$$seq}{'commands'};
+			my @seqs = split(',',$sequences{$$seq}{'commands'});
+			my $seqcommstring = '';
+			foreach my $c (@seqs) {
+				if ($c =~ /^app/) {
+					my ($a,$opt,$appid) = split(':',$c);
+					if (exists $soipapps{$appid}) {
+						$seqcommstring .= $c . ':' . uc($opt) . ' ' . $soipapps{$appid} . ',';
+					}
+				} else {
+					$seqcommstring .= $c . ',';
+				}
+			}
+			$seqcommstring =~ s/,$//;
+			print $seqcommstring;
+			#print $sequences{$$seq}{'commands'};
 		} else {
 			print "\"$$seq\" not found";
 		} 
