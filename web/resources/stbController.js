@@ -731,7 +731,7 @@ function rows($row) {	// This function handles the row selection buttons on the 
 	var restrict = $('#restrictSTBGridRows').val();
 	if (restrict) {
 		for (var stb in stbHash) {
-		      document.getElementById(stb).className = 'stbButton deselect';
+		      	document.getElementById(stb).className = 'stbButton deselect';
 		}
 		stbHash = {};
 	}
@@ -743,6 +743,11 @@ function rows($row) {	// This function handles the row selection buttons on the 
 		if (match) {
 			continue;	// Skip the row button that is in that row
 		}
+
+		if (document.getElementById(ayedee).disabled == true) {
+			continue;
+		}
+
 		colorToggle(ayedee,override,highlight);	// Send 'ayedee' to the colorToggle function
 	}
 }
@@ -2471,4 +2476,45 @@ function glassAppListChecker() {
 	}, 2000);
 }
 
+function deviceActiveToggle($this,$dev) {
+	var clicked = $($this);
+	var classa = clicked.attr('class');
+	var switc = 'enable';
+	if (classa.match(/inactive/)) {
+		clicked.attr('class','devActiveSlider active masterTooltip');
+	} else {
+		clicked.attr('class','devActiveSlider inactive masterTooltip');
+		switc = 'disable';
+	}
+
+	$.ajax({
+		type : 'POST',
+		url : 'cgi-bin/scripts/pages/stbDataPage.pl',
+		data : {
+			'option' : switc,
+			'stb' : $dev,
+		},
+		success : function(result) {
+			if (result) {
+				if (result.match(/^ERROR/)) {
+					alert(result);
+					//perlCall('dynamicPage','scripts/pages/settingsPage.pl');
+				} else {
+					perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb',$dev);
+				}
+			}
+		},
+	});
+}
+
+function sequencesMenu () {
+	pageCall('dynamicPage','web/sequencesPage.html');
+	logLastBoxes();
+	setTimeout(function() {
+		perlCall('sequencesAvailable','scripts/pages/sequencesPage.pl','action','Menu');
+		setTimeout(function() {
+			focusEl('sequencesAvailable')
+		},500);
+	},500);
+}
 // end hiding script from old browsers -->

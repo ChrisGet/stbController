@@ -93,7 +93,7 @@ if (-e $seqfile) {
 
 chomp(my $action = $ARGV[0] // $query->param('action') // '');
 chomp(my $command = $ARGV[1] // $query->param('command') // '');
-chomp(my $info = $ARGV[2] // $query->param('info') // '');
+chomp(my $info = $ARGV[2] // $query->param('info') // '');	# This will be the target device(s) or group(s)
 chomp(my $logpid = $ARGV[4] || '');	# $logpid will only ever be used by the backend eventScheduleControl.pl script
 my $logging = '';
 my $schedpid = '';
@@ -114,19 +114,24 @@ if ($logging) {		# Log the pid of this main script if logging has been requested
 	system("touch $pidlog")
 }
 
+#### Below we separate the target STB input ($info) and process each item to see whether it is a group or a single STB
 my @targetsraw = split(',',$info);
 my $targetstring = '';
-
-#### Below we separate the target STB input ($info) and process each item to see whether it is a group or a single STB
 
 foreach my $target (@targetsraw) {
 	$target = uc($target);
 	if (exists $groups{$target}) {
 		my @members = split(',',$groups{$target}{'stbs'});
 		foreach my $member (@members) {
+			if (exists $stbdata{$member}{'State'} and $stbdata{$member}{'State'} =~ /inactive/) {
+				next;
+			}
 			$targetstring .= "$member,";
 		}
 	} else {
+		if (exists $stbdata{$target}{'State'} and $stbdata{$target}{'State'} =~ /inactive/) {
+			next;
+		}
 		$targetstring .= "$target,";
 	}
 }

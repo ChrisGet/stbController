@@ -287,6 +287,17 @@ while ($r <= $rows) {
 		}
 		$style .= $btnstyle;
 		$style .= '"';
+
+		my $disabled = '';
+		my $tooltip = '';	# Buttons will be given the masterTooltip class and a value if the devices are set to "inactive"
+		my $value = '';
+		if (exists $stbdata{$id}{'State'}) {
+			if ($stbdata{$id}{'State'} =~ /inactive/) {
+				$disabled = 'disabled=true';
+				$tooltip = 'masterTooltip';
+				$value = 'value="Device is set to inactive"';
+			}
+		}
 		
 		if ($buttontext =~ /^\s*\:\s*$/) {
 print <<BOX;
@@ -294,7 +305,7 @@ print <<BOX;
 BOX
 		} else {
 print <<BOX;
-<button name="$name" id="$id" class="stbButton deselect" onclick="colorToggle('$id')" $style>$buttontext</button>
+<button name="$name" id="$id" class="stbButton deselect $tooltip" $value onclick="colorToggle('$id')" $disabled $style>$buttontext</button>
 BOX
 		}
 

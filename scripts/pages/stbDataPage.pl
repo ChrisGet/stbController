@@ -29,11 +29,23 @@ if (open my $fsfh, '<', $fullsizefile) {
 my $json = JSON->new->allow_nonref;
 $json = $json->canonical('1');
 
+my %stbdata;
+if (-e $stbdatafile) {
+	local $/ = undef;
+        open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
+	my $data = <$fh>;
+	if ($data) {
+		my $decoded = $json->decode($data);
+		%stbdata = %{$decoded};
+	}
+}
+
 chomp(my $option = $query->param('option') || $ARGV[0] || '');
 chomp(my $box = $query->param('stb') || $ARGV[1] || '');
 
 stbSelect() if ($option =~ /chooseSTB/i);
 stbConfig(\$box) if ($option =~ /configSTB/i);
+stbActive() and exit if ($option =~ /able/i);	# Fires the sub routine if $option contains "enable" or "disable"
 stbConfig(\$box,\'printDuskyTable') and exit if ($option =~ /printDusky/i);
 stbConfig(\$box,\'printBluetoothTable') and exit if ($option =~ /printBluetooth/i);
 stbConfig(\$box,\'printNowTVNetworkTable') and exit if ($option =~ /printNetwork/i and $option =~ /NowTV/i);
@@ -172,11 +184,22 @@ EN
 	                if (exists $stbdata{$id}{'ButtonTextColour'}) {
 	                        $style .= 'color:' . $stbdata{$id}{'ButtonTextColour'} . ';';
 	                }
+
+	                my $tooltip = '';       # Buttons will be given the masterTooltip class and a value if the devices are set to "inactive"
+	                my $value = '';
+	                if (exists $stbdata{$id}{'State'}) {
+	                        if ($stbdata{$id}{'State'} =~ /inactive/) {
+					$style = 'style="background-color:#cccccc;color:black;';
+	                                $tooltip = 'masterTooltip';
+	                                $value = 'value="Device is set to inactive"';
+	                        }
+			}
+
 	                $style .= $btnstyle;
 	                $style .= '"';
 
 print <<BOX;
-<button $style name="$name" id="$id" class="stbButton data" onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button>
+<button $style name="$name" id="$id" class="stbButton data $tooltip" $value onclick="perlCall('dynamicPage','scripts/pages/stbDataPage.pl','option','configSTB','stb','$id')">$buttontext</button>
 BOX
 	               	$stbno++;
                 	$c++;
@@ -200,17 +223,6 @@ LAST
 
 sub stbConfig {
 	my ($stb,$option) = @_;
-	my %stbdata;
-	if (-e $stbdatafile) {
-        	local $/ = undef;
-                open my $fh, "<", $stbdatafile or die "ERROR: Unable to open $stbdatafile: $!\n";
-		my $data = <$fh>;
-		if ($data) {
-			my $decoded = $json->decode($data);
-			%stbdata = %{$decoded};
-		}
-	}
-
 	my ($num) = $$stb =~ /STB(\d+)/i;
 	my $name;
 	my $titlename;
@@ -340,7 +352,25 @@ HEAD
 	}
 	# End of $option actions
 
-	print "<div class=\"stbDataWrapRight\">";
+	my $boxstate = $stbdata{$$stb}{'State'} // '';
+	my $infotext = 'Click to deactivate this device. Doing so will prevent it from being controlled either manually or via the schedule';
+	if (!$boxstate) {
+		$boxstate = 'active';
+	} elsif ($boxstate =~ /inactive/) {
+		$infotext = 'Click to activate this device. Doing so will enable it to be controlled either manually or via the schedule';
+	}
+	my $statetext = ucfirst($boxstate);
+		
+print <<RIGHTFIRST;
+	<div class="stbDataWrapRight">
+		<div id="deviceActiveDiv">
+			<h2>Device State - $statetext</h2>
+			<div id="devActiveSliderMain" class="devActiveSlider $boxstate masterTooltip" value="$infotext" onclick="deviceActiveToggle(this,'$$stb')">
+				<div class="devActiveInnerSlide"></div>
+			</div>
+		</div>
+
+RIGHTFIRST
 
 print <<DUTTABLE;
 <table class="stbDataFormTable DUT">
@@ -663,4 +693,22 @@ print <<IR;
 <div id="stbDataNoteDivNowTVGC">
 </div>
 IR
+}
+
+sub stbActive {
+	my $state = 'active';
+	if ($option =~ /disable/i) {
+		$state = 'inactive';
+	}
+	$stbdata{$box}{'State'} = $state;
+
+	my $encoded = $json->pretty->encode(\%stbdata);
+	if (open my $newfh, '+>', $stbdatafile) {
+		print $newfh $encoded;
+		close $newfh;
+		print "Success";
+	} else {
+		print "Fail";
+		die "ERROR: Unable to open $stbdatafile: $!\n";
+	}
 }
