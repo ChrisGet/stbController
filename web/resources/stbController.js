@@ -686,17 +686,17 @@ function colorToggle($id,$override,$highlight){	// This function handles the STB
 		}
 	}
 
-	if (item.className == 'stbButton deselect') {
-		item.className = 'stbButton selected';
+	if (item.className.match('deselect')) {
+		item.className = item.className.replace("deselect", "selected");
 		stbHash[$id] = 1;
 		perlCall('','scripts/videoSwitching.pl','stbs',$id);	// Once a box is selected, switch to its video too
 	} else {
-		if (item.className == 'stbButton highlighted') {
-			item.className = 'stbButton selected';
+		if (item.className.match('highlighted')) {
+			item.className = item.className.replace("highlighted","selected");
                 	stbHash[$id] = '1';
 			delete highlightedSTBs[$id];
 		} else {
-			item.className = 'stbButton deselect';
+			item.className = item.className.replace("selected","deselect");
 			delete stbHash[$id];
 		}
 	}
