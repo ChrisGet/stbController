@@ -126,7 +126,6 @@ sub searchSequences {
 sub showSequences {
 	my ($seq) = @_;
 	if ($$seq =~ /^All$/i) {
-		#while (my ($key,$value) = each %sequences) {
 		foreach my $key (sort keys %sequences) {
 			print "$key -- " . $sequences{$key}{'commands'} . "\n";
 		}	
@@ -142,7 +141,7 @@ sub showSequences {
 				if ($c =~ /^app/) {
 					my ($a,$opt,$appid) = split(':',$c);
 					if (exists $soipapps{$appid}) {
-						$seqcommstring .= $c . ':' . uc($opt) . ' ' . $soipapps{$appid} . ',';
+						$seqcommstring .= $c . '>' . uc($opt) . ' ' . $soipapps{$appid} . ',';
 					}
 				} else {
 					$seqcommstring .= $c . ',';
@@ -150,7 +149,6 @@ sub showSequences {
 			}
 			$seqcommstring =~ s/,$//;
 			print $seqcommstring;
-			#print $sequences{$$seq}{'commands'};
 		} else {
 			print "\"$$seq\" not found";
 		} 

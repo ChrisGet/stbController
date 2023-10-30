@@ -1259,9 +1259,9 @@ function editSequencePage2($seq) {	// This function handles the second part of e
 						newtext += ' ';
 					}
 					if (id.match(/^app/)) {
-						var bits = id.split(':');
-						id = bits[2];
-						newtext = bits[3];
+						var bits = id.split('>');
+						id = bits[0];
+						newtext = bits[1];
 					}
 					seqTextUpdate(id,newtext);
 				}
